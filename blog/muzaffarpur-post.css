@@ -1,0 +1,88 @@
+/* Wedding Album Design Course in Muzaffarpur — post-specific styles (shared blog.css does the layout) */
+.mzf-post .blog-article-body h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.4rem, 2.4vw, 1.7rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+  margin: 36px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ecdcc4;
+}
+.mzf-post .blog-article-body h3 { font-family: 'Outfit', sans-serif; color: #0f172a; font-weight: 800; }
+.mzf-post .blog-article-body p { color: #334155; line-height: 1.85; font-size: 1.02rem; margin: 0 0 14px; }
+
+.mzf-badge-gold { background: #fef7ec; border: 1px solid #edd6af; color: #925f17; font-weight: 700; }
+.mzf-badge-plain { background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; font-weight: 700; }
+.mzf-meta { display: inline-flex; align-items: center; gap: 6px; }
+
+.mzf-hero { margin: 0 0 28px; border-radius: 16px; overflow: hidden; border: 1px solid #ecdcc4; box-shadow: 0 18px 40px rgba(15, 23, 42, .18); }
+.mzf-hero img { width: 100%; height: auto; display: block; }
+
+.mzf-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 4px 0 28px; }
+.mzf-facts > div { background: #fff; border: 1.5px solid #ebd9be; border-radius: 14px; padding: 16px 12px; text-align: center; }
+.mzf-facts strong { display: block; font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 900; color: #0f172a; line-height: 1.2; }
+.mzf-facts span { display: block; font-size: .82rem; color: #64748b; font-weight: 600; margin-top: 4px; }
+
+.mzf-list { margin: 6px 0 18px; padding-left: 0; list-style: none; }
+.mzf-list li { position: relative; padding: 8px 0 8px 28px; color: #334155; line-height: 1.6; border-bottom: 1px dashed #ecdcc4; }
+.mzf-list li::before { content: "✓"; position: absolute; left: 4px; top: 8px; color: #b88636; font-weight: 900; }
+
+.mzf-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 6px; }
+.mzf-tools span { background: #fffaf0; border: 1px solid #ecdcc4; color: #7c5414; font-weight: 700; font-size: .85rem; padding: 6px 12px; border-radius: 999px; }
+
+.mzf-cta {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+  margin: 32px 0; padding: 24px 26px; border-radius: 16px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(216, 161, 83, .45);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .25);
+}
+.mzf-post .mzf-cta .mzf-cta-title { color: #fce09b; font-weight: 800; font-size: 1.2rem; margin: 0 0 4px; }
+.mzf-post .mzf-cta .mzf-cta-text { color: #e2e8f0; font-size: .95rem; margin: 0; line-height: 1.6; }
+.mzf-cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.mzf-btn-wa, .mzf-btn-gold {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 20px;
+  border-radius: 10px; font-weight: 800; font-size: .95rem; text-decoration: none; transition: transform .2s ease;
+}
+.mzf-btn-wa { background: #25d366; color: #fff; }
+.mzf-btn-gold { background: linear-gradient(135deg, #f6d389, #d8a153); color: #111; }
+.mzf-btn-wa:hover, .mzf-btn-gold:hover { transform: translateY(-2px); }
+
+.mzf-weeks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.mzf-week { background: linear-gradient(145deg, #fff 0%, #faf8f5 100%); border: 1.5px solid #ecdcc4; border-left: 5px solid #d8a153; border-radius: 14px; padding: 18px 20px; }
+.mzf-week-no { display: inline-block; background: #d8a153; color: #0f172a; font-weight: 900; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; }
+.mzf-post .mzf-week h3 { font-size: 1.05rem; margin: 10px 0 6px; }
+.mzf-post .mzf-week p { font-size: .94rem; margin: 0; line-height: 1.65; }
+
+.mzf-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 10px 0 16px; }
+.mzf-option { background: #fff; border: 1.5px solid #ecdcc4; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; }
+.mzf-post .mzf-option h3 { font-size: 1.08rem; margin: 0 0 8px; }
+.mzf-post .mzf-option p { font-size: .95rem; flex: 1; }
+.mzf-option a { color: #a8701f; font-weight: 800; text-decoration: none; }
+.mzf-option a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.mzf-faq { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.mzf-faq details { background: #fff; border: 1.5px solid #ecdcc4; border-radius: 12px; padding: 0 18px; }
+.mzf-faq details[open] { border-color: #d8a153; background: #fffcf6; }
+.mzf-faq summary { cursor: pointer; list-style: none; padding: 16px 30px 16px 0; position: relative; font-weight: 800; color: #0f172a; line-height: 1.45; }
+.mzf-faq summary::-webkit-details-marker { display: none; }
+.mzf-faq summary::after { content: "+"; position: absolute; right: 0; top: 13px; font-size: 1.3rem; color: #b88636; transition: transform .2s ease; }
+.mzf-faq details[open] summary::after { transform: rotate(45deg); }
+.mzf-post .mzf-faq details p { margin: 0 0 16px; font-size: .96rem; }
+
+.mzf-links { border-top: 1.5px solid #ecdcc4; padding-top: 22px; margin-top: 36px; }
+.mzf-post .mzf-links h3 { font-size: .9rem; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 12px; }
+.mzf-links > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.mzf-links a { background: #fff; color: #0f172a; padding: 9px 14px; border-radius: 8px; font-size: .9rem; font-weight: 700; text-decoration: none; border: 1.5px solid #ecdcc4; }
+.mzf-links a:hover { border-color: #d8a153; background: #fffaf0; }
+
+@media (max-width: 760px) {
+  .mzf-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .mzf-weeks, .mzf-options { grid-template-columns: 1fr; }
+  .mzf-cta { padding: 20px; }
+  .mzf-cta-actions, .mzf-btn-wa, .mzf-btn-gold { width: 100%; }
+  .mzf-post .blog-article-body p { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mzf-btn-wa:hover, .mzf-btn-gold:hover { transform: none; }
+}

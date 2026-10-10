@@ -2977,29 +2977,26 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     return;
   }
 
-  // ── 0B. ZOOM MEETING (DIRECT SEAMLESS 100% IN-PLAYER EMBED) ──
-  const zoomUrl = (session && session.zoomUrl) || (session && session.streamType === 'zoom' ? (session.streamId || '') : '') || (streamId && streamId.includes('zoom.us') ? streamId : '');
-  let zoomMeetingId = (session && session.zoomMeetingId) || '';
-  let zoomPasscode = (session && session.zoomPasscode) || '';
-
+  // ── 0B. ZOOM MEETING (WEB CLIENT EMBED + RELIABLE APP FALLBACK) ──
+  const zoomUrlRaw = (session && session.zoomUrl) || (session && session.streamType === 'zoom' ? (session.streamId || '') : '') || (streamId && streamId.includes('zoom.us') ? streamId : '');
+  const zoomUrl = /^https:\/\/([a-z0-9-]+\.)*zoom\.us\//i.test(String(zoomUrlRaw).trim()) ? String(zoomUrlRaw).trim() : '';
+  let zoomMeetingId = String((session && session.zoomMeetingId) || '').replace(/\D/g, '');
   let encryptedPwdHash = '';
 
   if (zoomUrl) {
-    const mMid = zoomUrl.match(/\/j\/(\d{9,12})/i) || zoomUrl.match(/\/wc\/(\d{9,12})/i) || zoomUrl.match(/(\d{9,12})/);
+    const mMid = zoomUrl.match(/\/(?:j|wc|w|s)\/(\d{9,12})/i) || zoomUrl.match(/[?&]confno=(\d{9,12})/i);
     if (!zoomMeetingId && mMid) zoomMeetingId = mMid[1];
-
     const mPwd = zoomUrl.match(/[?&]pwd=([^&#]+)/i);
-    if (mPwd) {
-      encryptedPwdHash = mPwd[1];
-    }
+    if (mPwd) encryptedPwdHash = mPwd[1];
+  } else if (!zoomMeetingId && /^\s*[\d\s-]{9,14}\s*$/.test(String(zoomUrlRaw))) {
+    zoomMeetingId = String(zoomUrlRaw).replace(/\D/g, '');
   }
 
-  // If plain passcode was missing, try fallback
-  if (!zoomPasscode && encryptedPwdHash) {
-    zoomPasscode = encryptedPwdHash;
-  }
+  // Plain numeric passcode (shown to student). The encrypted ?pwd= token is never shown as a "passcode".
+  const rawPass = String((session && session.zoomPasscode) || '').trim();
+  const plainPass = rawPass && rawPass !== encryptedPwdHash ? rawPass : '';
 
-  const isZoomSession = (session && session.streamType === 'zoom') || (zoomUrl && zoomUrl.includes('zoom.us')) || Boolean(zoomMeetingId);
+  const isZoomSession = (session && session.streamType === 'zoom') || Boolean(zoomUrl) || Boolean(zoomMeetingId);
 
   if (isZoomSession) {
     if (shield) { shield.style.display = 'none'; shield.style.pointerEvents = 'none'; }
@@ -3011,84 +3008,81 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     const cinemaDock = document.getElementById('live-cinema-control-dock');
     if (cinemaDock) cinemaDock.style.display = 'none';
 
-    const cleanMeetingId = (zoomMeetingId || '').replace(/\s+/g, '');
+    const zEsc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const studentName = (typeof currentStudent !== 'undefined' && currentStudent && currentStudent.name)
       ? currentStudent.name
       : (localStorage.getItem('qa_user_name') || localStorage.getItem('qaa_student_name') || 'Student');
-    const encName = encodeURIComponent(studentName);
+    const sessionTitle = (session && session.title) || 'Interactive Live Session';
 
-    // Zoom URL query 'pwd' strictly requires the encrypted token hash from the zoom URL when available.
-    const tokenToPass = encryptedPwdHash || zoomPasscode || '';
-    const plainPass = zoomPasscode || '';
+    // App / new-tab join link: the original admin link (keeps Zoom's encrypted pwd token) — opens Zoom app without passcode prompt
+    const directJoinLink = zoomUrl || (zoomMeetingId ? `https://zoom.us/j/${zoomMeetingId}${encryptedPwdHash ? `?pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}` : '');
 
-    // Direct Join Link: Bypasses mobile iframe 3rd-party cookie blocking so mobile NEVER asks for password
-    const directJoinLink = zoomUrl || (cleanMeetingId ? `https://us05web.zoom.us/j/${cleanMeetingId}${tokenToPass ? `?pwd=${tokenToPass}` : ''}` : '');
+    // Web client only accepts the ENCRYPTED token in `pwd` and a plain display name in `uname`.
+    // Sending the plain passcode as `pwd` or a non-base64 `un` makes Zoom show "Invalid meeting / passcode" errors.
+    const zoomEmbedUrl = zoomMeetingId
+      ? `https://app.zoom.us/wc/${zoomMeetingId}/join?prefer=1${encryptedPwdHash ? `&pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}&uname=${encodeURIComponent(studentName)}`
+      : '';
 
-    const zoomEmbedUrl = `https://app.zoom.us/wc/${encodeURIComponent(cleanMeetingId)}/join?prefer=1${tokenToPass ? `&pwd=${encodeURIComponent(tokenToPass)}` : ''}${plainPass ? `&passcode=${encodeURIComponent(plainPass)}&password=${encodeURIComponent(plainPass)}` : ''}&uname=${encName}&un=${encName}&name=${encName}&display_name=${encName}`;
+    const passPill = plainPass ? `
+          <div class="zoom-pass-pill" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#94a3b8;background:rgba(15,23,42,0.85);padding:6px 14px;border-radius:20px;border:1px solid rgba(59,130,246,0.3)">
+            <span>Passcode: <strong style="color:#60a5fa;font-family:monospace;font-size:13px">${zEsc(plainPass)}</strong></span>
+            <button type="button" data-copy="${zEsc(plainPass)}" onclick="copyText(this.dataset.copy, 'Passcode')" style="background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.5);color:#93c5fd;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:6px;cursor:pointer">📋 Copy</button>
+          </div>` : '';
 
-    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
-
-    if (isMobileDevice) {
+    const renderZoomLauncher = (note) => {
       mount.innerHTML = `
         <div class="zoom-mobile-launcher" style="position:relative;width:100%;height:100%;min-height:300px;background:radial-gradient(circle at center, #0f1c3f 0%, #060a14 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;box-sizing:border-box;text-align:center;color:#fff">
-          <div style="width:62px;height:62px;border-radius:18px;background:rgba(37,99,235,0.22);border:2px solid rgba(59,130,246,0.45);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px;box-shadow:0 8px 24px rgba(37,99,235,0.35)">
-            🔷
-          </div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#93c5fd;margin-bottom:6px">
-            Live 2-Way Interactive Class
-          </div>
-          <h3 style="font-size:17px;font-weight:800;color:#fff;margin:0 0 16px 0;line-height:1.3;max-width:320px">
-            ${escapeHtml(session?.title || 'Interactive Live Session')}
-          </h3>
-
+          <div style="width:62px;height:62px;border-radius:18px;background:rgba(37,99,235,0.22);border:2px solid rgba(59,130,246,0.45);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px;box-shadow:0 8px 24px rgba(37,99,235,0.35)">🔷</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#93c5fd;margin-bottom:6px">Live 2-Way Interactive Class</div>
+          <h3 style="font-size:17px;font-weight:800;color:#fff;margin:0 0 ${note ? '8px' : '16px'} 0;line-height:1.3;max-width:340px">${zEsc(sessionTitle)}</h3>
+          ${note ? `<p style="font-size:12.5px;color:#fca5a5;margin:0 0 14px 0;max-width:340px;line-height:1.5">${zEsc(note)}</p>` : ''}
           <div style="display:flex;flex-direction:column;width:100%;max-width:290px;gap:10px;margin-bottom:14px">
-            <a href="${escapeHtml(directJoinLink)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#fff;font-size:14px;font-weight:800;padding:13px 20px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 25px rgba(37,99,235,0.5)">
-              <span>🚀 1-Tap Join (Bina Password)</span>
-              <span style="font-size:16px">➔</span>
-            </a>
-            <button type="button" onclick="loadZoomIframeDirectly()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#cbd5e1;font-size:12px;padding:9px 12px;border-radius:8px;cursor:pointer">
-              🖥️ Yahi Browser Me Chalayein
-            </button>
+            ${directJoinLink ? `<a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#fff;font-size:14px;font-weight:800;padding:13px 20px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 25px rgba(37,99,235,0.5)">
+              <span>🚀 Zoom App me Join karein</span><span style="font-size:16px">➔</span>
+            </a>` : ''}
+            ${zoomEmbedUrl ? `<button type="button" onclick="loadZoomIframeDirectly()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#cbd5e1;font-size:12px;padding:9px 12px;border-radius:8px;cursor:pointer">🖥️ Yahi Browser Me Chalayein</button>` : ''}
           </div>
+          ${passPill}
+        </div>
+      `;
+    };
 
-          <!-- Credentials info for convenience -->
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#94a3b8;background:rgba(15,23,42,0.85);padding:6px 14px;border-radius:20px;border:1px solid rgba(59,130,246,0.3)">
-            <span>Passcode: <strong style="color:#60a5fa;font-family:monospace;font-size:13px">${escapeHtml(plainPass || '808310')}</strong></span>
-            <button type="button" onclick="copyText('${escapeHtml(plainPass || '808310')}', 'Passcode')" style="background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.5);color:#93c5fd;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:6px;cursor:pointer">📋 Copy</button>
+    window.loadZoomIframeDirectly = function() {
+      if (!zoomEmbedUrl) { renderZoomLauncher('Zoom Meeting ID nahi mila. Admin se sahi Zoom link update karwayein.'); return; }
+      mount.innerHTML = `
+        <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
+          <iframe
+            id="live-stream-iframe"
+            class="zoom-embed-frame interactive-frame"
+            src="${zEsc(zoomEmbedUrl)}"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;"
+            allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write"
+            allowfullscreen="true">
+          </iframe>
+          <div class="zoom-embed-fallback" style="position:absolute;top:8px;right:8px;z-index:5;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 16px)">
+            ${plainPass ? `<button type="button" data-copy="${zEsc(plainPass)}" onclick="copyText(this.dataset.copy, 'Passcode')" style="background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.45);color:#93c5fd;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer">🔑 ${zEsc(plainPass)}</button>` : ''}
+            ${directJoinLink ? `<a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" title="Browser me error aaye to Zoom App me kholein" style="background:rgba(37,99,235,0.92);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;text-decoration:none">Error? Zoom App me kholein ↗</a>` : ''}
           </div>
         </div>
       `;
+    };
 
-      window.loadZoomIframeDirectly = function() {
-        mount.innerHTML = `
-          <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
-            <iframe 
-              id="live-stream-iframe"
-              class="zoom-embed-frame interactive-frame"
-              src="${zoomEmbedUrl}" 
-              style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;" 
-              allow="camera *; microphone *; fullscreen *; display-capture *; autoplay *; clipboard-write *" 
-              allowfullscreen="true">
-            </iframe>
-          </div>
-        `;
-      };
+    if (!zoomMeetingId) {
+      renderZoomLauncher(directJoinLink ? '' : 'Zoom Meeting ID nahi mila. Admin se sahi Zoom link update karwayein.');
       return;
     }
 
-    // DESKTOP: Direct seamless 100% in-player embed (Zero clicks, auto-joined)
-    mount.innerHTML = `
-      <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
-        <iframe 
-          id="live-stream-iframe"
-          class="zoom-embed-frame interactive-frame"
-          src="${zoomEmbedUrl}" 
-          style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;" 
-          allow="camera *; microphone *; fullscreen *; display-capture *; autoplay *; clipboard-write *" 
-          allowfullscreen="true">
-        </iframe>
-      </div>
-    `;
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    const embedAllowed = !(session && session.zoomEmbedMode === false);
+
+    // Mobile browsers block Zoom's third-party cookies inside iframes → always offer the native app first
+    if (isMobileDevice || !embedAllowed) {
+      renderZoomLauncher('');
+      return;
+    }
+
+    // DESKTOP: In-player Zoom web client (with an always-visible "open in Zoom app" fallback)
+    window.loadZoomIframeDirectly();
     return;
   } else {
     const streamBar = document.querySelector('.live-stream-bar');
@@ -4872,6 +4866,11 @@ window.toggleZoomInBrowser = function(showEmbed) {
     }
   }
 };
+
+// Alias used by live-class renderers (Meet / Zoom); without it they threw "escapeHtml is not defined"
+function escapeHtml(str) {
+  return escHtml(str);
+}
 
 function escHtml(str) {
   if (!str) return '';

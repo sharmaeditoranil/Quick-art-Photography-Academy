@@ -363,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
         path.endsWith('/quickart-masterclass-final/index.html') ||
         path === popupRoot.pathname ||
         path === new URL('index.html', popupRoot).pathname;
-    const isMaster = /\/master-class(?:\/index\.html|\/)?$/i.test(path) || path.includes('/master-class');
     const isPortalOrAdmin = path.includes('/portal') || path.includes('/admin');
 
     if (!isPortalOrAdmin) {
@@ -513,7 +512,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Connect all "Book Free Demo" buttons/links on the page (Fast-pathed for sub-16ms INP)
+    // Popup is homepage-only: on other pages these links keep their normal href (contact page / on-page form).
     document.addEventListener('click', e => {
+        if (!isHome) return;
         const trigger = e.target.closest('a, button');
         if (!trigger) return;
         if (trigger.type === 'submit' || trigger.closest('form')) return;
@@ -537,8 +538,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Page open hone ke 15 second baad popup automatically open ho — lekin har customer ko poori site pe kewal EK hi baar
-    if ((isHome || isMaster) && !hasAutoPopupShown()) {
+    // Page open hone ke 15 second baad popup automatically open ho — sirf Home page par, har customer ko kewal EK hi baar
+    if (isHome && !hasAutoPopupShown()) {
         window.setTimeout(() => {
             if (!hasAutoPopupShown() && !document.querySelector('.qa-popup-overlay')) {
                 markAutoPopupShown();
@@ -582,8 +583,8 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.append(grid, actions); section.append(wrap);
     const whyChoose = main.querySelector('#why-choose');
     const review = [...main.querySelectorAll('section')].find(s => [...s.querySelectorAll('h2')].some(h => /community of|testimonials|student stories/i.test(h.textContent)));
-    const faq = main.querySelector('#faq') || [...main.querySelectorAll('section')].find(s => [...s.querySelectorAll('h2')].some(h => /frequently asked questions/i.test(h.textContent)));
-    const anchor = whyChoose || (main.querySelector('.mc-bonuses') ? (faq || review) : (review || faq));
+    const faq = main.querySelector('#faq') || [...main.querySelectorAll('section:not(.mc-info)')].find(s => [...s.querySelectorAll('h2')].some(h => /frequently asked questions/i.test(h.textContent)));
+    const anchor = whyChoose || (main.querySelector('.mc-bonuses') ? (faq || review) : (review || faq)) || main.querySelector('#visit');
     if (anchor) anchor.before(section); else main.append(section);
 })();
 
@@ -594,17 +595,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = main.querySelector('.qaa-play-download')?.closest('section');
     const homeFaq = main.querySelector('#faq'); if (app && homeFaq) homeFaq.before(app);
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    if (!('IntersectionObserver' in window) || reduced.matches || !Element.prototype.animate) return;
-    const animations = new Set();
+    if (!('IntersectionObserver' in window) || reduced.matches) return;
+
+    // Scroll motion: only content BELOW the fold is hidden (no LCP/CLS cost); grids reveal with a stagger.
+    const skip = '.qa-scroll-reveal,.qa-scroll-stagger,.qa-scroll-zoom,.qa-scroll-left,.qa-scroll-right,[data-no-motion],.ref-header,dialog,[role="dialog"]';
+    const items = new Set();
+    const add = (el, kind, delay) => {
+        if (!el || items.has(el) || el.closest(skip) || items.size > 360) return;
+        el.classList.add('qm', kind); if (delay) el.style.setProperty('--qm-d', delay + 'ms'); items.add(el);
+    };
+    const finish = el => { el.classList.remove('qm', 'qm-up', 'qm-zoom', 'qm-in'); el.style.removeProperty('--qm-d'); };
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-        if (!entry.isIntersecting) return; observer.unobserve(entry.target); if (reduced.matches) return;
-        const animation = entry.target.animate([{ opacity: .35, transform: 'translateY(14px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 480, easing: 'cubic-bezier(.22,1,.36,1)' });
-        animations.add(animation); animation.onfinish = () => animations.delete(animation);
-    }), { threshold: 0, rootMargin: '0px 0px -24px 0px' });
-    requestAnimationFrame(() => main.querySelectorAll('section>.container,section>.ec-wrap,.qaa-examples-heading,.qaa-examples-grid>figure').forEach(node => {
-        if (node.getBoundingClientRect().top > innerHeight) observer.observe(node);
-    }));
-    reduced.addEventListener('change', () => { if (reduced.matches) { observer.disconnect(); animations.forEach(animation => animation.cancel()); animations.clear(); } });
+        if (!entry.isIntersecting) return;
+        const el = entry.target; observer.unobserve(el); el.classList.add('qm-in');
+        // Hand transforms back to the component (hover lifts etc.) once the reveal is done
+        setTimeout(() => finish(el), 900 + (parseInt(el.style.getPropertyValue('--qm-d')) || 0));
+    }), { threshold: 0.12, rootMargin: '0px 100% -8% 100%' }); // wide side margins: carousels/marquees never stay hidden
+
+    requestAnimationFrame(() => {
+        const fold = innerHeight;
+        main.querySelectorAll('section').forEach(section => {
+            if (section.getBoundingClientRect().bottom < fold) return;
+            section.querySelectorAll(':scope :is(h2, h2 + p, [class*="eyebrow"], [class*="kicker"], [class*="badge"]):not(:is([class*="grid"] *, [class*="cards"] *))').forEach(el => add(el, 'qm-up'));
+            section.querySelectorAll(':scope :is([class*="grid"], [class*="cards"], [class*="-list"], .qaa-examples-grid)').forEach(grid => {
+                if (/marquee|track|slider|carousel|swiper|ticker|scroll/i.test(grid.getAttribute('class') || '') || grid.scrollWidth > grid.clientWidth + 4) return;
+                const kids = [...grid.children].filter(k => /^(DIV|ARTICLE|FIGURE|LI|A)$/.test(k.tagName));
+                if (kids.length < 2 || kids.length > 24) return;
+                kids.forEach((k, i) => add(k, k.tagName === 'FIGURE' ? 'qm-zoom' : 'qm-up', Math.min(i, 7) * 70));
+            });
+            section.querySelectorAll(':scope :is(figure, .qa-roadmap-header, details):not(.qm, .qm *)').forEach(el => add(el, 'qm-up'));
+        });
+        items.forEach(el => {
+            if (el.getBoundingClientRect().top < fold * 0.92) { items.delete(el); finish(el); return; }
+            observer.observe(el);
+        });
+        document.documentElement.classList.add('qm-on');
+    });
+    reduced.addEventListener('change', () => { if (reduced.matches) { observer.disconnect(); items.forEach(finish); } });
 })();
 
 // Premium Scroll Reveal & Stagger Animation Controller

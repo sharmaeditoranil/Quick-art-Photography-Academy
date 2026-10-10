@@ -20,7 +20,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/master-class/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -47,7 +47,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/about-us/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -266,11 +266,11 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/blog/top-10-video-editing-institutes-in-india/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://quickartphotography.in/assets/top-10-video-editing-institutes-in-india.jpg</image:loc>
+      <image:loc>https://quickartphotography.in/assets/top-10-video-editing-institutes-in-india-v2.jpg</image:loc>
       <image:title>Top 10 Video Editing Institutes in India - Best Video Editing Institute in India</image:title>
       <image:caption>Comparison of Top 10 Video Editing Institutes in India and Best Video Editing Course in India</image:caption>
     </image:image>
@@ -288,7 +288,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/blog/edius-course-in-patna/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -409,7 +409,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/blog/premiere-pro-video-editing-course-hindi/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -430,8 +430,30 @@
     </image:image>
   </url>
   <url>
+    <loc>https://quickartphotography.in/blog/video-editing-course-in-muzaffarpur/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://quickartphotography.in/assets/video-editing-course-in-muzaffarpur.webp</image:loc>
+      <image:title>Video Editing Course in Muzaffarpur - Quick Art Photography Academy</image:title>
+      <image:caption>Video editing course for Muzaffarpur students: Premiere Pro, DaVinci Resolve, EDIUS and wedding video editing.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://quickartphotography.in/blog/wedding-album-design-course-in-muzaffarpur/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://quickartphotography.in/assets/wedding-album-design-course-in-muzaffarpur.webp</image:loc>
+      <image:title>Wedding Album Design Course in Muzaffarpur - Quick Art Photography Academy</image:title>
+      <image:caption>Wedding album design course for Muzaffarpur students: Photoshop album layouts, retouching and print-ready design.</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://quickartphotography.in/blog/wedding-album-design-course-in-patna/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -442,7 +464,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/blog/premiere-pro-course-in-patna/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
     <image:image>
@@ -547,7 +569,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/admission/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -558,7 +580,7 @@
   </url>
   <url>
     <loc>https://quickartphotography.in/alumni/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>

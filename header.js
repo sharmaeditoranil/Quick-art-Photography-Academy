@@ -384,7 +384,8 @@
    });
  } else if (currentPath.includes('/about-us') || currentHref.includes('/about-us')) {
    const freeResToggle = header.querySelector('.ref-resources .ref-toggle');
-   if (freeResToggle) freeResToggle.style.color = '#f59e0b';
+   // Class (not inline colour) so the open/expanded gold button keeps its dark text like every other page
+   if (freeResToggle) freeResToggle.classList.add('ref-parent-active');
  }
 
 

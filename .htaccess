@@ -52,6 +52,16 @@ RedirectMatch 301 ^/best-davinci-resolve-online-course-in-hindi/?$ /online/davin
 RedirectMatch 301 ^/best-davinci-resolve-online-course-in-hindi/index\.html$ /online/davinci-resolve-course/
 RedirectMatch 301 ^/join-video-editing-album-design-course/?$ /online/album-design-course/
 RedirectMatch 301 ^/join-video-editing-album-design-course/index\.html$ /online/album-design-course/
+# Server-side 301s for legacy stub pages (meta-refresh pages kept only as a fallback)
+RedirectMatch 301 ^/home(/|/index\.html)?$ /
+RedirectMatch 301 ^/contact-quick-art-photography-academy(/|/index\.html)?$ /contact-us/
+RedirectMatch 301 ^/courses/ai-marketing(/|/index\.html)?$ /courses/ai-digital-marketing/
+RedirectMatch 301 ^/edius-online-course(/|/index\.html)?$ /online/edius-course/
+RedirectMatch 301 ^/edius-online-course-in-india(/|/index\.html)?$ /online/edius-course/
+RedirectMatch 301 ^/premiere-pro-online-course-in-india(/|/index\.html)?$ /online/premiere-pro-course/
+RedirectMatch 301 ^/top-5-editing-course-academies-in-bihar(/|/index\.html)?$ /blog/top-5-editing-course-academies-in-patna/
+RedirectMatch 301 ^/top-5-editing-course-academies-in-patna(/|/index\.html)?$ /blog/top-5-editing-course-academies-in-patna/
+RedirectMatch 301 ^/video-editing-course(/|/index\.html)?$ /courses/video-editing/
 
 # ─── Browser Caching (Aggressive — 1 year for immutable assets) ─────────────
 <IfModule mod_expires.c>

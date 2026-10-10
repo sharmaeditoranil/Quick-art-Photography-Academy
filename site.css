@@ -6684,3 +6684,86 @@ body {
     animation: none !important;
   }
 }
+
+/* =========================================================================
+   SCROLL MOTION + CLEAN POLISH (driven by site.js — html.qm-on / .qm)
+   Only below-the-fold content is ever hidden, and only after JS runs.
+   ========================================================================= */
+html.qm-on .qm {
+  opacity: 0;
+  transition:
+    opacity .7s cubic-bezier(.22, 1, .36, 1) var(--qm-d, 0ms),
+    transform .85s cubic-bezier(.22, 1, .36, 1) var(--qm-d, 0ms),
+    filter .85s cubic-bezier(.22, 1, .36, 1) var(--qm-d, 0ms);
+}
+html.qm-on .qm.qm-up { transform: translate3d(0, 28px, 0); }
+html.qm-on .qm.qm-zoom { transform: scale(.96); filter: saturate(.6); }
+html.qm-on .qm.qm-in { opacity: 1; transform: none; filter: none; }
+
+/* Reading progress bar — pure CSS scroll timeline, no JS cost; hidden where unsupported */
+@supports (animation-timeline: scroll()) {
+  html.qm-on body::after {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 3px;
+    z-index: 2147483000;
+    pointer-events: none;
+    background: linear-gradient(90deg, #d8a153, #f6d389 60%, #ffe8a3);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    animation: qmProgress linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes qmProgress { to { transform: scaleX(1); } }
+}
+
+/* Clean typography + interaction details */
+main :is(h1, h2, h3) { text-wrap: balance; }
+main p { text-wrap: pretty; }
+::selection { background: rgba(216, 161, 83, .32); color: inherit; }
+:is(a, button, summary, [role="button"]) { -webkit-tap-highlight-color: transparent; }
+main img { image-rendering: auto; }
+
+/* Gold shimmer passed through pure white → invisible on light sections. Keep it readable there. */
+/* :not(#qm-x) lifts specificity to beat the ID-weighted :is() shimmer rule above */
+:is(h1, h2, h3).text-ink .text-gold-gradient:not(#qm-x),
+.qa-roadmap-section .text-gold-gradient:not(#qm-x) {
+  background-image: linear-gradient(110deg, #a8701f 0%, #d8a153 30%, #f0c46e 50%, #d8a153 70%, #a8701f 100%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.qm-on .qm { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+  html.qm-on body::after { display: none; }
+}
+
+/* Mobile: 16px form fields stop iOS Safari auto-zooming on focus; keep contact pills inside the screen */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
+}
+.qa-contact-link { box-sizing: border-box !important; max-width: 100% !important; }
+
+/* Testimonial video cards: dark-theme overrides turned .text-ink white → white play icon on a white disc was invisible */
+a.group .bg-white\/95 svg.lucide-play,
+a.group .bg-white\/95 svg.lucide-play polygon {
+  color: #0b0e15 !important;
+  fill: #0b0e15 !important;
+  stroke: #0b0e15 !important;
+}
+
+/* iOS zooms into any focused field under 16px — beat page-level form overrides */
+@media (max-width: 768px) {
+  html body :is(main, section, form) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]), select, textarea) { font-size: 16px !important; }
+}
+
+/* Phone field = one bordered group (+91 prefix + input). The inner input must never draw its own border.
+   :not(#qa-x) lifts specificity above page-level form overrides. */
+form.qa-enquiry .qa-phone-group input:not(#qa-x),
+form.qa-enquiry .qa-phone-group input:not(#qa-x):focus,
+form.qa-enquiry .qa-phone-group input:not(#qa-x):focus-visible {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+}

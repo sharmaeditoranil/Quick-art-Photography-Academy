@@ -1,0 +1,210 @@
+/* =========================================================================
+   MASTER CLASS — PROFESSIONAL LANDING LAYER
+   Loaded last on /master-class/. Keeps the existing dark/gold system and
+   only tightens rhythm, alignment and mobile ergonomics.
+   ========================================================================= */
+:root {
+  --mc-gold: #e9b965;
+  --mc-gold-2: #f6d389;
+  --mc-ink: #0b0e15;
+  --mc-card: rgba(255, 255, 255, .035);
+  --mc-line: rgba(255, 255, 255, .08);
+  --mc-line-gold: rgba(233, 185, 101, .28);
+  --mc-text: #e2e8f0;
+  --mc-muted: #94a3b8;
+  --mc-head: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* ── Programme details / FAQ section (replaces the old inline-styled SEO block) ── */
+.mc-info {
+  background: radial-gradient(120% 60% at 50% 0%, #121726 0%, var(--mc-ink) 60%);
+  border-top: 1px solid var(--mc-line-gold);
+  color: var(--mc-text);
+  padding: 96px 20px 104px;
+}
+.mc-info-wrap { max-width: 1120px; margin: 0 auto; }
+.mc-info-head { text-align: center; max-width: 760px; margin: 0 auto 48px; }
+.mc-info-kicker,
+.mc-faq-title::before {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--mc-gold); padding: 6px 14px; border-radius: 999px;
+  border: 1px solid var(--mc-line-gold); background: rgba(233, 185, 101, .06);
+}
+.mc-info-head h2 {
+  font-family: var(--mc-head); font-weight: 800; color: #fff;
+  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.12; letter-spacing: -.025em;
+  margin: 18px 0 14px; text-wrap: balance;
+}
+.mc-info-head p { color: var(--mc-muted); font-size: 16.5px; line-height: 1.7; margin: 0; text-wrap: pretty; }
+
+.mc-info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.mc-info-card {
+  position: relative; padding: 28px 26px; border-radius: 20px;
+  background: var(--mc-card); border: 1px solid var(--mc-line);
+  transition: border-color .25s ease, transform .25s ease, background .25s ease;
+}
+.mc-info-card:hover { border-color: var(--mc-line-gold); background: rgba(255, 255, 255, .05); transform: translateY(-3px); }
+.mc-info-num {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
+  font: 800 14px/1 var(--mc-head); color: #1a1205;
+  background: linear-gradient(145deg, var(--mc-gold-2), #d39a3f);
+  box-shadow: 0 8px 20px -8px rgba(233, 185, 101, .6);
+}
+.mc-info-card h3 { font-family: var(--mc-head); font-size: 19px; font-weight: 700; color: #fff; margin: 18px 0 10px; letter-spacing: -.01em; }
+.mc-info-card p { color: var(--mc-muted); font-size: 14.5px; line-height: 1.7; margin: 0; }
+
+.mc-related { margin-top: 56px; }
+.mc-related-title { font-family: var(--mc-head); font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 16px; }
+.mc-related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.mc-related-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 22px; border-radius: 16px;
+  background: var(--mc-card); border: 1px solid var(--mc-line); text-decoration: none;
+  transition: border-color .2s ease, background .2s ease;
+}
+.mc-related-card strong { color: #fff; font-size: 16px; font-weight: 700; }
+.mc-related-card span { color: var(--mc-muted); font-size: 14px; line-height: 1.6; flex: 1; }
+.mc-related-card em { font-style: normal; color: var(--mc-gold); font-weight: 700; font-size: 14px; }
+.mc-related-card:hover { border-color: var(--mc-line-gold); background: rgba(233, 185, 101, .05); }
+.mc-related-card:hover em { text-decoration: underline; text-underline-offset: 3px; }
+
+.mc-faq { margin-top: 64px; max-width: 860px; margin-inline: auto; }
+.mc-faq-title {
+  display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;
+  font-family: var(--mc-head); font-weight: 800; color: #fff;
+  font-size: clamp(26px, 3vw, 36px); letter-spacing: -.02em; margin: 0 0 28px;
+}
+.mc-faq-title::before { content: "FAQ"; }
+.mc-faq-list { display: flex; flex-direction: column; gap: 10px; }
+.mc-faq details {
+  border-radius: 16px; background: var(--mc-card); border: 1px solid var(--mc-line);
+  transition: border-color .2s ease, background .2s ease;
+}
+.mc-faq details[open] { border-color: var(--mc-line-gold); background: rgba(233, 185, 101, .04); }
+.mc-faq summary {
+  list-style: none; cursor: pointer; position: relative;
+  padding: 20px 60px 20px 22px; min-height: 44px;
+  color: #fff; font-size: 16px; font-weight: 650; line-height: 1.45;
+}
+.mc-faq summary::-webkit-details-marker { display: none; }
+.mc-faq summary::after {
+  content: ""; position: absolute; right: 20px; top: 50%; width: 26px; height: 26px; margin-top: -13px;
+  border-radius: 50%; border: 1px solid var(--mc-line-gold);
+  background:
+    linear-gradient(var(--mc-gold), var(--mc-gold)) center / 10px 1.6px no-repeat,
+    linear-gradient(var(--mc-gold), var(--mc-gold)) center / 1.6px 10px no-repeat;
+  transition: transform .25s ease;
+}
+.mc-faq details[open] summary::after { transform: rotate(45deg); }
+.mc-faq summary:focus-visible { outline: 2px solid var(--mc-gold); outline-offset: 2px; border-radius: 16px; }
+.mc-faq details p { margin: 0; padding: 0 22px 20px; color: #cbd5e1; font-size: 15px; line-height: 1.75; }
+
+.mc-trust {
+  margin: 48px auto 0; max-width: 860px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 20px 24px; border-radius: 18px; border: 1px solid var(--mc-line-gold);
+  background: linear-gradient(110deg, rgba(233, 185, 101, .09), rgba(233, 185, 101, .02));
+}
+.mc-trust strong { display: block; color: #fff; font-size: 16px; }
+.mc-trust span { display: block; color: var(--mc-muted); font-size: 14px; margin-top: 4px; line-height: 1.55; }
+.mc-trust a {
+  flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  background: rgba(233, 185, 101, .12); border: 1px solid var(--mc-line-gold);
+  color: var(--mc-gold-2); font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap;
+}
+.mc-trust a:hover { background: rgba(233, 185, 101, .22); }
+
+.mc-final-cta { text-align: center; margin-top: 72px; }
+.mc-final-cta h2 { font-family: var(--mc-head); font-weight: 800; color: #fff; font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -.025em; margin: 0 0 12px; }
+.mc-final-cta p { color: var(--mc-muted); font-size: 16.5px; line-height: 1.7; max-width: 560px; margin: 0 auto 26px; }
+.mc-final-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.mc-btn-gold,
+.mc-btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px;
+  border-radius: 14px; font-weight: 700; font-size: 15.5px; text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.mc-btn-gold { color: #1a1205; background: linear-gradient(135deg, var(--mc-gold-2), #d39a3f); box-shadow: 0 14px 30px -12px rgba(233, 185, 101, .65); }
+.mc-btn-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -12px rgba(233, 185, 101, .8); }
+.mc-btn-ghost { color: #fff; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .18); }
+.mc-btn-ghost:hover { background: rgba(255, 255, 255, .1); }
+.mc-final-cta small { display: block; margin-top: 18px; color: #64748b; font-size: 12px; }
+
+/* EMI bonus: plain note instead of a meaningless strikethrough */
+.mc-bonus-value .mc-bonus-note { color: var(--mc-muted); font-size: 13px; margin-right: 6px; }
+
+/* Bottom booking form: social-proof line was dark-on-dark */
+#book .qa-form-proof, #book .qa-proof-text, #book .qa-proof-safe { color: #cbd5e1 !important; }
+#book .qa-proof-text strong, #book .qa-proof-social strong { color: #fff !important; }
+
+/* ── Tablet ── */
+@media (max-width: 1023px) {
+  .mc-info-grid, .mc-related-grid { grid-template-columns: 1fr; }
+  .mc-info-card { display: grid; grid-template-columns: 40px 1fr; column-gap: 16px; padding: 22px; }
+  .mc-info-card h3 { margin: 6px 0 8px; }
+  .mc-info-card p { grid-column: 2; }
+}
+
+/* ── Mobile (most visitors) ── */
+@media (max-width: 760px) {
+  /* Hero: one consistent centre axis instead of left title + centred copy */
+  .qa-master-hero .mc-studio-eyebrow-wrap { justify-content: center !important; text-align: center !important; }
+  html body main section.qa-master-hero h1.mc-studio-h1:not(#mc-x) {
+    align-items: center !important; text-align: center !important; margin-inline: auto !important;
+    /* longest line ≈ 9.45em wide → fill ~94% of the 16px-gutter content width without clipping */
+    font-size: clamp(26px, calc((100vw - 32px) / 10), 48px) !important;
+  }
+  html body main section.qa-master-hero h1.mc-studio-h1:not(#mc-x) > span { align-self: center !important; text-align: center !important; }
+  .qa-master-hero .mc-studio-lead { text-align: center !important; margin-inline: auto !important; color: #cbd5e1 !important; }
+
+  /* Form title: larger, reads as the primary action on mobile */
+  html body main .mc-deck-body .mc-deck-title:not(#mc-x),
+  html body main .mc-deck-title:not(#mc-x) { font-size: clamp(28px, 8.4vw, 36px) !important; line-height: 1.12 !important; }
+
+  /* Form header: badges no longer break into three lines */
+  .mc-form-kicker-row { flex-wrap: wrap !important; justify-content: center !important; row-gap: 8px !important; }
+  .mc-form-kicker-row .mc-deck-kicker { white-space: nowrap !important; border-radius: 999px !important; padding: 5px 12px !important; }
+
+  /* Bonuses: compact rows instead of eight tall cards */
+  .mc-bonus-grid { gap: 10px !important; }
+  html body main .mc-bonuses .mc-bonus-card { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 14px !important; padding: 16px !important; min-height: 0 !important; }
+  html body main .mc-bonuses .mc-bonus-card > div { flex: 1 1 auto; min-width: 0; }
+  html body main .mc-bonuses .mc-bonus-card .mc-bonus-icon { width: 40px !important; height: 40px !important; flex: 0 0 40px !important; margin: 0 !important; }
+  html body main .mc-bonuses .mc-bonus-card h3 { font-size: 15.5px !important; line-height: 1.35 !important; margin: 0 0 4px !important; }
+  html body main .mc-bonuses .mc-bonus-card p { font-size: 13px !important; line-height: 1.55 !important; margin: 0 0 6px !important; }
+  .mc-bonus-value { font-size: 13px !important; }
+
+  /* Comfortable tap targets for every CTA */
+  main :is(.lp-btn-primary, .lp-btn-secondary, .qa-demo) { min-height: 48px; }
+
+  .mc-info { padding: 64px 16px 72px; }
+  .mc-info-head { margin-bottom: 32px; }
+  .mc-info-head p, .mc-final-cta p { font-size: 15.5px; }
+  .mc-info-card { grid-template-columns: 36px 1fr; column-gap: 14px; padding: 18px; border-radius: 16px; }
+  .mc-info-num { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
+  .mc-info-card h3 { font-size: 17px; }
+  .mc-related { margin-top: 40px; }
+  .mc-related-card { padding: 18px; }
+  .mc-faq { margin-top: 48px; }
+  .mc-faq summary { font-size: 15px; padding: 16px 52px 16px 16px; }
+  .mc-faq summary::after { right: 14px; }
+  .mc-faq details p { padding: 0 16px 16px; font-size: 14.5px; }
+  .mc-trust { flex-direction: column; align-items: stretch; text-align: center; padding: 18px; }
+  .mc-trust a { justify-content: center; white-space: normal; }
+  .mc-final-cta { margin-top: 56px; }
+  .mc-final-actions { flex-direction: column; }
+  .mc-btn-gold, .mc-btn-ghost { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-info-card, .mc-info-card:hover, .mc-btn-gold:hover { transform: none; transition: none; }
+  .mc-faq summary::after { transition: none; }
+}
+
+/* iOS zooms into any focused field under 16px — beat page-level form overrides */
+@media (max-width: 768px) {
+  html body :is(main, section, form) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]), select, textarea) { font-size: 16px !important; }
+}
+@media (max-width: 768px) {
+  html body #book :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea),
+  html body #book .qa-enquiry :is(input:not([type="checkbox"]), select, textarea) { font-size: 16px !important; }
+}

@@ -1275,3 +1275,67 @@ body.ref-nav-locked{overflow:hidden !important;touch-action:none !important}
 }
 
 
+
+/* =========================================================================
+   MEGA MENU POLISH (desktop) — softer surface, clearer hierarchy, card hover
+   ========================================================================= */
+@media(min-width:1151px){
+  .ref-mega{
+    top:calc(100% + 8px);
+    border-radius:18px;
+    border:1px solid rgba(23,32,51,.08);
+    box-shadow:0 30px 60px -18px rgba(6,10,20,.45),0 12px 24px -12px rgba(6,10,20,.25);
+    font-family:inherit;
+  }
+  .ref-mega::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#d8a153,#f3d695 50%,#d8a153);z-index:1}
+  .ref-mega .ref-categories{background:linear-gradient(180deg,#fbf8f2,#f7f3ea);border-right:1px solid #ece4d4;padding:22px 0 22px 14px}
+  .ref-mega .ref-categories button{
+    position:relative;margin-bottom:4px;padding:13px 16px;border-radius:12px 0 0 12px;border-right:3px solid transparent;
+    color:#4a5468;transition:background .2s ease,color .2s ease,border-color .2s ease
+  }
+  .ref-mega .ref-categories button:hover{background:#fff;color:#172033}
+  .ref-mega .ref-categories button[aria-selected=true]{background:#fff;color:#172033;border-right-color:#c58a33;box-shadow:-6px 6px 18px -12px rgba(140,95,32,.45)}
+  .ref-mega .ref-categories button .ref-category-label{font-weight:600;font-size:14.5px;line-height:1.35;font-family:inherit;letter-spacing:-.005em;color:inherit}
+  .ref-mega .ref-categories button[aria-selected=true] .ref-category-label{color:#8c5f20}
+  .ref-mega .ref-categories button>span:last-child{font-size:18px;transition:transform .2s ease}
+  .ref-mega .ref-categories button[aria-selected=true]>span:last-child{transform:translateX(3px)}
+
+  .ref-mega .ref-panels{padding:28px 30px}
+  .ref-mega .ref-panels h2,.ref-mega .ref-panels .ref-panel-title{font-weight:700;font-size:19px;line-height:1.3;font-family:inherit;letter-spacing:-.015em;color:#11182a;margin-bottom:6px}
+  .ref-mega .ref-panels .ref-highlight-badge{font-family:inherit}
+  .ref-mega .ref-card-grid{gap:14px;margin-top:18px}
+  .ref-mega .ref-course{
+    position:relative;gap:14px;padding:14px 40px 14px 14px;min-height:72px;border-radius:14px;
+    border:1px solid #ece4d4;background:#fff;font-weight:600;color:#172033;
+    transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,border-color .2s ease,background .2s ease
+  }
+  .ref-mega .ref-course::after{
+    content:"→";position:absolute;right:16px;top:50%;transform:translate(-6px,-50%);opacity:0;color:#b9802d;font-weight:700;
+    transition:opacity .2s ease,transform .2s ease
+  }
+  .ref-mega .ref-course:hover{transform:translateY(-2px);border-color:#d9b475;background:#fffcf6;box-shadow:0 14px 28px -16px rgba(140,95,32,.5)}
+  .ref-mega .ref-course:hover::after{opacity:1;transform:translate(0,-50%)}
+  .ref-mega .ref-course-icon{
+    width:44px;height:44px;border-radius:12px;font-weight:800;font-size:15px;line-height:1;font-family:inherit;color:#7a4f14;
+    background:linear-gradient(145deg,#fff3da,#f5dfb2);box-shadow:inset 0 0 0 1px rgba(197,138,51,.25);
+    transition:transform .2s ease
+  }
+  .ref-mega .ref-course:hover .ref-course-icon{transform:scale(1.06) rotate(-3deg)}
+  .ref-mega .ref-all,.ref-mega .ref-all-online{
+    margin-top:22px;padding:9px 16px;border-radius:999px;background:#fbf3e3;border:1px solid #ecd9b4;color:#8c5f20;font-size:13.5px
+  }
+  .ref-mega .ref-all:hover,.ref-mega .ref-all-online:hover{background:#f3d695;color:#17120b;text-decoration:none;border-color:#d8a447}
+  .ref-mega .ref-course:focus-visible,.ref-mega .ref-categories button:focus-visible{outline:2px solid #c58a33;outline-offset:2px}
+}
+@media(min-width:1151px) and (prefers-reduced-motion:reduce){
+  .ref-mega .ref-course,.ref-mega .ref-course:hover,.ref-mega .ref-course:hover .ref-course-icon{transform:none}
+}
+
+/* Section highlight (e.g. About Us lives under Free Resources) — only while the menu is closed */
+.ref-nav .ref-toggle.ref-parent-active:not([aria-expanded="true"]) { color: #f59e0b; }
+/* Open dropdown button = dark text on gold, at the top AND in the scrolled header (the scrolled rule forces white) */
+.ref-header .ref-nav > .ref-dropdown:not(:first-child) > .ref-toggle[aria-expanded="true"]:not(#ref-x) {
+  color: #17120b !important;
+  background: linear-gradient(110deg, #f3d695, #d8a447) !important;
+}
+.ref-header.ref-scrolled .ref-nav .ref-toggle.ref-parent-active:not([aria-expanded="true"]):not(#ref-x) { color: #f59e0b !important; }
