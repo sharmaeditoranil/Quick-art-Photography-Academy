@@ -3061,12 +3061,18 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     if (zoomEmbedUrl) {
       mount.innerHTML = `
         <div class="zoom-embed-container" style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
+          <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <span>Full Screen</span>
+          </button>
           <iframe
             id="live-stream-iframe"
             class="zoom-embed-frame interactive-frame"
             src="${zEsc(zoomEmbedUrl)}"
             style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;background:#000;"
-            allow="camera *; microphone *; autoplay *; display-capture *; fullscreen *; clipboard-read *; clipboard-write *"
+            allow="camera; microphone; display-capture; fullscreen; autoplay; clipboard-read; clipboard-write; speaker-selection; screen-wake-lock"
             allowfullscreen="true"
             webkitallowfullscreen="true"
             mozallowfullscreen="true">
@@ -3623,26 +3629,42 @@ function isLiveFullscreenActive() {
 
 function toggleLiveCinemaFullscreen() {
   const box = document.getElementById('live-video-box');
+  const iframe = document.getElementById('live-stream-iframe');
   if (!box) return;
 
   const isFs = isLiveFullscreenActive();
 
   if (!isFs) {
+    // 1. Immediately activate CSS Fullscreen (works on 100% of devices: iOS Safari, Android Webview, Desktop)
     box.classList.add('is-fullscreen');
     document.body.classList.add('live-fs-open');
 
+    // 2. Also invoke native fullscreen API on container or iframe
+    const targetEl = box;
     try {
-      if (box.requestFullscreen) {
-        box.requestFullscreen().catch(() => {});
-      } else if (box.webkitRequestFullscreen) {
-        box.webkitRequestFullscreen();
-      } else if (box.mozRequestFullScreen) {
-        box.mozRequestFullScreen();
-      } else if (box.msRequestFullscreen) {
-        box.msRequestFullscreen();
+      const p = targetEl.requestFullscreen
+        ? targetEl.requestFullscreen()
+        : (targetEl.webkitRequestFullscreen
+          ? targetEl.webkitRequestFullscreen()
+          : (targetEl.mozRequestFullScreen
+            ? targetEl.mozRequestFullScreen()
+            : (targetEl.msRequestFullscreen
+              ? targetEl.msRequestFullscreen()
+              : null)));
+      if (p && p.catch) {
+        p.catch(() => {
+          // If container requestFullscreen fails or is blocked, try direct iframe fullscreen
+          if (iframe) {
+            try {
+              if (iframe.requestFullscreen) iframe.requestFullscreen().catch(() => {});
+              else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+            } catch (_) {}
+          }
+        });
       }
     } catch (_) {}
 
+    // 3. For mobile / tablet: lock to landscape orientation for cinema view if supported
     try {
       if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape').catch(() => {});
@@ -3651,12 +3673,12 @@ function toggleLiveCinemaFullscreen() {
 
     revealLiveOverlayControls(4000);
   } else {
+    // Exit fullscreen
     box.classList.remove('is-fullscreen');
     document.body.classList.remove('live-fs-open');
 
     try {
-      const isNative = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
-      if (isNative) {
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
         if (document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
         } else if (document.webkitExitFullscreen) {
@@ -3686,7 +3708,7 @@ function updateLiveFullscreenUI() {
   if (fsPreviewBtn) {
     if (isFs) {
       fsPreviewBtn.classList.add('active-fs');
-      fsPreviewBtn.style.background = 'rgba(220,38,38,0.9)';
+      fsPreviewBtn.style.background = 'rgba(220,38,38,0.92)';
       fsPreviewBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg><span>Exit Full Screen</span>`;
     } else {
       fsPreviewBtn.classList.remove('active-fs');
@@ -3699,11 +3721,11 @@ function updateLiveFullscreenUI() {
   btns.forEach(btn => {
     if (btn.classList.contains('live-video-overlay-fs')) {
       btn.innerHTML = isFs ? '✕' : '⛶';
-      btn.title = isFs ? 'Exit Fullscreen' : 'Fullscreen Mode';
+      btn.title = isFs ? 'Exit Fullscreen (Esc / Press F)' : 'Fullscreen Mode (Press F)';
       if (isFs) btn.classList.add('active-fs');
       else btn.classList.remove('active-fs');
     } else if (btn.classList.contains('live-icon-btn')) {
-      btn.title = isFs ? 'Exit Fullscreen' : 'Fullscreen Mode';
+      btn.title = isFs ? 'Exit Fullscreen (Esc / Press F)' : 'Fullscreen Mode (Press F)';
       if (isFs) {
         btn.classList.add('active-fs');
         btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg>`;
@@ -3711,6 +3733,10 @@ function updateLiveFullscreenUI() {
         btn.classList.remove('active-fs');
         btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>`;
       }
+    } else {
+      btn.innerHTML = isFs ? '<span>⤶</span> Exit Fullscreen' : '<span>⛶</span> Fullscreen';
+      if (isFs) btn.classList.add('active-fs');
+      else btn.classList.remove('active-fs');
     }
   });
 }
@@ -3725,6 +3751,9 @@ function updateLiveFullscreenUI() {
       try {
         if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
       } catch (_) {}
+    } else if (isNative && box) {
+      box.classList.add('is-fullscreen');
+      document.body.classList.add('live-fs-open');
     }
     updateLiveFullscreenUI();
   });

@@ -3066,55 +3066,101 @@ button.profile-menu-danger:active {
   }
 }
 
-.live-video-box.is-zoom.is-fullscreen {
+.live-video-box.is-zoom.is-fullscreen,
+.live-video-box.is-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  width: 100dvw !important;
   height: 100vh !important;
   height: 100dvh !important;
-  width: 100vw !important;
+  max-width: 100vw !important;
+  max-width: 100dvw !important;
   max-height: 100vh !important;
   max-height: 100dvh !important;
-  max-width: 100vw !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  padding: 0 !important;
+  margin: 0 !important;
   border: none !important;
   border-radius: 0 !important;
+  z-index: 2147483640 !important;
+  background: #000 !important;
+  display: block !important;
 }
 
-/* Floating Exit Button in Fullscreen Mode (Auto-hiding, zero text when playing) */
+/* Floating button on player to trigger Fullscreen directly */
+.live-zoom-float-fs-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2147483645;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+.live-zoom-float-fs-btn:hover {
+  background: rgba(37, 99, 235, 0.95);
+  border-color: #60a5fa;
+  transform: translateY(-1px);
+}
+.live-video-box.is-fullscreen .live-zoom-float-fs-btn {
+  display: none !important;
+}
+
+/* Floating Exit Button in Fullscreen Mode (Always clickable & clearly visible) */
 .live-fs-exit-btn {
   display: none;
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 2147483647;
-  background: rgba(15, 23, 42, 0.88);
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 2147483647 !important;
+  background: rgba(220, 38, 38, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   color: #fff;
   font-size: 13px;
-  font-weight: 700;
-  padding: 8px 16px;
+  font-weight: 800;
+  padding: 8px 18px;
   border-radius: 999px;
   cursor: pointer;
   align-items: center;
   gap: 7px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
   opacity: 0;
   transform: translateY(-4px);
   transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
   pointer-events: none;
 }
 .live-fs-exit-btn:hover {
-  background: rgba(220, 38, 38, 0.9);
-  border-color: #ef4444;
-  transform: translateY(0) scale(1.04);
+  background: #b91c1c;
+  border-color: #fca5a5;
+  transform: translateY(0) scale(1.05);
 }
-.live-video-box.is-fullscreen .live-fs-exit-btn {
-  display: inline-flex;
-}
-.live-video-box.is-fullscreen:hover .live-fs-exit-btn,
-.live-video-box.is-fullscreen.show-controls .live-fs-exit-btn {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+.live-video-box.is-fullscreen .live-fs-exit-btn,
+.live-video-box:fullscreen .live-fs-exit-btn,
+.live-video-box:-webkit-full-screen .live-fs-exit-btn {
+  display: inline-flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
 }
 
 /* ── Zoom Classroom Bottom Control Deck ── */
@@ -3176,35 +3222,33 @@ button.profile-menu-danger:active {
 }
 
 /* ── Enhanced HTML5 & Mobile/Tablet Fullscreen Support ── */
-.live-video-box.is-fullscreen {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  height: 100dvh !important;
-  max-width: 100vw !important;
-  max-height: 100vh !important;
-  max-height: 100dvh !important;
-  padding-bottom: 0 !important;
-  margin: 0 !important;
-  background: #000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 0 !important;
-  z-index: 2147483640 !important;
-}
-
 body.live-fs-open {
   overflow: hidden !important;
   touch-action: none;
 }
 
+body.live-fs-open .live-player-wrapper {
+  overflow: visible !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+body.live-fs-open .live-studio-layout {
+  overflow: visible !important;
+}
+
+body.live-fs-open #view-live-studio {
+  overflow: visible !important;
+  max-width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 .live-video-box.is-fullscreen iframe,
 .live-video-box.is-fullscreen .live-video-mount,
+.live-video-box.is-fullscreen .zoom-embed-container,
 .live-video-box.is-fullscreen .live-full-shield {
   width: 100% !important;
   height: 100% !important;
@@ -3216,6 +3260,49 @@ body.live-fs-open {
   left: 0 !important;
   bottom: 0 !important;
   right: 0 !important;
+}
+
+.live-video-box:fullscreen,
+.live-video-box:-webkit-full-screen,
+.live-video-box:-moz-full-screen,
+.live-video-box:-ms-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #000 !important;
+  display: block !important;
+  border-radius: 0 !important;
+}
+.live-video-box:fullscreen iframe,
+.live-video-box:-webkit-full-screen iframe,
+.live-video-box:-moz-full-screen iframe,
+.live-video-box:-ms-fullscreen iframe,
+.live-video-box:fullscreen .live-video-mount,
+.live-video-box:-webkit-full-screen .live-video-mount,
+.live-video-box:-moz-full-screen .live-video-mount,
+.live-video-box:-ms-fullscreen .live-video-mount,
+.live-video-box:fullscreen .zoom-embed-container,
+.live-video-box:-webkit-full-screen .zoom-embed-container,
+.live-video-box:-moz-full-screen .zoom-embed-container,
+.live-video-box:-ms-fullscreen .zoom-embed-container,
+.live-video-box:fullscreen .live-full-shield,
+.live-video-box:-webkit-full-screen .live-full-shield,
+.live-video-box:-moz-full-screen .live-full-shield,
+.live-video-box:-ms-fullscreen .live-full-shield {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 /* ── Initial 5-Second Cinematic Letterbox Bars (Removed as requested) ── */
