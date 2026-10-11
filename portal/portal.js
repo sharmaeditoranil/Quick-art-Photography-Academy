@@ -6393,12 +6393,19 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
         <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
 
-        <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-          </svg>
-          <span>Full Screen</span>
-        </button>
+        <!-- Floating Display Controls (Pure Logos: Comment & Fullscreen) -->
+        <div class="live-display-top-controls">
+          <button type="button" class="live-display-float-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments (Press C)" aria-label="Comments">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </button>
+          <button type="button" class="live-display-float-icon-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen (Press F)" aria-label="Full Screen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </button>
+        </div>
         <iframe 
           id="live-stream-iframe"
           src="${embedUrl}" 
@@ -6423,12 +6430,19 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
         <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
 
-        <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-          </svg>
-          <span>Full Screen</span>
-        </button>
+        <!-- Floating Display Controls (Pure Logos: Comment & Fullscreen) -->
+        <div class="live-display-top-controls">
+          <button type="button" class="live-display-float-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments (Press C)" aria-label="Comments">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </button>
+          <button type="button" class="live-display-float-icon-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen (Press F)" aria-label="Full Screen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </button>
+        </div>
         <iframe 
           id="live-stream-iframe"
           src="${embedUrl}" 
@@ -6483,7 +6497,7 @@ function renderStandardStreamBar(isCompletedSession = false) {
     <div class="live-stream-status" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <span class="live-broadcast-badge" style="background:${isCompletedSession ? 'rgba(216,161,83,0.18)' : 'rgba(239,68,68,0.18)'};border:1px solid ${isCompletedSession ? 'rgba(216,161,83,0.45)' : 'rgba(239,68,68,0.45)'};color:${isCompletedSession ? '#fde68a' : '#fca5a5'};padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:0.5px">
         ${isCompletedSession ? '<span>📼</span>' : '<span class="live-blink-circle" style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444"></span>'}
-        <span>${isCompletedSession ? 'RECORDED REPLAY' : 'LIVE BROADCAST'}</span>
+        <span>${isCompletedSession ? 'RECORDED' : 'LIVE'}</span>
       </span>
       <span class="live-watching-badge" id="live-attendees-pill-mini">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -6496,17 +6510,18 @@ function renderStandardStreamBar(isCompletedSession = false) {
     </div>
 
     <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <button type="button" class="live-btn-fs-preview" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen Preview">
+      <button type="button" class="live-btn-fs-preview" onclick="toggleLiveCinemaFullscreen()" title="Full Screen (Press F)" aria-label="Full Screen">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
         </svg>
-        <span>Full Screen Preview</span>
+        <span>Full Screen</span>
       </button>
 
-      <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button type="button" class="live-btn-chat-toggle" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Live Doubts">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
         </svg>
+        <span>Live Doubts</span>
       </button>
 
       ${!isCompletedSession ? `
@@ -7125,7 +7140,7 @@ function updateLiveFullscreenUI() {
     } else {
       fsPreviewBtn.classList.remove('active-fs');
       fsPreviewBtn.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
-      fsPreviewBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg><span>Full Screen Preview</span>`;
+      fsPreviewBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg><span>Full Screen</span>`;
     }
   }
 
