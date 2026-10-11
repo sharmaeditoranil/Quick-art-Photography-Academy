@@ -6614,7 +6614,7 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
         <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
 
-        <!-- 5-Second Zero-Leak Connection Curtain: Covers YouTube bootstrap so no YouTube logo is seen -->
+        <!-- 8-Second Zero-Leak Connection Curtain: Covers YouTube bootstrap so no YouTube logo is seen -->
         <div class="live-curtain-loader" id="live-curtain-loader">
           <div class="live-curtain-spinner-ring"></div>
           <div class="live-curtain-text">
@@ -6651,7 +6651,7 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
         <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
 
-        <!-- 5-Second Zero-Leak Connection Curtain: Covers YouTube bootstrap so no YouTube logo is seen -->
+        <!-- 8-Second Zero-Leak Connection Curtain: Covers YouTube bootstrap so no YouTube logo is seen -->
         <div class="live-curtain-loader" id="live-curtain-loader">
           <div class="live-curtain-spinner-ring"></div>
           <div class="live-curtain-text">
@@ -6766,7 +6766,7 @@ function startLiveZeroLeakCurtain() {
         try { curtain.remove(); } catch (_) {}
       }, 650);
     }
-  }, 5000);
+  }, 8000);
 }
 
 window.unmuteLiveStream = function() {

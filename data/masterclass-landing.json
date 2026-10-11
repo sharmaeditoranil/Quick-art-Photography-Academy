@@ -1,27 +1,22 @@
 {
     "topAnnouncement": "⚡ LIVE BATCH THIS SUNDAY @ 07:00 PM • ONLY 17 SEATS LEFT AT ₹21 (PRICE INCREASES TO ₹999)",
-    "heroBadge": "🔴 2-DAY PRACTICAL LIVE WORKSHOP • BATCH STARTS THIS SUNDAY 07:00 PM",
-    "title": "Wedding Photo & Video Editing Me AI Ka Sahi Use",
-    "titleHighlight": "1-Click Me 500+ RAW Photos & 10x Fast Cinematic Teaser Edit Karein",
-    "subtitle": "Shaadi season me raat-raat bhar jagna band! Special Wedding Photographers & Video Editors ke liye 2-Day Practical Live Masterclass (Only ₹21 Me). Day 01: 1-Click AI Wedding Photo Editing & 500+ RAW Bulk Retouching | Day 02: AI Se Professional Video Editing (Teaser, Highlight, Pre-Wedding & Reels).",
-    "promoVideoUrl": "https://youtu.be/XWFnwJowfx4",
-    "scheduledAt": "2026-10-04T19:00:00+05:30",
+    "heroBadge": "🔴 1-DAY PRACTICAL LIVE WORKSHOP • BATCH STARTS THIS SUNDAY 07:00 PM",
+    "title": "Wedding Photo Editing में AI का सही इस्तेमाल कैसे करें?",
+    "titleHighlight": "सिर्फ 1 Click में पूरी Wedding की RAW Photos को Filter और AI से Edit करें, साथ ही Customer से Online Photo Selection भी करवाएँ।",
+    "subtitle": "📸 Wedding Photographers के लिए 1-Day Practical Live AI Masterclass सीखें 1-Click में Wedding RAW Photos की Filtering, 2000+ Photos की Bulk AI Editing & Retouching और Customer से Online Photo Selection करवाना। 🚀",
+    "promoVideoUrl": "https://youtu.be/g5pUTfBxfVQ",
+    "scheduledAt": "2026-10-18T13:30:00.000Z",
     "ticketPrice": 21,
     "originalPrice": 999,
     "seatsRemaining": "🔥 ONLY 17 SEATS LEFT AT ₹21 • CLOSING SOON",
-    "duration": "2 Days Live Masterclass (This Sunday & Monday Shaam 7:00 PM)",
+    "duration": "1-Day Live Masterclass (Sunday Shaam 7:00 PM)",
     "language": "Hindi (हिंदी) Step-by-Step Hands-On",
-    "software": "Photoshop AI, Lightroom AI, Premiere Pro & DaVinci Resolve (AI Workflow)",
+    "software": "Ai PhotoFlow (aiphotoflow.in), Photoshop AI, Lightroom AI Workflow",
     "modules": [
         {
-            "day": "Day 01",
-            "title": "Day 1 (Sunday 7:00 PM): 1-Click AI Wedding Photo Editing & 500+ RAW Bulk Retouching",
-            "desc": "Poori wedding ki 500+ RAW photos ko 15 min me 1-click bulk color grade aur retouch karna. AI Bridal Skin Retouch, natural face glow, Haldi/Mehendi harsh yellow lights ko creamy skin tone me badalna, aur Generative AI se unwanted crowd, rishtedar aur wires 1-click me gayab karna."
-        },
-        {
-            "day": "Day 02",
-            "title": "Day 2 (Monday 7:00 PM): AI Se Professional Video Editing (Teaser, Highlight & Pre-Wedding)",
-            "desc": "Premiere Pro & DaVinci me AI Beat Sync se 30 min me Cinematic Wedding Teaser cut karna. Professional Wedding Highlight & Pre-Wedding emotional storytelling, 1-Click Studio Voice AI (DJ sound/noise clean), Topaz AI se shaky/low-light clips 4K upscale, aur 9:16 viral Instagram reels auto reframe."
+            "day": "Masterclass Module",
+            "title": "1-Click AI Photo Selection, 2,000+ RAW Bulk Editing, Retouching & Online Client Selection",
+            "desc": "Ai PhotoFlow (aiphotoflow.in) se 1-click photo culling, blinks & blur removal, 2000+ RAW photos ki instant bulk color grading, Indian bridal skin tone protection, aur customer ko direct mobile selection link bhejkar fast photo approval karwana."
         }
     ],
     "bonusValue": "₹4,999",

@@ -3267,7 +3267,7 @@ button.profile-menu-danger:active {
   background: linear-gradient(90deg, #2563eb, #60a5fa, #93c5fd);
   border-radius: 99px;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
-  animation: liveCurtainProgress 5s linear forwards;
+  animation: liveCurtainProgress 8s linear forwards;
 }
 
 @keyframes liveCurtainProgress {

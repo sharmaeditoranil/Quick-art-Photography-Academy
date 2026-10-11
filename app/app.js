@@ -3724,7 +3724,7 @@ function startLiveZeroLeakCurtain() {
         try { curtain.remove(); } catch (_) {}
       }, 650);
     }
-  }, 5000);
+  }, 8000);
 }
 
 window.unmuteLiveStream = function() {
