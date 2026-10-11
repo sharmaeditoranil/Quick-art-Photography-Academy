@@ -2504,7 +2504,7 @@ function cleanYouTubeVideoId(input) {
   input = String(input).trim();
   if (input.startsWith('rtmp://') || input.startsWith('rtmps://')) return '';
   if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-  const mLive = input.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/i);
+  const mLive = input.match(/(?:youtube\.com\/live\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i);
   if (mLive) return mLive[1];
   const mShort = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/i);
   if (mShort) return mShort[1];
@@ -2512,6 +2512,8 @@ function cleanYouTubeVideoId(input) {
   if (mV) return mV[1];
   const mEmbed = input.match(/embed\/([a-zA-Z0-9_-]{11})/i);
   if (mEmbed) return mEmbed[1];
+  const mAny = input.match(/([a-zA-Z0-9_-]{11})/);
+  if (mAny && input.includes('youtube')) return mAny[1];
   return input;
 }
 
@@ -2886,7 +2888,17 @@ function hideLiveOverlayControls() {
   }
 }
 
+window.handleProtectedPlayerClick = function(e) {
+  if (e) {
+    try { e.preventDefault(); e.stopPropagation(); } catch (_) {}
+  }
+  toast('🔒 Quick Art Academy: Video classroom me hi chalega (External YouTube navigation restricted)');
+};
+
 function handleLiveShieldClick(e) {
+  if (typeof window.unmuteLiveStream === 'function') {
+    window.unmuteLiveStream();
+  }
   revealLiveOverlayControls(5000);
 }
 
@@ -2900,6 +2912,9 @@ function handleLiveShieldTouch(e) {
     return;
   }
   lastLiveShieldTouchTime = now;
+  if (typeof window.unmuteLiveStream === 'function') {
+    window.unmuteLiveStream();
+  }
   revealLiveOverlayControls(5000);
 }
 
@@ -2940,40 +2955,90 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
   if ((session && session.streamType === 'google_meet') || (meetUrl && meetUrl.includes('meet.google.com'))) {
     if (shield) { shield.style.display = 'none'; shield.style.pointerEvents = 'none'; }
     if (startMask) { startMask.style.display = 'none'; }
+    if (liveBox) liveBox.classList.remove('is-zoom', 'yt-live', 'is-protected-stream');
+    const exitBtn = document.getElementById('live-fs-exit-btn');
+    if (exitBtn) exitBtn.remove();
+
+    const studentName = (typeof currentStudent !== 'undefined' && currentStudent && currentStudent.name)
+      ? currentStudent.name
+      : (localStorage.getItem('qa_user_name') || localStorage.getItem('qaa_student_name') || 'Student');
 
     mount.innerHTML = `
-      <div class="two-way-meeting-card meet-theme" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;box-sizing:border-box;background:radial-gradient(circle at top center, rgba(34,197,94,0.22), #060a14 75%);text-align:center;color:#fff;position:relative;overflow:hidden">
-        <div style="width:64px;height:64px;border-radius:20px;background:rgba(34,197,94,0.15);border:2px solid rgba(34,197,94,0.4);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;box-shadow:0 8px 30px rgba(34,197,94,0.25)">
+      <div class="two-way-meeting-card meet-theme" style="width:100%;height:100%;min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;box-sizing:border-box;background:radial-gradient(circle at top center, rgba(34,197,94,0.22), #060a14 75%);text-align:center;color:#fff;position:relative;overflow:hidden;border-radius:12px">
+        <div style="width:68px;height:68px;border-radius:22px;background:rgba(34,197,94,0.15);border:2px solid rgba(34,197,94,0.4);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;box-shadow:0 8px 30px rgba(34,197,94,0.25)">
           🟢
         </div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#86efac;padding:4px 12px;border-radius:20px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);margin-bottom:10px;display:inline-flex;align-items:center;gap:6px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#86efac;padding:5px 14px;border-radius:20px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);margin-bottom:12px;display:inline-flex;align-items:center;gap:6px">
           <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e"></span>
           2-Way Interactive Classroom Live
         </div>
-        <h2 style="font-size:18px;font-weight:800;color:#fff;margin:0 0 8px 0;line-height:1.3">
+        <h2 style="font-size:22px;font-weight:800;color:#fff;margin:0 0 6px 0;max-width:540px;line-height:1.3">
           ${escapeHtml(session?.title || 'Interactive Live Doubt Session')}
         </h2>
-        <p style="font-size:12.5px;color:#cbd5e1;margin:0 0 20px 0;line-height:1.5">
-          Mentor <strong>Anil Sharma</strong> ke sath direct audio-video &amp; screen share karke DaVinci Resolve aur Premiere Pro timeline doubt clear karein.
-        </p>
-        <div style="display:flex;flex-direction:column;width:100%;max-width:280px;gap:10px;margin-bottom:16px">
-          <a href="${escapeHtml(meetUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="background:#22c55e;color:#052e16;font-size:14px;font-weight:800;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;box-shadow:0 6px 20px rgba(34,197,94,0.4)">
-            <span>🚀 Join Google Meet Class</span>
-            <span style="font-size:15px">➔</span>
+        <div style="font-size:13px;color:#86efac;font-weight:600;margin-bottom:8px">
+          Lead Mentor Anil Sharma • Quick Art Photography Academy
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:4px 12px;border-radius:15px;font-size:12px;color:#cbd5e1;margin-bottom:18px">
+          <span>👤 Student:</span>
+          <strong style="color:#86efac">${escapeHtml(studentName)}</strong>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;width:100%;max-width:440px;margin-bottom:14px">
+          <a href="${escapeHtml(meetUrl)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #22c55e 0%, #16a34a 100%);color:#fff;font-size:16px;font-weight:800;padding:16px 36px;border-radius:14px;display:inline-flex;align-items:center;gap:12px;text-decoration:none;box-shadow:0 12px 35px rgba(34,197,94,0.45);border:1px solid rgba(134,239,172,0.4);cursor:pointer;max-width:92%">
+            <span style="font-size:22px">🚀</span>
+            <span style="display:flex;flex-direction:column;align-items:flex-start;text-align:left">
+              <span style="font-size:16px;font-weight:800;line-height:1.2">Click Karke Google Meet Join Karein</span>
+              <span style="font-size:11.5px;font-weight:500;color:#dcfce7;line-height:1.3">⚡ Zero Form: Meeting code ya password kuch nahi dalna padega</span>
+            </span>
+            <span style="font-size:20px;margin-left:4px">➔</span>
           </a>
-          <button type="button" onclick="copyText('${escapeHtml(meetUrl)}')" class="btn" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px">
+        </div>
+
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:14px;max-width:460px;line-height:1.5">
+          ✓ <strong>Instant 1-Click Entry:</strong> Button click karte hi Google Meet app ya browser me direct class connect ho jayegi. Mic aur screen share dono active hain.
+        </div>
+
+        <div style="margin-bottom:14px">
+          <button type="button" onclick="copyText('${escapeHtml(meetUrl)}', 'Google Meet Link')" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.4);color:#86efac;font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
             <span>📋 Copy Meet Link</span>
           </button>
         </div>
-        <div style="display:flex;gap:12px;font-size:11px;color:#94a3b8;flex-wrap:wrap;justify-content:center">
+
+        <div style="display:flex;gap:16px;font-size:11.5px;color:#94a3b8;flex-wrap:wrap;justify-content:center">
           <span>🎤 Mic Unmute</span>
           <span>•</span>
-          <span>🖥️ Screen Share</span>
+          <span>🖥️ Student Screen Share</span>
           <span>•</span>
-          <span>⚡ Instant Join</span>
+          <span>⚡ 100% Free &amp; Instant Join</span>
         </div>
       </div>
     `;
+
+    // Stream toolbar for Google Meet
+    const streamBar = document.querySelector('.live-stream-bar');
+    if (streamBar) {
+      streamBar.style.display = 'flex';
+      streamBar.className = 'live-stream-bar meet-classroom-bar';
+      streamBar.innerHTML = `
+        <div class="live-stream-status" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="live-broadcast-badge" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.45);color:#86efac;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:0.5px">
+            <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e"></span>
+            <span>GOOGLE MEET LIVE</span>
+          </span>
+        </div>
+        <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <a href="${escapeHtml(meetUrl)}" target="_blank" rel="noopener noreferrer" class="live-btn-fs-preview" style="text-decoration:none;background:linear-gradient(135deg, #22c55e, #16a34a);color:#fff;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:9px 18px;border-radius:9px" title="Join Google Meet">
+            <span style="font-size:15px">🚀</span>
+            <span>Join Google Meet (1-Click)</span>
+          </a>
+          <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </button>
+        </div>
+      `;
+    }
     return;
   }
 
@@ -3218,8 +3283,6 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
                       (replayUrl && (replayUrl.includes('videodelivery.net') || replayUrl.includes('cloudflarestream.com')));
 
   if (isCfSession) {
-    // Cloudflare Stream is 100% white-label (zero YouTube branding).
-    // Shields must NOT block clicks so students can unmute and interact.
     if (shield) {
       shield.style.display = 'none';
       shield.style.pointerEvents = 'none';
@@ -3233,20 +3296,28 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     if (mCf) cfUid = mCf[1];
     cfUid = (cfUid || '').trim();
 
-    // Controls=true enables student unmute and fullscreen; autoplay=true & muted=true bypasses browser autoplay block
     const cfEmbedUrl = `https://iframe.videodelivery.net/${encodeURIComponent(cfUid)}?autoplay=true&preload=true&responsive=true&controls=true`;
     mount.innerHTML = `
       <div style="position:relative;width:100%;height:100%;background:#000;">
+        <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>Full Screen</span>
+        </button>
         <iframe 
           id="live-stream-iframe"
           src="${cfEmbedUrl}" 
           loading="lazy" 
           style="border:0;width:100%;height:100%;pointer-events:auto !important;" 
           allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen" 
-          allowfullscreen="true">
+          allowfullscreen="true"
+          webkitallowfullscreen="true"
+          mozallowfullscreen="true">
         </iframe>
       </div>
     `;
+    renderStandardStreamBar(isCompleted);
     return;
   }
 
@@ -3281,16 +3352,25 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     if (bunnyUrl) {
       mount.innerHTML = `
         <div style="position:relative;width:100%;height:100%;background:#000;">
+          <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <span>Full Screen</span>
+          </button>
           <iframe 
             id="live-stream-iframe"
             src="${bunnyUrl}" 
             loading="lazy" 
             style="border:0;width:100%;height:100%;pointer-events:auto !important;" 
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen" 
-            allowfullscreen="true">
+            allowfullscreen="true"
+            webkitallowfullscreen="true"
+            mozallowfullscreen="true">
           </iframe>
         </div>
       `;
+      renderStandardStreamBar(isCompleted);
       return;
     }
   }
@@ -3304,46 +3384,84 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
   const videoId = cleanYouTubeVideoId(rawId);
 
   if (!videoId) {
+    const isRtmp = rawId && (rawId.startsWith('rtmp://') || rawId.startsWith('rtmps://'));
     mount.innerHTML = `
       <div class="live-placeholder">
-        <div style="font-size:36px;margin-bottom:12px;">⏳</div>
-        <div style="font-weight:700;font-size:16px;color:#fff;">Stream Starting Soon</div>
+        <div style="font-size:36px;margin-bottom:12px;">${isRtmp ? '⚠️' : '⏳'}</div>
+        <div style="font-weight:700;font-size:16px;color:#fff;">${isRtmp ? 'RTMP Server URL Detected' : 'Stream Starting Soon'}</div>
         <div class="muted" style="font-size:13px;margin-top:6px;max-width:480px;line-height:1.5;">
-          Mentor Anil Sharma will start broadcasting shortly. Please stay on this screen.
+          ${isRtmp 
+            ? 'Admin Panel me OBS ka RTMP Server link daala gaya hai. Web browser me live stream dekhne ke liye YouTube Studio me jakar Live Video ka Watch Link (jaise https://youtube.com/live/xxxx ya Video ID) daalna zaroori hai.' 
+            : 'Mentor Anil Sharma will start broadcasting shortly. Please stay on this screen.'}
         </div>
       </div>
     `;
+    renderStandardStreamBar(isCompleted);
     return;
   }
 
   const originStr = encodeURIComponent(window.location.origin);
+  if (liveBox) {
+    liveBox.classList.remove('is-zoom');
+    liveBox.classList.add('yt-live', 'is-protected-stream');
+  }
+
   if (isCompleted) {
     // Replay Mode: Controls enabled, seekbar active, pause/play enabled, keyboard seek enabled, fullscreen enabled
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0&disablekb=0&playsinline=1&enablejsapi=1&fs=1&origin=${originStr}`;
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1&fs=0&origin=${originStr}&widget_referrer=${originStr}`;
     mount.innerHTML = `
-      <iframe 
-        id="live-stream-iframe"
-        src="${embedUrl}" 
-        title="Quick Art Photography Academy Masterclass Replay" 
-        frameborder="0" 
-        style="width:100%;height:100%;border:none;pointer-events:auto !important;"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
-        allowfullscreen>
-      </iframe>
+      <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden;" oncontextmenu="return false;" ondragstart="return false;">
+        <!-- YouTube Anti-Leak Shields (Prevents navigating away to YouTube.com) -->
+        <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
+        <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
+
+        <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>Full Screen</span>
+        </button>
+        <iframe 
+          id="live-stream-iframe"
+          src="${embedUrl}" 
+          title="Quick Art Photography Academy Masterclass Replay" 
+          frameborder="0" 
+          style="width:100%;height:100%;border:none;pointer-events:auto !important;"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; display-capture" 
+          allowfullscreen="true"
+          webkitallowfullscreen="true"
+          mozallowfullscreen="true">
+        </iframe>
+      </div>
     `;
+    renderStandardStreamBar(true);
   } else {
     // Pure Live Mode: 100% Autoplay with mobile-safe mute + instant touch-to-unmute
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&showinfo=0&disablekb=0&playsinline=1&enablejsapi=1&fs=1&origin=${originStr}`;
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1&fs=0&origin=${originStr}&widget_referrer=${originStr}`;
     mount.innerHTML = `
-      <div style="position:relative;width:100%;height:100%;background:#000;">
+      <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden;" oncontextmenu="return false;" ondragstart="return false;">
+        <!-- YouTube Anti-Leak Shields (Prevents navigating away to YouTube.com) -->
+        <div class="live-yt-shield-top" onclick="revealLiveOverlayControls(4000)" title="Quick Art Photography Academy Protected Classroom"></div>
+        <div class="live-yt-shield-logo" onclick="handleProtectedPlayerClick(event)" title="Quick Art Photography Academy Protected Classroom"></div>
+
+        <button type="button" class="live-zoom-float-fs-btn" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>Full Screen</span>
+        </button>
         <iframe 
           id="live-stream-iframe"
           src="${embedUrl}" 
           title="Quick Art Photography Academy Live Stream" 
           frameborder="0" 
-          style="width:100%;height:100%;border:none;pointer-events:auto !important;"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
-          allowfullscreen>
+          style="width:100%;height:100%;border:none;pointer-events:none !important;"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; display-capture" 
+          allowfullscreen="true"
+          webkitallowfullscreen="true"
+          mozallowfullscreen="true">
         </iframe>
         <!-- Floating Sound Helper Badge on Mobile -->
         <button id="live-unmute-tap-badge" type="button" onclick="unmuteLiveStream()" style="position:absolute;bottom:16px;left:16px;z-index:20;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px 16px;border-radius:30px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.6);font-family:inherit">
@@ -3352,6 +3470,8 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         </button>
       </div>
     `;
+
+    renderStandardStreamBar(false);
 
     // Global gesture listener: On mobile, student's first tap anywhere un-mutes automatically
     const autoUnmuteOnFirstTouch = () => {
@@ -3374,6 +3494,53 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
 
     revealLiveOverlayControls(6500, true);
   }
+}
+
+function renderStandardStreamBar(isCompletedSession = false) {
+  const streamBar = document.querySelector('.live-stream-bar');
+  if (!streamBar) return;
+  streamBar.style.display = 'flex';
+  streamBar.className = 'live-stream-bar';
+  streamBar.innerHTML = `
+    <div class="live-stream-status" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span class="live-broadcast-badge" style="background:${isCompletedSession ? 'rgba(216,161,83,0.18)' : 'rgba(239,68,68,0.18)'};border:1px solid ${isCompletedSession ? 'rgba(216,161,83,0.45)' : 'rgba(239,68,68,0.45)'};color:${isCompletedSession ? '#fde68a' : '#fca5a5'};padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:0.5px">
+        ${isCompletedSession ? '<span>📼</span>' : '<span class="live-blink-circle" style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444"></span>'}
+        <span>${isCompletedSession ? 'RECORDED REPLAY' : 'LIVE BROADCAST'}</span>
+      </span>
+      <span class="live-watching-badge" id="live-attendees-pill-mini">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="live-viewer-count-mini" class="attendees-num">${typeof currentLiveAttendeesCount === 'number' ? currentLiveAttendeesCount : 420}</span>
+        <span class="watching-word">Watching</span>
+      </span>
+    </div>
+
+    <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button type="button" class="live-btn-fs-preview" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen Preview">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+        <span>Full Screen Preview</span>
+      </button>
+
+      <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+      </button>
+
+      ${!isCompletedSession ? `
+        <button type="button" class="live-icon-btn" id="live-sound-btn" onclick="toggleLiveAudioMute()" title="Audio Mute/Unmute" aria-label="Audio" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+      ` : ''}
+    </div>
+  `;
 }
 
 window.unmuteLiveStream = function() {
@@ -3690,6 +3857,23 @@ function toggleLiveCinemaFullscreen() {
   const box = document.getElementById('live-video-box');
   const iframe = document.getElementById('live-stream-iframe');
   if (!box) return;
+
+  // Ensure Floating Exit Fullscreen Button exists inside video box for all stream types (YouTube, Meet, Zoom)
+  let exitBtn = document.getElementById('live-fs-exit-btn');
+  if (!exitBtn) {
+    exitBtn = document.createElement('button');
+    exitBtn.type = 'button';
+    exitBtn.id = 'live-fs-exit-btn';
+    exitBtn.className = 'live-fs-exit-btn';
+    exitBtn.setAttribute('title', 'Exit Fullscreen (Esc / Press F)');
+    exitBtn.setAttribute('aria-label', 'Exit Fullscreen');
+    exitBtn.innerHTML = `<span>✕</span> Exit Fullscreen`;
+    exitBtn.onclick = function(e) {
+      e.stopPropagation();
+      toggleLiveCinemaFullscreen();
+    };
+    box.appendChild(exitBtn);
+  }
 
   const isFs = isLiveFullscreenActive();
 
