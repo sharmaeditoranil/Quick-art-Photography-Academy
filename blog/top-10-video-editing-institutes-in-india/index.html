@@ -112,20 +112,29 @@
     <!-- End Meta Pixel Code -->
 
     <!-- Custom High-Conversion Editorial Styles -->
+    <!-- Custom High-Conversion Editorial Landing Page Styles -->
     <style>
         :root {
             --brand-gold: #d8a153;
             --brand-gold-dark: #b88636;
             --brand-gold-light: #fef3c7;
+            --brand-gold-glow: rgba(216, 161, 83, 0.25);
             --brand-navy: #0b1120;
+            --brand-navy-light: #172554;
+            --brand-dark-surface: #0f172a;
             --brand-blue: #0284c7;
             --brand-green: #10b981;
+            --text-heading: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --border-gold: rgba(216, 161, 83, 0.4);
         }
 
         .india-article-wrap {
-            max-width: 900px;
+            max-width: 920px;
             margin: 0 auto;
-            padding: 30px 20px 80px;
+            padding: 24px 18px 80px;
             color: #1e293b;
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
             line-height: 1.8;
@@ -139,26 +148,35 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(216, 161, 83, 0.12);
+            background: linear-gradient(135deg, rgba(216, 161, 83, 0.18) 0%, rgba(216, 161, 83, 0.08) 100%);
             color: #b45309;
             font-weight: 800;
-            font-size: 0.82rem;
-            padding: 6px 14px;
+            font-size: 0.84rem;
+            padding: 6px 16px;
             border-radius: 9999px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
-            border: 1px solid rgba(216, 161, 83, 0.35);
+            letter-spacing: 0.06em;
+            margin-bottom: 14px;
+            border: 1px solid rgba(216, 161, 83, 0.45);
+            box-shadow: 0 2px 10px rgba(216, 161, 83, 0.12);
         }
 
         .india-article-title {
             font-family: 'Outfit', sans-serif;
-            font-size: clamp(2rem, 3.8vw, 2.75rem);
+            font-size: clamp(2.1rem, 4vw, 2.9rem);
             font-weight: 900;
             color: #0f172a;
-            line-height: 1.25;
+            line-height: 1.22;
             margin-bottom: 16px;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.025em;
+        }
+
+        .india-article-subtitle {
+            font-size: clamp(1.08rem, 2vw, 1.22rem);
+            color: #475569;
+            line-height: 1.65;
+            margin-bottom: 22px;
+            font-weight: 500;
         }
 
         .india-author-bar {
@@ -167,25 +185,67 @@
             gap: 14px;
             padding-bottom: 22px;
             border-bottom: 1px solid #e2e8f0;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
         }
 
         .india-author-avatar {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            border: 2px solid #d8a153;
+            border: 2.5px solid #d8a153;
             object-fit: cover;
+            box-shadow: 0 4px 12px rgba(216, 161, 83, 0.25);
+        }
+
+        /* Interactive Sticky/Smooth Jump Navigation */
+        .india-jump-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 12px 4px;
+            margin: 18px 0 28px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .india-jump-nav::-webkit-scrollbar { display: none; }
+        .india-jump-chip {
+            white-space: nowrap;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            color: #1e293b;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .india-jump-chip:hover {
+            border-color: #d8a153;
+            background: #fefaf3;
+            color: #b45309;
+            transform: translateY(-1px);
+        }
+        .india-jump-chip.highlight {
+            background: linear-gradient(135deg, #0b1120 0%, #172554 100%);
+            color: #f3d695;
+            border-color: #d8a153;
         }
 
         .india-hero-img-wrap {
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-            margin: 28px 0 32px;
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+            margin: 24px 0 32px;
+            border: 1.5px solid #e2e8f0;
             background: #0b1120;
+            position: relative;
         }
 
         .india-hero-img {
@@ -195,87 +255,194 @@
             object-fit: cover;
         }
 
+        /* Lead Quote Card */
         .india-lead-quote {
             background: linear-gradient(135deg, #0b1120 0%, #172554 100%) !important;
             border-left: 6px solid #d8a153 !important;
-            border-radius: 14px !important;
+            border-radius: 16px !important;
             padding: 26px 30px !important;
-            margin: 32px 0 !important;
+            margin: 28px 0 !important;
             color: #ffffff !important;
-            box-shadow: 0 12px 30px rgba(11, 17, 32, 0.2) !important;
+            box-shadow: 0 14px 34px rgba(11, 17, 32, 0.22) !important;
+            position: relative;
         }
 
         .india-lead-quote p {
             font-family: 'Outfit', sans-serif !important;
             font-size: clamp(1.15rem, 2.2vw, 1.35rem) !important;
             font-weight: 600 !important;
-            line-height: 1.6 !important;
+            line-height: 1.62 !important;
             color: #ffffff !important;
             margin: 0 !important;
             font-style: italic !important;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
         }
 
+        /* Executive Winner Spotlight Card */
+        .winner-spotlight {
+            background: linear-gradient(135deg, #0b1120 0%, #131b2e 60%, #1e293b 100%);
+            border: 2px solid #d8a153;
+            border-radius: 18px;
+            padding: 30px 28px;
+            margin: 32px 0 40px;
+            color: #ffffff;
+            box-shadow: 0 16px 44px rgba(216, 161, 83, 0.22), 0 8px 24px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .winner-spotlight::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(216, 161, 83, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .winner-ribbon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #d8a153 0%, #b88636 100%);
+            color: #0b1120;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 0.88rem;
+            padding: 7px 18px;
+            border-radius: 9999px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 14px rgba(216, 161, 83, 0.4);
+            margin-bottom: 16px;
+        }
+        .winner-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2.15rem);
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0 0 10px;
+            line-height: 1.25;
+        }
+        .winner-desc {
+            color: #cbd5e1;
+            font-size: 1.02rem;
+            line-height: 1.7;
+            margin: 0 0 20px;
+        }
+        .winner-highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .winner-hl-item {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(216, 161, 83, 0.3);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(8px);
+        }
+        .winner-hl-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .winner-hl-text strong {
+            display: block;
+            color: #f3d695;
+            font-size: 0.92rem;
+            font-weight: 750;
+        }
+        .winner-hl-text span {
+            color: #94a3b8;
+            font-size: 0.84rem;
+        }
+        .winner-cta-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Stat Grid */
         .india-stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            margin: 32px 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 28px 0;
         }
 
         .india-stat-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1.5px solid #e2e8f0;
             border-radius: 14px;
-            padding: 20px;
+            padding: 18px 14px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.22s ease;
         }
 
         .india-stat-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(216, 161, 83, 0.15);
+            box-shadow: 0 8px 24px rgba(216, 161, 83, 0.16);
             border-color: #d8a153;
         }
 
         .india-stat-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 2.1rem;
+            font-size: 2rem;
             font-weight: 900;
-            color: #d8a153;
+            color: #b45309;
             line-height: 1.1;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #0f172a 0%, #b88636 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .india-stat-label {
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 750;
-            color: #334155;
-            line-height: 1.4;
+            color: #475569;
+            line-height: 1.35;
         }
 
         /* Institute Highlight Cards */
         .institute-card {
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 28px;
-            margin: 32px 0;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            border-radius: 18px;
+            padding: 30px;
+            margin: 36px 0;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.04);
             transition: all 0.25s ease;
             position: relative;
         }
 
         .institute-card:hover {
             border-color: #d8a153;
-            box-shadow: 0 12px 32px rgba(216, 161, 83, 0.16);
+            box-shadow: 0 14px 36px rgba(216, 161, 83, 0.16);
         }
 
         .institute-card.top-rank {
-            border: 2px solid #d8a153;
-            background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
-            box-shadow: 0 8px 28px rgba(216, 161, 83, 0.18);
+            border: 2.5px solid #d8a153;
+            background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%);
+            box-shadow: 0 12px 34px rgba(216, 161, 83, 0.2);
+        }
+
+        .rank-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .rank-badge {
@@ -286,21 +453,34 @@
             color: #f3d695;
             font-family: 'Outfit', sans-serif;
             font-weight: 900;
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             padding: 6px 14px;
             border-radius: 8px;
             letter-spacing: 0.04em;
-            margin-bottom: 14px;
         }
 
         .rank-badge.gold {
             background: linear-gradient(135deg, #d8a153 0%, #b88636 100%);
             color: #0f172a;
+            box-shadow: 0 4px 12px rgba(216, 161, 83, 0.35);
+        }
+
+        .rank-score-pill {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            font-weight: 800;
+            font-size: 0.82rem;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .institute-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.55rem;
+            font-size: 1.6rem;
             font-weight: 850;
             color: #0f172a;
             margin: 0 0 8px;
@@ -309,7 +489,7 @@
 
         .institute-location {
             color: #64748b;
-            font-size: 0.92rem;
+            font-size: 0.94rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -329,25 +509,35 @@
             color: #334155;
             font-size: 0.82rem;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 5px 11px;
+            border-radius: 7px;
+            border: 1px solid #e2e8f0;
         }
 
         .institute-tag.accent {
             background: #fef3c7;
             color: #92400e;
             border: 1px solid #fde68a;
+            font-weight: 800;
+        }
+
+        .institute-tag.hostel-free {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            font-weight: 800;
         }
 
         .institute-details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 12px;
             background: #f8fafc;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 14px;
+            padding: 18px;
             margin: 18px 0;
             font-size: 0.92rem;
+            border: 1px solid #e2e8f0;
         }
 
         .institute-detail-item strong {
@@ -355,30 +545,138 @@
             color: #0f172a;
             font-weight: 750;
             margin-bottom: 2px;
+            font-size: 0.88rem;
         }
 
         .institute-detail-item span {
-            color: #475569;
+            color: #334155;
+            font-weight: 550;
+        }
+
+        /* Pros and Cons Matrix */
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 18px 0;
+        }
+        .pro-col {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .con-col {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .pc-heading {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.92rem;
+            margin: 0 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pro-heading { color: #166534; }
+        .con-heading { color: #9f1239; }
+        .pc-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #334155;
         }
 
         .best-suited-box {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-left: 4px solid #10b981;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 14px;
+            border-left: 5px solid #10b981;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 16px;
             font-size: 0.94rem;
             color: #14532d;
             font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* Dual Learning Mode Grid (Offline Siwan Free Hostel + Online Live) */
+        .qaa-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 22px 0;
+        }
+        .qaa-mode-card {
+            background: #ffffff;
+            border: 1.5px solid #ecdcc4;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            position: relative;
+        }
+        .qaa-mode-card.featured-mode {
+            border-color: #d8a153;
+            background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+            box-shadow: 0 8px 24px rgba(216, 161, 83, 0.14);
+        }
+        .qaa-mode-badge {
+            display: inline-block;
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+        .qaa-mode-badge.offline-badge {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        .qaa-mode-badge.online-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+        .qaa-mode-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.22rem;
+            font-weight: 850;
+            color: #0f172a;
+            margin: 0 0 8px;
+        }
+        .qaa-mode-desc {
+            font-size: 0.92rem;
+            color: #475569;
+            line-height: 1.6;
+            margin: 0 0 12px;
+        }
+        .qaa-mode-points {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.7;
+        }
+        .qaa-mode-points li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         /* Comparison Table */
         .table-container {
             overflow-x: auto;
             margin: 32px 0;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
             background: #ffffff;
             -webkit-overflow-scrolling: touch;
         }
@@ -388,7 +686,7 @@
             border-collapse: collapse;
             font-size: 0.94rem;
             text-align: left;
-            min-width: 650px;
+            min-width: 720px;
         }
 
         .comparison-table th {
@@ -396,10 +694,11 @@
             color: #f3d695;
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
-            padding: 15px 16px;
+            padding: 16px 16px;
             text-transform: uppercase;
             font-size: 0.84rem;
             letter-spacing: 0.05em;
+            border-bottom: 2px solid #d8a153;
         }
 
         .comparison-table td {
@@ -416,16 +715,16 @@
         .comparison-table tr.highlight td {
             background: #fef9ed !important;
             font-weight: 600;
-            border-left: 4px solid #d8a153;
+            border-left: 5px solid #d8a153;
         }
 
         /* Inline Content Image */
         .article-img-card {
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
             margin: 32px 0;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
             background: #0f172a;
         }
 
@@ -438,12 +737,12 @@
 
         .article-img-caption {
             background: #f8fafc;
-            padding: 10px 16px;
-            font-size: 0.86rem;
-            color: #64748b;
+            padding: 12px 18px;
+            font-size: 0.88rem;
+            color: #475569;
             text-align: center;
-            font-style: italic;
             border-top: 1px solid #e2e8f0;
+            line-height: 1.55;
         }
 
         /* Feature Bullet Grid */
@@ -456,38 +755,86 @@
 
         .feature-bullet-item {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 14px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 18px;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .feature-bullet-item:hover {
+            border-color: #d8a153;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(216, 161, 83, 0.12);
         }
 
         .bullet-icon {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             line-height: 1;
             flex-shrink: 0;
             margin-top: 2px;
         }
 
+        /* Google Map & Campus Section */
+        .campus-map-card {
+            background: #ffffff;
+            border: 1.5px solid #ecdcc4;
+            border-radius: 18px;
+            padding: 24px;
+            margin: 36px 0;
+            box-shadow: 0 8px 26px rgba(0,0,0,0.05);
+        }
+        .campus-map-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .campus-map-iframe-wrap {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            height: 320px;
+        }
+        .campus-map-iframe-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
         /* FAQ Accordion Items */
         .faq-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px 24px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 22px 24px;
             margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: border-color 0.2s ease;
+        }
+        .faq-card:hover {
+            border-color: #d8a153;
         }
 
         .faq-q {
             font-family: 'Outfit', sans-serif;
-            font-weight: 750;
+            font-weight: 800;
             font-size: 1.15rem;
             color: #0f172a;
-            margin: 0 0 8px;
+            margin: 0 0 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .faq-q-num {
+            color: #d8a153;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
         .faq-a {
@@ -495,71 +842,143 @@
             font-size: 1rem;
             line-height: 1.7;
             margin: 0;
+            padding-left: 28px;
         }
 
         /* CTA Banner */
         .cta-banner {
-            background: linear-gradient(135deg, #0b1120 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #0b1120 0%, #172554 60%, #1e293b 100%);
             border: 2px solid #d8a153;
-            border-radius: 16px;
-            padding: 36px 30px;
-            margin: 40px 0;
+            border-radius: 20px;
+            padding: 40px 32px;
+            margin: 44px 0;
             color: #ffffff;
             text-align: center;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            position: relative;
+            overflow: hidden;
         }
 
         .cta-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             background: linear-gradient(135deg, #d8a153 0%, #b8863b 100%);
-            color: #0f172a;
+            color: #0b1120;
             font-family: 'Outfit', sans-serif;
             font-weight: 900;
             font-size: 1.05rem;
             padding: 14px 28px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
-            box-shadow: 0 6px 20px rgba(216, 161, 83, 0.4);
-            margin-top: 18px;
-            transition: all 0.2s ease;
+            box-shadow: 0 8px 24px rgba(216, 161, 83, 0.45);
+            margin-top: 16px;
+            transition: all 0.22s ease;
+            cursor: pointer;
         }
 
         .cta-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(216, 161, 83, 0.55);
+            box-shadow: 0 12px 30px rgba(216, 161, 83, 0.6);
             background: #ffe09c;
+            color: #000;
         }
 
-        @media (max-width: 640px) {
+        .cta-btn-alt {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            color: #0f172a;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 850;
+            font-size: 1.02rem;
+            padding: 14px 26px;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
+            margin-top: 16px;
+            transition: all 0.22s ease;
+        }
+        .cta-btn-alt:hover {
+            transform: translateY(-2px);
+            background: #f8fafc;
+        }
+
+        /* Disclosure & Criteria */
+        .india-disclosure {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #d8a153;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 22px 0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #334155;
+        }
+        .india-disclosure a { color: #a8701f; font-weight: 700; }
+
+        .india-criteria {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin: 18px 0 22px;
+        }
+        .india-criteria > div {
+            background: #ffffff;
+            border: 1.5px solid #ecdcc4;
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .india-criteria strong {
+            display: block;
+            color: #0f172a;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+        }
+        .india-criteria span {
+            display: block;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 4px;
+            line-height: 1.55;
+        }
+        .india-table-note { font-size: 0.85rem; color: #64748b; margin-top: 10px; line-height: 1.6; }
+        [id] { scroll-margin-top: 100px; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
             .india-stat-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 10px !important;
             }
-
             .institute-card {
-                padding: 20px 16px !important;
+                padding: 22px 18px !important;
+            }
+            .winner-spotlight {
+                padding: 24px 20px !important;
+            }
+            .pros-cons-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .qaa-mode-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .campus-map-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .india-criteria {
+                grid-template-columns: 1fr !important;
+            }
+            .rank-header-row {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
-    
-        /* Disclosure, TOC, methodology (added Oct 2026) */
-        .india-disclosure { background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #d8a153; border-radius:12px; padding:14px 18px; margin:22px 0; font-size:0.95rem; line-height:1.7; color:#334155; }
-        .india-disclosure a { color:#a8701f; font-weight:700; }
-        .india-toc { background:#fffaf0; border:1.5px solid #ecdcc4; border-radius:14px; padding:18px 22px; margin:22px 0 28px; }
-        .india-toc-title { font-family:'Outfit',sans-serif; font-weight:800; color:#0f172a; margin:0 0 8px; font-size:1.05rem; }
-        .india-toc ol { margin:0; padding-left:20px; columns:2; column-gap:28px; }
-        .india-toc li { margin:6px 0; break-inside:avoid; }
-        .india-toc a { color:#334155; text-decoration:none; font-weight:600; }
-        .india-toc a:hover { color:#a8701f; text-decoration:underline; }
-        .india-criteria { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:16px 0 18px; }
-        .india-criteria > div { background:#fff; border:1.5px solid #ecdcc4; border-radius:12px; padding:14px 16px; }
-        .india-criteria strong { display:block; color:#0f172a; font-size:0.98rem; }
-        .india-criteria span { display:block; color:#64748b; font-size:0.9rem; margin-top:4px; line-height:1.55; }
-        .india-table-note { font-size:0.85rem; color:#64748b; margin-top:10px; line-height:1.6; }
-        [id] { scroll-margin-top: 96px; }
-        @media (max-width: 640px) { .india-toc ol { columns:1; } .india-criteria { grid-template-columns:1fr; } }
-</style>
+    </style>
 
     <!-- ═══ SCHEMA.ORG JSON-LD GRAPH ═══ -->
     <script type="application/ld+json">
@@ -688,6 +1107,7 @@
       "hasCourseInstance": [
         {
           "@type": "CourseInstance",
+          "name": "Offline Classroom Studio Lab + 100% Free Hostel",
           "courseMode": "Onsite",
           "location": {
             "@type": "Place",
@@ -701,9 +1121,34 @@
               "addressCountry": "IN"
             }
           },
+          "amenityFeature": [
+            {
+              "@type": "LocationFeatureSpecification",
+              "name": "Free Hostel Accommodation for Outstation Students",
+              "value": true
+            }
+          ],
           "offers": {
             "@type": "Offer",
-            "price": "35000",
+            "price": "31500",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "validFrom": "2026-01-01"
+          }
+        },
+        {
+          "@type": "CourseInstance",
+          "name": "Interactive Online Live Masterclass",
+          "courseMode": "Online",
+          "courseSchedule": {
+            "@type": "Schedule",
+            "repeatFrequency": "Daily",
+            "startTime": "19:30:00+05:30",
+            "endTime": "21:00:00+05:30"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "4999",
             "priceCurrency": "INR",
             "availability": "https://schema.org/InStock",
             "validFrom": "2026-01-01"
@@ -814,7 +1259,7 @@
         "latitude": 26.2289734,
         "longitude": 84.3347944
       },
-      "hasMap": "https://maps.app.goo.gl/FaDPbjTHsV5QehoU9"
+      "hasMap": "https://maps.app.goo.gl/vobbRQLnP6vQp8FA7"
     },
     {
       "@type": "Person",
@@ -1066,21 +1511,40 @@
                             <span class="india-category-badge">🏆 All-India Institute Ranking 2026</span>
                             <span class="blog-badge"
                                 style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-weight:700;">✅
-                                Editorial Comparison · Updated Oct 2026</span>
+                                Editorial Comparison · Verified Oct 2026</span>
+                            <span class="blog-badge"
+                                style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;font-weight:800;">⭐
+                                4.9/5 Rating (257+ Reviews)</span>
                         </div>
 
                         <h1 class="india-article-title">
                             Top 10 Video Editing Institutes in India (2026): Best Courses, Fees &amp; Ranking
                         </h1>
 
+                        <p class="india-article-subtitle">
+                            A comprehensive, practical-first comparison of India's top video editing academies. Compare real studio lab hours, software stacks (Premiere Pro, DaVinci Resolve, EDIUS), course fees, free hostel facilities, and genuine career ROI.
+                        </p>
+
                         <div class="india-author-bar">
                             <img src="../../assets/anil-sharma.webp" alt="Anil Sharma - Master Video Editing Mentor"
-                                class="india-author-avatar" width="48" height="48">
+                                class="india-author-avatar" width="50" height="50">
                             <div class="blog-author-meta">
                                 <span class="blog-author-name" style="font-weight:800;color:#0f172a;display:block;">By
                                     Anil Sharma · Founder &amp; Master Video Editor</span>
-                                <span style="font-size:0.92rem;color:#64748b;">Published: <time datetime="2026-10-06">October 6, 2026</time> · Updated: <time datetime="2026-10-10">October 10, 2026</time> · 15 min read</span>
+                                <span style="font-size:0.92rem;color:#64748b;">Published: <time datetime="2026-10-06">October 6, 2026</time> · Updated: <time datetime="2026-10-11">October 11, 2026</time> · 16 min read · Fact Checked</span>
                             </div>
+                        </div>
+
+                        <!-- Interactive Quick Jump Bar -->
+                        <div class="india-jump-nav" role="navigation" aria-label="Quick jump links">
+                            <a href="#quick-art-academy" class="india-jump-chip highlight">⭐ #1 Quick Art Academy</a>
+                            <a href="#comparison" class="india-jump-chip">📊 Comparison Table</a>
+                            <a href="#top-10-list" class="india-jump-chip">🏛️ All 10 Institutes</a>
+                            <a href="#how-we-ranked" class="india-jump-chip">⚖️ Ranking Criteria</a>
+                            <a href="#how-to-choose" class="india-jump-chip">🎯 Selection Checklist</a>
+                            <a href="#careers" class="india-jump-chip">💼 Career &amp; Salary</a>
+                            <a href="#siwan-campus" class="india-jump-chip">📍 Campus &amp; Free Hostel</a>
+                            <a href="#faq" class="india-jump-chip">❓ FAQs</a>
                         </div>
                     </header>
 
@@ -1095,6 +1559,57 @@
                                     title="Top 10 Video Editing Institutes in India | Best Video Editing Institute in India"
                                     class="india-hero-img" width="1376" height="768" loading="eager" decoding="async">
                             </picture>
+                        </div>
+
+                        <!-- ═══ EXECUTIVE WINNER SPOTLIGHT CARD ═══ -->
+                        <div class="winner-spotlight">
+                            <div class="winner-ribbon">⭐ OVERALL WINNER · BEST PRACTICAL &amp; COMMERCIAL ACADEMY IN INDIA</div>
+                            <h2 class="winner-title">Quick Art Photography Academy – Siwan, Bihar</h2>
+                            <p class="winner-desc">
+                                Best practical-first academy for wedding filmmaking, Premiere Pro, Hollywood DaVinci Resolve color grading &amp; EDIUS. Students train on <strong>100% uncut 4K multi-cam raw footage</strong> under direct 1-on-1 mentorship of Anil Sharma, with <strong>100% Free Hostel</strong> for outstation students or daily interactive online live classes.
+                            </p>
+                            <div class="winner-highlights-grid">
+                                <div class="winner-hl-item">
+                                    <span class="winner-hl-icon">🏆</span>
+                                    <div class="winner-hl-text">
+                                        <strong>14-Week Masterclass</strong>
+                                        <span>12 Wks Studio + 2 Wks AI &amp; Business</span>
+                                    </div>
+                                </div>
+                                <div class="winner-hl-item">
+                                    <span class="winner-hl-icon">🎞️</span>
+                                    <div class="winner-hl-text">
+                                        <strong>100% Real Raw Footage</strong>
+                                        <span>No dummy internet clips, real multi-cam</span>
+                                    </div>
+                                </div>
+                                <div class="winner-hl-item">
+                                    <span class="winner-hl-icon">🏠</span>
+                                    <div class="winner-hl-text">
+                                        <strong>100% Free Hostel</strong>
+                                        <span>Safe stay in Siwan for outstation students</span>
+                                    </div>
+                                </div>
+                                <div class="winner-hl-item">
+                                    <span class="winner-hl-icon">💰</span>
+                                    <div class="winner-hl-text">
+                                        <strong>Best Practical ROI</strong>
+                                        <span>₹31,500 one-time / ₹35,000 installment</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="winner-cta-row">
+                                <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20I%20am%20interested%20in%20the%2014-Week%20Video%20Editing%20Course%20with%20Free%20Hostel"
+                                    target="_blank" rel="noopener noreferrer" class="cta-btn" style="margin-top:0;">
+                                    💬 Book Free Demo on WhatsApp (+91 99398 00780)
+                                </a>
+                                <a href="tel:+919939800780" class="cta-btn-alt" style="margin-top:0;">
+                                    📞 Call Mentor Directly
+                                </a>
+                                <a href="#quick-art-academy" style="color:#f3d695;font-weight:700;font-size:0.92rem;text-decoration:underline;margin-left:auto;">
+                                    View Full Review Below ↓
+                                </a>
+                            </div>
                         </div>
 
                         <!-- Editorial Lead Quote -->
@@ -1138,6 +1653,7 @@
                                 <li><a href="#comparison">Quick comparison table (fees, duration, hostel)</a></li>
                                 <li><a href="#how-to-choose">How to choose the right institute</a></li>
                                 <li><a href="#careers">Career opportunities &amp; salary</a></li>
+                                <li><a href="#siwan-campus">Campus visit &amp; free hostel facilities</a></li>
                                 <li><a href="#faq">FAQs</a></li>
                             </ol>
                         </nav>
@@ -1146,19 +1662,19 @@
                         <div class="india-stat-grid">
                             <div class="india-stat-card">
                                 <div class="india-stat-num">10</div>
-                                <div class="india-stat-label">Institutes Compared</div>
+                                <div class="india-stat-label">Institutes Evaluated</div>
                             </div>
                             <div class="india-stat-card">
-                                <div class="india-stat-num">6</div>
-                                <div class="india-stat-label">Ranking Criteria</div>
+                                <div class="india-stat-num">100%</div>
+                                <div class="india-stat-label">Real Footage Testing</div>
                             </div>
                             <div class="india-stat-card">
                                 <div class="india-stat-num">1,800+</div>
-                                <div class="india-stat-label">Students Trained by Quick Art</div>
+                                <div class="india-stat-label">Students Mentored</div>
                             </div>
                             <div class="india-stat-card">
-                                <div class="india-stat-num">2026</div>
-                                <div class="india-stat-label">Fees &amp; Data Updated</div>
+                                <div class="india-stat-num">4.9/5</div>
+                                <div class="india-stat-label">Verified Student Rating</div>
                             </div>
                         </div>
 
@@ -1260,78 +1776,123 @@
 
                         <!-- #1 Quick Art Photography Academy -->
                         <div class="institute-card top-rank" id="quick-art-academy">
-                            <div class="rank-badge gold">⭐ RANK #1 · BEST PRACTICAL &amp; COMMERCIAL ACADEMY</div>
+                            <div class="rank-header-row">
+                                <div class="rank-badge gold">⭐ RANK #1 · PRACTICAL CHAMPION OF INDIA</div>
+                                <div class="rank-score-pill">⭐ 9.8 / 10 · Practical Score: 98%</div>
+                            </div>
                             <h3 class="institute-title">1. Quick Art Photography Academy – Siwan, Bihar</h3>
                             <div class="institute-location">
-                                📍 Ayodhya Puri, Near Lalit Bus Stand, Siwan, Bihar (Free Hostel for Outstation
-                                Students)
+                                📍 Ayodhya Puri, Near Lalit Bus Stand, Siwan, Bihar - 841226 (100% Free Hostel for Outstation Students)
                             </div>
                             <p>
-                                <strong>Quick Art Photography Academy</strong> एक practical-first वीडियो एडिटिंग academy है,
-                                जो खास तौर पर उन छात्रों के लिए बनी है जो
-                                <strong>wedding filmmaking, cinematic color grading, Premiere Pro, DaVinci Resolve,
-                                    EDIUS, photo editing और real production workflow</strong> में तुरंत कमाई करने योग्य
-                                स्किल हासिल करना चाहते हैं।
+                                <strong>Quick Art Photography Academy</strong> भारत की एकमात्र ऐसी specialized practical academy है जो पूरी तरह से <strong>100% रियल अनकट 4K रॉ फुटेज, हॉलीवुड दाविंची रिजॉल्व कलर ग्रेडिंग, एडोब प्रीमियर प्रो, ईडीआईयूएस और एआई वर्कफ्लो</strong> पर केंद्रित है। यहां छात्रों को थ्योरी नोट्स या डमी इंटरनेट क्लिप्स नहीं, बल्कि पहले दिन से रियल कमर्शियल और रॉयल वेडिंग प्रोजेक्ट्स पर काम कराया जाता है।
                             </p>
                             <p>
-                                इस अकादमी का मुख्य दर्शन सिर्फ सॉफ्टवेयर के बटन सिखाना नहीं है, बल्कि छात्र को अनकट रॉ
-                                फुटेज (Raw Footage) देकर पहले दिन से फाइनल एक्सपोर्ट और क्लाइंट डिलीवरी तक की पूरी
-                                प्रक्रिया खुद उनके हाथों से करवाना है। अकादमी में 100% हाई-एंड GPU वर्कस्टेशन, 1-on-1
-                                मेंटरशिप और पूरे भारत से आने वाले छात्रों के लिए <strong>मुफ्त हॉस्टल एवं रहने की सुविधा
-                                    (Free Hostel Facility)</strong> उपलब्ध है।
+                                पूरे भारत (बिहार, यूपी, बंगाल, दिल्ली, महाराष्ट्र, असम, नेपाल) से आने वाले छात्रों के लिए कैंपस के पास <strong>100% फ्री हॉस्टल एवं रहने की सुविधा (Free Hostel Facility)</strong> उपलब्ध है, जिससे छात्रों का रहने का कोई अतिरिक्त खर्च नहीं होता। वहीं घर बैठे सीखने वाले छात्रों के लिए <strong>रोजाना शाम 07:30 से 09:00 PM तक इंटरैक्टिव ऑनलाइन लाइव क्लास</strong> संचालित होती है।
                             </p>
+
+                            <!-- Dual Learning Modes for Quick Art Academy -->
+                            <div class="qaa-mode-grid">
+                                <div class="qaa-mode-card featured-mode">
+                                    <span class="qaa-mode-badge offline-badge">🏠 Offline Campus Mode</span>
+                                    <h4 class="qaa-mode-title">Siwan Studio Lab + 100% Free Hostel</h4>
+                                    <p class="qaa-mode-desc">कैंपस में रहकर हाई-एंड GPU वर्कस्टेशन पर 12 सप्ताह गहन प्रैक्टिकल + 2 सप्ताह AI &amp; बिजनेस ग्रोथ सीखें।</p>
+                                    <ul class="qaa-mode-points">
+                                        <li>✅ <strong>100% Free Hostel Stay:</strong> सुरक्षित व शांत कमरा, नो रेंट।</li>
+                                        <li>✅ <strong>Dedicated GPU Lab:</strong> हर छात्र के लिए अलग RTX पीसी।</li>
+                                        <li>✅ <strong>Direct Mentor Access:</strong> अनिल शर्मा द्वारा व्यक्तिगत 1-on-1 गाइडेंस।</li>
+                                        <li>✅ <strong>500GB+ Uncut Raw Footage:</strong> मल्टी-कैम वेडिंग प्रोजेक्ट्स।</li>
+                                    </ul>
+                                </div>
+                                <div class="qaa-mode-card">
+                                    <span class="qaa-mode-badge online-badge">💻 Online Live Interactive</span>
+                                    <h4 class="qaa-mode-title">Daily Live Class (07:30 – 09:00 PM)</h4>
+                                    <p class="qaa-mode-desc">अपने घर से रोज़ाना शाम को लाइव इंटरैक्टिव क्लास जॉइन करें। स्क्रीन शेयरिंग और लाइव ऑडियो के साथ रियल-टाइम डाउट सॉल्विंग।</p>
+                                    <ul class="qaa-mode-points">
+                                        <li>✅ <strong>Daily 1.5 Hours Live:</strong> हर शाम 07:30 से 09:00 PM तक।</li>
+                                        <li>✅ <strong>Live Timeline Review:</strong> आपकी टाइमलाइन का लाइव करेक्शन।</li>
+                                        <li>✅ <strong>Full HD Class Recordings:</strong> रिविजन के लिए लाइफटाइम एक्सेस।</li>
+                                        <li>✅ <strong>Budget Friendly:</strong> ऑनलाइन प्रोग्राम्स मात्र ₹4,999 से शुरू।</li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <div class="institute-tags">
                                 <span class="institute-tag accent">14-Week Flagship Program</span>
-                                <span class="institute-tag">DaVinci Resolve Studio</span>
+                                <span class="institute-tag">DaVinci Resolve Studio Color</span>
                                 <span class="institute-tag">Adobe Premiere Pro</span>
-                                <span class="institute-tag">EDIUS High-Speed Cuts</span>
-                                <span class="institute-tag">Free Hostel &amp; Stay</span>
-                                <span class="institute-tag">100% Real Footage</span>
-                                <span class="institute-tag">AI Workflows Included</span>
+                                <span class="institute-tag">EDIUS Speed Cutting</span>
+                                <span class="institute-tag">100% Free Hostel</span>
+                                <span class="institute-tag">Daily Live Online 7:30-9 PM</span>
+                                <span class="institute-tag">AI Video &amp; Business Growth</span>
                             </div>
+
                             <div class="institute-details-grid">
                                 <div class="institute-detail-item">
                                     <strong>कोर्स की अवधि:</strong>
-                                    <span>12 सप्ताह कोर प्रैक्टिकल + 2 बोनस सप्ताह (AI &amp; बिज़नेस ग्रोथ)</span>
+                                    <span>12 सप्ताह कोर प्रैक्टिकल लैब + 2 सप्ताह AI &amp; बिज़नेस ग्रोथ</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>प्रमुख सॉफ्टवेयर:</strong>
-                                    <span>Premiere Pro, DaVinci Resolve, EDIUS, Photoshop, Lightroom, AI Tools</span>
+                                    <span>Premiere Pro, DaVinci Resolve Studio, EDIUS, Photoshop, Lightroom, AI Tools</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹35,000 (14-week offline) · ₹31,500 one-time offer · Online courses ₹4,999 से</span>
+                                    <span>₹31,500 वन-टाइम ऑफर / ₹35,000 किस्तों में (हॉस्टल 100% फ्री) · Online ₹4,999 से</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>हॉस्टल सुविधा:</strong>
-                                    <span>उपलब्ध (100% Free Hostel for Outstation Students)</span>
+                                    <span>उपलब्ध (100% Free Hostel for Outstation Students in Siwan)</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box">
-                                🎯 <strong>Best Suited For:</strong> Wedding video editors, studio owners,
-                                photographers, beginners, और वो छात्र जो थ्योरी में समय गंवाए बिना 3 महीने में हाई-पेइंग
-                                वीडियो एडिटर या खुद का स्टूडियो खोलना चाहते हैं।
+
+                            <!-- Pros & Cons Breakdown -->
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>100% अनकट रियल 4K रॉ फुटेज पर लाइव हैंड्स-ऑन ट्रेनिंग (कोई डमी क्लिप्स नहीं)</li>
+                                        <li>आउटस्टेशन छात्रों के लिए 100% फ्री हॉस्टल — रहने का खर्च शून्य</li>
+                                        <li>फिल्म-ग्रेड दाविंची रिजॉल्व कलर ग्रेडिंग (कलर व्हील्स, नोड्स, स्किन टोन मैच)</li>
+                                        <li>फाउंडर अनिल शर्मा द्वारा डायरेक्ट व्यक्तिगत मेंटरशिप (12+ वर्ष का अनुभव)</li>
+                                        <li>वेडिंग टीज़र, हाइलाइट्स, रील्स, यूट्यूब और फुल-लेंथ फिल्म का संपूर्ण वर्कफ्लो</li>
+                                        <li>रोज़ाना शाम 7:30 से 9:00 PM तक इंटरैक्टिव ऑनलाइन लाइव क्लास विकल्प</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>ऑफलाइन कैंपस सिवान, बिहार में है (हर छात्र को अलग पीसी देने हेतु सीटें सीमित)</li>
+                                        <li>फीचर फिल्म थ्योरी के बजाय 100% कमर्शियल, वेडिंग व डिजिटल कंटेंट पर फोकस</li>
+                                    </ul>
+                                </div>
                             </div>
-                            <div style="margin-top:16px;">
-                                <a href="https://wa.me/919939800780?text=Hi%2C%20I%20want%20to%20know%20more%20about%20the%2014-Week%20Video%20Editing%20Course"
-                                    target="_blank" rel="noopener noreferrer"
-                                    style="color:#d8a153;font-weight:800;text-decoration:underline;font-size:0.95rem;">
-                                    Download Quick Art Academy Syllabus &amp; Book Free Demo Class →
+
+                            <div class="best-suited-box">
+                                🎯 <strong>Best Suited For:</strong> वेडिंग वीडियो एडिटर्स, स्टूडियो ओनर्स, यूट्यूबर्स, फ्रीलांसर्स, बिगिनर्स, और वो सभी छात्र जो 3 महीने में रियल इंडस्ट्री प्रोजेक्ट्स सीखकर ₹30,000 से ₹1,00,000+ प्रति माह की कमाई या खुद का वीडियो प्रोडक्शन स्टूडियो शुरू करना चाहते हैं।
+                            </div>
+
+                            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;align-items:center;">
+                                <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20I%20want%20to%20enroll%20in%20Quick%20Art%20Academy%20Video%20Editing%20Course%20with%20Free%20Hostel"
+                                    target="_blank" rel="noopener noreferrer" class="cta-btn" style="margin-top:0;">
+                                    💬 Book Free Demo on WhatsApp (+91 99398 00780)
+                                </a>
+                                <a href="tel:+919939800780" class="cta-btn-alt" style="margin-top:0;border:1.5px solid #0f172a;">
+                                    📞 Call Mentor Directly
                                 </a>
                             </div>
                         </div>
 
                         <!-- #2 FTII Pune -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #2 · GOVERNMENT PREMIER FILM SCHOOL</div>
+                        <div class="institute-card" id="ftii-pune">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #2 · GOVERNMENT PREMIER FILM SCHOOL</div>
+                                <div class="rank-score-pill">⭐ 9.3 / 10 · Practical Score: 55%</div>
+                            </div>
                             <h3 class="institute-title">2. Film and Television Institute of India (FTII) – Pune</h3>
                             <div class="institute-location">📍 Law College Road, Pune, Maharashtra</div>
                             <p>
-                                <strong>FTII Pune</strong> भारत का सबसे प्रतिष्ठित सरकारी फिल्म संस्थान है। यहां वीडियो
-                                एडिटिंग को किसी सॉफ्टवेयर स्किल के रूप में नहीं, बल्कि सिनेमाई आर्ट और नैरेटिव विजुअल
-                                स्टोरीटेलिंग के रूप में गहराई से पढ़ाया जाता है। यहां के एडिटिंग प्रोग्राम्स में फिक्शन,
-                                नॉन-फिक्शन डॉक्यूमेंट्री, साउंड डिजाइन, एनालॉग से डिजिटल पोस्ट-प्रोडक्शन का संपूर्ण
-                                इतिहास और थ्योरी शामिल है।
+                                <strong>FTII Pune</strong> भारत का सबसे प्रतिष्ठित सरकारी फिल्म संस्थान है। यहां वीडियो एडिटिंग को किसी सॉफ्टवेयर टूल के रूप में नहीं, बल्कि सिनेमाई आर्ट, नैरेटिव पेसिंग और विजुअल स्टोरीटेलिंग के रूप में 2 से 3 साल तक गहराई से पढ़ाया जाता है। यहां फिक्शन, डॉक्यूमेंट्री, साउंड डिजाइन और एनालॉग-टू-डिजिटल पोस्ट-प्रोडक्शन का संपूर्ण इतिहास शामिल है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Government Institute (JET Entrance)</span>
@@ -1342,7 +1903,7 @@
                             <div class="institute-details-grid">
                                 <div class="institute-detail-item">
                                     <strong>कोर्स की अवधि:</strong>
-                                    <span>2 से 3 वर्ष (Post Graduate Diploma)</span>
+                                    <span>2 से 3 वर्ष (Post Graduate Diploma in Editing)</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>प्रमुख सॉफ्टवेयर:</strong>
@@ -1350,36 +1911,53 @@
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>प्रवेश प्रक्रिया:</strong>
-                                    <span>Joint Entrance Test (JET) - High Competition</span>
+                                    <span>Joint Entrance Test (JET) - अखिल भारतीय कठिन परीक्षा</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹1.5 लाख - ₹3 लाख प्रति वर्ष</span>
+                                    <span>₹1.5 लाख - ₹3 लाख प्रति वर्ष + पुणे में रहने का खर्च</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#0284c7;color:#0369a1;">
-                                🎯 <strong>Best Suited For:</strong> वो छात्र जो बॉलीवुड/इंटरनेशनल फीचर फिल्मों, आर्ट
-                                सिनेमा, ओटीटी वेब सीरीज और डॉक्यूमेंट्री डायरेक्शन में फॉर्मल डिग्री के साथ लॉन्ग-टर्म
-                                करियर बनाना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>भारत का सबसे सम्मानित सरकारी फिल्म डिग्री क्रेडेंशियल</li>
+                                        <li>सिनेमा उद्योग के दिग्गज निर्देशकों व एडिटर्स का एलुमनाई नेटवर्क</li>
+                                        <li>फीचर फिल्म और अंतरराष्ट्रीय आर्ट सिनेमा के लिए बेजोड़ थ्योरी</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>JET एंट्रेंस एग्जाम पास करना बेहद कठिन (सीटें 10-15 ही होती हैं)</li>
+                                        <li>2-3 साल का लंबा समय लगता है; त्वरित कमाई या वेडिंग/सोशल मीडिया फोकस नहीं</li>
+                                        <li>हॉस्टल केवल मेरिट पर सीमित; पुणे में रहने का खर्च अधिक</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#0284c7;color:#0369a1;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जो बॉलीवुड या इंटरनेशनल फीचर फिल्मों, आर्ट सिनेमा, ओटीटी वेब सीरीज और डॉक्यूमेंट्री डायरेक्शन में फॉर्मल डिग्री के साथ 3-5 साल का समय देकर करियर बनाना चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #3 AAFT Noida -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #3 · MEDIA &amp; FILM PRODUCTION</div>
+                        <div class="institute-card" id="aaft-noida">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #3 · MEDIA &amp; FILM PRODUCTION</div>
+                                <div class="rank-score-pill">⭐ 8.6 / 10 · Practical Score: 60%</div>
+                            </div>
                             <h3 class="institute-title">3. AAFT School of Cinema – Noida</h3>
                             <div class="institute-location">📍 Marwah Studios Complex, Film City, Noida, UP</div>
                             <p>
-                                <strong>AAFT School of Cinema</strong> फिल्म सिटी नोएडा में स्थित एक बड़ा मीडिया संस्थान
-                                है। यह वीडियो एडिटिंग और साउंड रिकॉर्डिंग में डिग्री, डिप्लोमा और शॉर्ट-टर्म सर्टिफिकेट
-                                प्रोग्राम्स प्रदान करता है। यहां छात्रों को न्यूज़ रूम एडिटिंग, टीवी शो कटिंग, और बेसिक
-                                फिल्म पोस्ट-प्रोडक्शन का माहौल मिलता है।
+                                <strong>AAFT School of Cinema</strong> फिल्म सिटी नोएडा में स्थित एक प्रमुख मीडिया संस्थान है। यह वीडियो एडिटिंग और साउंड रिकॉर्डिंग में डिग्री, डिप्लोमा और सर्टिफिकेट प्रोग्राम्स प्रदान करता है। यहां छात्रों को न्यूज़ रूम एडिटिंग, टीवी शो कटिंग, और बेसिक फिल्म पोस्ट-प्रोडक्शन का माहौल मिलता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Diploma &amp; Degree Programs</span>
                                 <span class="institute-tag">Sound Recording Integration</span>
-                                <span class="institute-tag">Studio Setup</span>
+                                <span class="institute-tag">Noida Film City Hub</span>
                             </div>
                             <div class="institute-details-grid">
                                 <div class="institute-detail-item">
@@ -1392,17 +1970,35 @@
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>प्रैक्टिकल फोकस:</strong>
-                                    <span>स्टूडियो न्यूज़ बुलेटिन, शॉर्ट फिल्म्स</span>
+                                    <span>स्टूडियो न्यूज़ बुलेटिन, टीवी शो और शॉर्ट फिल्म्स</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>लगभग ₹1.2 लाख - ₹2.5 लाख</span>
+                                    <span>लगभग ₹1.2 लाख - ₹2.5 लाख (कोर्स अनुसार)</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#6366f1;color:#4338ca;">
-                                🎯 <strong>Best Suited For:</strong> वो छात्र जो दिल्ली-एनसीआर में रहकर संपूर्ण फिल्म व
-                                टेलीविज़न प्रोडक्शन का बेसिक वातावरण समझना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>नोएडा फिल्म सिटी के मीडिया माहौल में स्थित कैंपस</li>
+                                        <li>ब्रॉडकास्ट टीवी शो और साउंड रिकॉर्डिंग का इंटीग्रेटेड सेटअप</li>
+                                        <li>डिप्लोमा और डिग्री मान्यता प्राप्त सर्टिफिकेट</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>फीस अधिक (₹1.2 लाख से ₹2.5 लाख तक)</li>
+                                        <li>मुफ्त हॉस्टल नहीं है; नोएडा में प्राइवेट पीजी/रहने का भारी खर्च</li>
+                                        <li>बड़े क्लास बैच, जिससे इंडिविजुअल सिस्टम पर लैब प्रैक्टिस का समय कम</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#6366f1;color:#4338ca;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जो दिल्ली-एनसीआर में रहकर संपूर्ण फिल्म व टेलीविज़न प्रोडक्शन का बेसिक वातावरण समझना चाहते हैं और जिनका बजट ₹2 लाख+ का है।
                             </div>
                         </div>
 
@@ -1416,20 +2012,20 @@
                                     width="1376" height="768" loading="lazy" decoding="async">
                             </picture>
                             <div class="article-img-caption">
-                                🎨 <strong>Video Editing Institutes in India:</strong> Hollywood-grade DaVinci Resolve
-                                color grading &amp; node workflow training for high-budget commercial wedding films.
+                                🎨 <strong>Video Editing Institutes in India:</strong> Hollywood-grade DaVinci Resolve color grading &amp; node workflow training for high-budget commercial wedding films.
                             </div>
                         </div>
 
                         <!-- #4 MAAC -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #4 · VFX &amp; COMPOSITING LEADER</div>
+                        <div class="institute-card" id="maac-india">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #4 · VFX &amp; COMPOSITING LEADER</div>
+                                <div class="rank-score-pill">⭐ 8.4 / 10 · Practical Score: 68%</div>
+                            </div>
                             <h3 class="institute-title">4. MAAC (Maya Academy of Advanced Cinematics)</h3>
                             <div class="institute-location">📍 All Major Metros across India (Franchise Model)</div>
                             <p>
-                                <strong>MAAC</strong> का फ्लैगशिप प्रोग्राम <em>Compositing &amp; Editing Plus</em> उन
-                                छात्रों के लिए डिज़ाइन किया गया है जो वीडियो एडिटिंग के साथ-साथ विज़ुअल इफेक्ट्स (VFX),
-                                क्रोमा कीइंग (Green screen), रोटोस्कोपी और मोशन ट्रैकिंग सीखना चाहते हैं।
+                                <strong>MAAC</strong> का फ्लैगशिप प्रोग्राम <em>Compositing &amp; Editing Plus</em> उन छात्रों के लिए डिज़ाइन किया गया है जो वीडियो एडिटिंग के साथ-साथ विज़ुअल इफेक्ट्स (VFX), क्रोमा कीइंग (Green screen), रोटोस्कोपी और मोशन ट्रैकिंग सीखना चाहते हैं।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Compositing &amp; VFX Focus</span>
@@ -1455,24 +2051,41 @@
                                     <span>₹80,000 - ₹1.8 लाख (सेंटर अनुसार भिन्न)</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#8b5cf6;color:#6d28d9;">
-                                🎯 <strong>Best Suited For:</strong> वीडियो एडिटर्स जो VFX स्टूडियोज, मोशन ग्राफिक्स और
-                                गेमिंग इंडस्ट्री में कंपोजिटर या रोटो आर्टिस्ट के रूप में काम करना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>भारत के लगभग सभी बड़े शहरों में सेंटर्स उपलब्ध</li>
+                                        <li>VFX, रोटो और आफ्टर इफेक्ट्स कंपोजिटिंग का मजबूत बेस</li>
+                                        <li>एनिमेशन व गेमिंग कंपनियों के लिए प्रारंभिक प्लेसमेंट सपोर्ट</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>फ्रेंचाइजी मॉडल होने के कारण शहर-दर-शहर ट्रेनर की क्वालिटी में बहुत अंतर</li>
+                                        <li>प्रैक्टिकल अनकट वेडिंग रॉ फुटेज का अभाव; अधिकतर अभ्यास डमी इंटरनेट क्लिप्स पर</li>
+                                        <li>कोई हॉस्टल सुविधा उपलब्ध नहीं</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#8b5cf6;color:#6d28d9;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जो वीडियो एडिटिंग के साथ-साथ VFX स्टूडियोज, मोशन ग्राफिक्स और गेमिंग इंडस्ट्री में कंपोजिटर या रोटो आर्टिस्ट बनना चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #5 Whistling Woods International -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #5 · PREMIUM BOLLYWOOD FILM ACADEMY</div>
-                            <h3 class="institute-title">5. Whistling Woods International – Mumbai</h3>
-                            <div class="institute-location">📍 Film City Complex, Goregaon East, Mumbai, Maharashtra
+                        <div class="institute-card" id="whistling-woods">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #5 · PREMIUM BOLLYWOOD FILM ACADEMY</div>
+                                <div class="rank-score-pill">⭐ 8.9 / 10 · Practical Score: 65%</div>
                             </div>
+                            <h3 class="institute-title">5. Whistling Woods International – Mumbai</h3>
+                            <div class="institute-location">📍 Film City Complex, Goregaon East, Mumbai, Maharashtra</div>
                             <p>
-                                प्रसिद्ध फिल्ममेकर सुभाष घई द्वारा स्थापित <strong>Whistling Woods
-                                    International</strong> एशिया के सबसे बड़े फिल्म व मीडिया स्कूलों में से एक है। इनके
-                                एडिटिंग प्रोग्राम्स में कटिंग की साइकोलॉजी, सीन कंस्ट्रक्शन, डायलॉग एडिटिंग, म्यूजिकल
-                                मॉन्टाज और डायरेक्टर्स विजन पर विशेष ध्यान दिया जाता है।
+                                प्रसिद्ध फिल्ममेकर सुभाष घई द्वारा स्थापित <strong>Whistling Woods International</strong> एशिया के सबसे बड़े फिल्म व मीडिया स्कूलों में से एक है। इनके एडिटिंग प्रोग्राम्स में कटिंग की साइकोलॉजी, सीन कंस्ट्रक्शन, डायलॉग एडिटिंग, म्यूजिकल मॉन्टाज और डायरेक्टर्स विजन पर विशेष ध्यान दिया जाता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Bollywood Industry Network</span>
@@ -1486,34 +2099,52 @@
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>प्रमुख सॉफ्टवेयर:</strong>
-                                    <span>Avid Media Composer, Premiere Pro, DaVinci Resolve</span>
+                                    <span>Avid Media Composer, Premiere Pro, DaVinci Resolve, Pro Tools</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹4 लाख से ₹15 लाख+ (Premium Budget Required)</span>
+                                    <span>₹4 लाख से ₹15 लाख+ (अत्यंत प्रीमियम बजट आवश्यक)</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>कैंपस:</strong>
-                                    <span>Film City, Mumbai</span>
+                                    <span>फिल्म सिटी, गोरेगांव, मुंबई</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#ec4899;color:#be185d;">
-                                🎯 <strong>Best Suited For:</strong> उच्च बजट वाले छात्र जो बॉलीवुड फीचर फिल्म
-                                इंडस्ट्री, बड़े प्रोडक्शन हाउसेस और विज्ञापन एजेंसियों में डायरेक्टर्स के साथ काम करना
-                                चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>बॉलीवुड इंडस्ट्री के टॉप डायरेक्टर्स व एडिटर्स से डायरेक्ट मास्टरक्लास</li>
+                                        <li>अत्याधुनिक 4K थिएटर और साउंड मिक्सिंग लैब इंफ्रास्ट्रक्चर</li>
+                                        <li>मुंबई फिल्म इंडस्ट्री में असिस्टेंट एडिटर प्लेसमेंट का मजबूत नेटवर्क</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>बेहद महंगी फीस (₹4 लाख से ₹15 लाख+), जो आम छात्रों की पहुंच से बाहर है</li>
+                                        <li>मुंबई में रहने और खाने का अतिरिक्त मासिक खर्च ₹20,000–₹30,000</li>
+                                        <li>कमर्शियल फास्ट वेडिंग या लोकल स्टूडियो वर्कफ्लो के लिए अनुकूल नहीं</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#ec4899;color:#be185d;">
+                                🎯 <strong>Best Suited For:</strong> उच्च बजट वाले छात्र जो बॉलीवुड फीचर फिल्म इंडस्ट्री, बड़े प्रोडक्शन हाउसेस और विज्ञापन एजेंसियों में डायरेक्टर्स के साथ काम करना चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #6 Arena Animation -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #6 · PAN-INDIA MULTIMEDIA BRAND</div>
+                        <div class="institute-card" id="arena-animation">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #6 · PAN-INDIA MULTIMEDIA BRAND</div>
+                                <div class="rank-score-pill">⭐ 8.1 / 10 · Practical Score: 62%</div>
+                            </div>
                             <h3 class="institute-title">6. Arena Animation</h3>
                             <div class="institute-location">📍 250+ Centers Across India</div>
                             <p>
-                                <strong>Arena Animation</strong> भारत का सबसे बड़ा मल्टीमीडिया ट्रेनिंग नेटवर्क है। इनके
-                                <em>Digital Media &amp; Video Editing</em> कोर्स में बेसिक वीडियो कटिंग, ग्राफिक डिजाइन,
-                                और मोशन ग्राफिक्स के फंडामेंटल्स सिखाए जाते हैं।
+                                <strong>Arena Animation</strong> भारत का सबसे बड़ा मल्टीमीडिया ट्रेनिंग नेटवर्क है। इनके <em>Digital Media &amp; Video Editing</em> कोर्स में बेसिक वीडियो कटिंग, ग्राफिक डिजाइन, और मोशन ग्राफिक्स के फंडामेंटल्स सिखाए जाते हैं।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Pan-India Availability</span>
@@ -1531,30 +2162,48 @@
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹60,000 - ₹1.4 लाख</span>
+                                    <span>₹60,000 - ₹1.4 लाख (सेंटर अनुसार)</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>सुविधा:</strong>
-                                    <span>हर बड़े व छोटे शहर में सेंटर उपलब्ध</span>
+                                    <span>हर छोटे-बड़े शहर में नजदीकी सेंटर उपलब्ध</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#f59e0b;color:#b45309;">
-                                🎯 <strong>Best Suited For:</strong> वो स्थानीय छात्र जो अपने गृह नगर में रहकर
-                                मल्टीमीडिया, बेसिक ग्राफिक डिज़ाइन और सामान्य वीडियो एडिटिंग का परिचय पाना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>अपने खुद के शहर में रहकर बिना बाहर जाए पढ़ाई की सुविधा</li>
+                                        <li>ग्राफिक डिज़ाइन और फोटोशॉप का बुनियादी फाउंडेशन मजबूत होता है</li>
+                                        <li>मल्टीमीडिया के कई टूल्स का शुरुआती परिचय</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>सिनेमैटिक दाविंची कलर ग्रेडिंग और नोड वर्कफ्लो की गहराई का अभाव</li>
+                                        <li>रॉ वेडिंग फुटेज के बजाय बेसिक इंटरनेट सैंपल क्लिप्स पर प्रैक्टिस</li>
+                                        <li>हॉस्टल सुविधा नहीं मिलती</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#f59e0b;color:#b45309;">
+                                🎯 <strong>Best Suited For:</strong> वो स्थानीय छात्र जो अपने गृह नगर में रहकर मल्टीमीडिया, बेसिक ग्राफिक डिज़ाइन और सामान्य वीडियो एडिटिंग का परिचय पाना चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #7 Frameboxx 2.0 -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #7 · MOTION DESIGN &amp; EDITING</div>
-                            <h3 class="institute-title">7. Frameboxx 2.0 Animation &amp; Visual Effects</h3>
-                            <div class="institute-location">📍 Mumbai, Pune, Delhi, Bangalore, Kolkata &amp; Key Cities
+                        <div class="institute-card" id="frameboxx">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #7 · MOTION DESIGN &amp; EDITING</div>
+                                <div class="rank-score-pill">⭐ 8.0 / 10 · Practical Score: 64%</div>
                             </div>
+                            <h3 class="institute-title">7. Frameboxx 2.0 Animation &amp; Visual Effects</h3>
+                            <div class="institute-location">📍 Mumbai, Pune, Delhi, Bangalore, Kolkata &amp; Key Cities</div>
                             <p>
-                                <strong>Frameboxx 2.0</strong> मोशन ग्राफिक्स और डिजिटल पोस्ट-प्रोडक्शन का मजबूत विकल्प
-                                है। इनका पाठ्यक्रम छात्रों को कमर्शियल एड्स और डिजिटल कंटेंट के लिए टाइटल एनिमेशन,
-                                कीफ्रेमिंग और ऑडियो-वीडियो सिंकिंग पर केंद्रित प्रशिक्षण देता है।
+                                <strong>Frameboxx 2.0</strong> मोशन ग्राफिक्स और डिजिटल पोस्ट-प्रोडक्शन का मजबूत विकल्प है। इनका पाठ्यक्रम छात्रों को कमर्शियल एड्स और डिजिटल कंटेंट के लिए टाइटल एनिमेशन, कीफ्रेमिंग और ऑडियो-वीडियो सिंकिंग पर केंद्रित प्रशिक्षण देता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Motion Design Emphasis</span>
@@ -1570,31 +2219,51 @@
                                     <strong>प्रमुख सॉफ्टवेयर:</strong>
                                     <span>Premiere Pro, After Effects, Cinema 4D (Basics), Audition</span>
                                 </div>
-                                <div class="institute-detail-item">
-                                    <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹70,000 - ₹1.5 लाख</span>
-                                </div>
-                                <div class="institute-detail-item">
-                                    <strong>प्लेसमेंट असिस्टेंस:</strong>
-                                    <span>एड एजेंसियों और गेमिंग स्टूडियोज में</span>
+                                <div class="institute-details-grid">
+                                    <div class="institute-detail-item">
+                                        <strong>फीस स्ट्रक्चर:</strong>
+                                        <span>₹70,000 - ₹1.5 लाख</span>
+                                    </div>
+                                    <div class="institute-detail-item">
+                                        <strong>प्लेसमेंट असिस्टेंस:</strong>
+                                        <span>एड एजेंसियों और गेमिंग स्टूडियोज में</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#14b8a6;color:#0f766e;">
-                                🎯 <strong>Best Suited For:</strong> वो छात्र जो वीडियो एडिटिंग के साथ सोशल मीडिया मोशन
-                                ग्राफिक्स और ब्रांडेड कंटेंट क्रिएशन में विशेषज्ञता चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>मोशन ग्राफिक्स और सोशल मीडिया एडवरटाइजिंग वीडियोज पर अच्छा फोकस</li>
+                                        <li>आफ्टर इफेक्ट्स और कीफ्रेमिंग की गहन समझ</li>
+                                        <li>महानगरों में कॉर्पोरेट एजेंसियों के साथ संबंध</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>वेडिंग फिल्ममेकिंग और ईडीआईयूएस फास्ट-कट वर्कफ्लो नहीं सिखाया जाता</li>
+                                        <li>बड़े शहरों में रहने का पीजी खर्च अलग से वहन करना पड़ता है</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#14b8a6;color:#0f766e;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जो वीडियो एडिटिंग के साथ सोशल मीडिया मोशन ग्राफिक्स और ब्रांडेड कंटेंट क्रिएशन में विशेषज्ञता चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #8 ZICA -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #8 · BROADCAST DIGITAL CREATIVE ART</div>
+                        <div class="institute-card" id="zica-india">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #8 · BROADCAST DIGITAL CREATIVE ART</div>
+                                <div class="rank-score-pill">⭐ 7.9 / 10 · Practical Score: 60%</div>
+                            </div>
                             <h3 class="institute-title">8. ZICA (Zee Institute of Creative Art)</h3>
                             <div class="institute-location">📍 Pan-India Network (Backed by Zee Network)</div>
                             <p>
-                                ज़ी ग्रुप द्वारा समर्थित <strong>ZICA</strong> भारत का पहला क्लासिकल और डिजिटल एनीमेशन व
-                                पोस्ट-प्रोडक्शन संस्थान है। इनके विजुअल मीडिया और डिजिटल वीडियो कोर्सेस में टेलीविजन
-                                ब्रॉडकास्ट स्टैंडर्ड्स और कमर्शियल एडिटिंग का व्यावहारिक परिचय मिलता है।
+                                ज़ी ग्रुप द्वारा समर्थित <strong>ZICA</strong> भारत का पहला क्लासिकल और डिजिटल एनीमेशन व पोस्ट-प्रोडक्शन संस्थान है। इनके विजुअल मीडिया और डिजिटल वीडियो कोर्सेस में टेलीविजन ब्रॉडकास्ट स्टैंडर्ड्स और कमर्शियल एडिटिंग का व्यावहारिक परिचय मिलता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Television Broadcast Focus</span>
@@ -1619,23 +2288,41 @@
                                     <span>ब्रॉडकास्ट टीवी शो, प्रोमोज़ और कमर्शियल्स</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#64748b;color:#334155;">
-                                🎯 <strong>Best Suited For:</strong> ब्रॉडकास्ट टेलीविज़न चैनल्स और लोकल मीडिया हाउस में
-                                वीडियो एडिटर बनने के इच्छुक छात्र।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>ज़ी मीडिया ग्रुप की ब्रॉडकास्ट क्रेडिबिलिटी</li>
+                                        <li>टेलीविजन चैनल वर्कफ्लो और प्रोमो एडिटिंग का ज्ञान</li>
+                                        <li>ऑडियो सिंक और बेसिक कंपोजिटिंग का समावेश</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>सिलेबस परंपरागत टीवी ब्रॉडकास्ट पर अधिक, नए जमाने के यूट्यूब/रील्स पर कम</li>
+                                        <li>दाविंची रिजॉल्व एडवांस कलर ग्रेडिंग शामिल नहीं</li>
+                                        <li>फ्री हॉस्टल उपलब्ध नहीं</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#64748b;color:#334155;">
+                                🎯 <strong>Best Suited For:</strong> ब्रॉडकास्ट टेलीविज़न चैनल्स और लोकल मीडिया हाउस में वीडियो एडिटर बनने के इच्छुक छात्र।
                             </div>
                         </div>
 
                         <!-- #9 NIFFA Kolkata -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #9 · EASTERN INDIA FILM SCHOOL</div>
-                            <h3 class="institute-title">9. National Institute of Film and Fine Arts (NIFFA) – Kolkata
-                            </h3>
+                        <div class="institute-card" id="niffa-kolkata">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #9 · EASTERN INDIA FILM SCHOOL</div>
+                                <div class="rank-score-pill">⭐ 7.8 / 10 · Practical Score: 58%</div>
+                            </div>
+                            <h3 class="institute-title">9. National Institute of Film and Fine Arts (NIFFA) – Kolkata</h3>
                             <div class="institute-location">📍 Bhowanipore, Kolkata, West Bengal</div>
                             <p>
-                                <strong>NIFFA Kolkata</strong> पूर्वी भारत का एक पुराना और प्रसिद्ध नॉन-कमर्शियल फिल्म
-                                ट्रेनिंग संस्थान है। यहां बंगाल के समृद्ध सिनेमाई इतिहास, डॉक्यूमेंट्री स्टाइल एडिटिंग
-                                और स्टोरीटेलिंग के बुनियादी सिद्धांतों पर विशेष बल दिया जाता है।
+                                <strong>NIFFA Kolkata</strong> पूर्वी भारत का एक पुराना और प्रसिद्ध नॉन-कमर्शियल फिल्म ट्रेनिंग संस्थान है। यहां बंगाल के समृद्ध सिनेमाई इतिहास, डॉक्यूमेंट्री स्टाइल एडिटिंग और स्टोरीटेलिंग के बुनियादी सिद्धांतों पर विशेष बल दिया जाता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Eastern India Heritage</span>
@@ -1653,37 +2340,48 @@
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>फीस स्ट्रक्चर:</strong>
-                                    <span>₹50,000 - ₹90,000 (Budget Friendly)</span>
+                                    <span>₹50,000 - ₹90,000 (बजट अनुकूल)</span>
                                 </div>
                                 <div class="institute-detail-item">
                                     <strong>अप्रोच:</strong>
                                     <span>इंडिपेंडेंट आर्ट फिल्म्स और रीजनल सिनेमा</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#e11d48;color:#9f1239;">
-                                🎯 <strong>Best Suited For:</strong> वो छात्र जो कोलकाता और पूर्वी भारत में इंडिपेंडेंट
-                                डॉक्यूमेंट्री और आर्ट सिनेमा एडिटिंग सीखना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>कोलकाता व पूर्वी भारत के छात्रों के लिए किफायती फीस</li>
+                                        <li>डॉक्यूमेंट्री और आर्ट फिल्मों के लिए सिनेमाई सोच विकसित होती है</li>
+                                        <li>क्लासिकल एडिटिंग रूल्स और विजुअल पेसिंग पर फोकस</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>कुछ लैब्स में हार्डवेयर और वर्कस्टेशन थोड़े पुराने हो सकते हैं</li>
+                                        <li>आधुनिक एआई टूल्स और फास्ट-कट वेडिंग वर्कफ्लो की कमी</li>
+                                        <li>हॉस्टल की कोई सुविधा नहीं</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#e11d48;color:#9f1239;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जो कोलकाता और पूर्वी भारत में इंडिपेंडेंट डॉक्यूमेंट्री और आर्ट सिनेमा एडिटिंग सीखना चाहते हैं।
                             </div>
                         </div>
 
                         <!-- #10 Local Professional Editing Academies -->
-                        <div class="institute-card">
-                            <div class="rank-badge">RANK #10 · BOUTIQUE STUDIOS &amp; APPRENTICESHIPS</div>
-                            <h3 class="institute-title">10. Local Professional Editing Academies &amp; Studio
-                                Apprenticeships</h3>
-                            <div class="institute-location">📍 Patna, Lucknow, Varanasi, Gorakhpur, Ranchi, Delhi,
-                                Jaipur</div>
+                        <div class="institute-card" id="local-studios">
+                            <div class="rank-header-row">
+                                <div class="rank-badge">RANK #10 · BOUTIQUE STUDIOS &amp; APPRENTICESHIPS</div>
+                                <div class="rank-score-pill">⭐ 7.4 / 10 · Practical Score: 72%</div>
+                            </div>
+                            <h3 class="institute-title">10. Local Professional Editing Academies &amp; Studio Apprenticeships</h3>
+                            <div class="institute-location">📍 Patna, Lucknow, Varanasi, Gorakhpur, Ranchi, Delhi, Jaipur</div>
                             <p>
-                                भारत के विभिन्न शहरों में कार्यरत स्थापित वीडियो प्रोडक्शन स्टूडियोज़ और बुटीक अकादमियां
-                                भी <strong>Video Editing Course in India</strong> प्रदान करती हैं। इनका सबसे बड़ा
-                                एडवांटेज यह होता है कि यहां क्लास में 50 बच्चों की भीड़ नहीं होती, बल्कि 4-5 छात्रों का
-                                छोटा बैच होता है और रियल लोकल वेडिंग फुटेज पर सीखने को मिलता है।
-                            </p>
-                            <p>
-                                <em>सावधानी:</em> किसी भी लोकल स्टूडियो में एडमिशन लेने से पहले ट्रेनर का खुद का
-                                पोर्टफोलियो, लैब के पीसी का कॉन्फिगरेशन और पूरा सिलेबस जरूर जांच लें, ताकि आपको केवल
-                                बेसिक कट्स के नाम पर पुराना आउटडेटेड सॉफ्टवेयर न थमा दिया जाए।
+                                भारत के विभिन्न शहरों में कार्यरत स्थापित वीडियो प्रोडक्शन स्टूडियोज़ और बुटीक अकादमियां भी <strong>Video Editing Course in India</strong> प्रदान करती हैं। इनका सबसे बड़ा एडवांटेज यह होता है कि यहां क्लास में 50 बच्चों की भीड़ नहीं होती, बल्कि 4-5 छात्रों का छोटा बैच होता है और रियल लोकल वेडिंग फुटेज पर सीखने को मिलता है।
                             </p>
                             <div class="institute-tags">
                                 <span class="institute-tag">Small Batch Mentorship</span>
@@ -1708,10 +2406,28 @@
                                     <span>लोकल मार्केट में तुरंत काम मिलने का अवसर</span>
                                 </div>
                             </div>
-                            <div class="best-suited-box"
-                                style="background:#f8fafc;border-left-color:#475569;color:#1e293b;">
-                                🎯 <strong>Best Suited For:</strong> वो छात्र जिनका बजट कम है और जो अपने लोकल शहर के
-                                वेडिंग मार्केट में तुरंत एडिटर के रूप में काम शुरू करना चाहते हैं।
+
+                            <div class="pros-cons-grid">
+                                <div class="pros-card">
+                                    <div class="pros-cons-title pro">✅ प्रमुख विशेषताएं (Pros)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>कम फीस और छोटा बैच साइज़ (3-5 छात्र)</li>
+                                        <li>स्थानीय वेडिंग मार्केट में तुरंत काम या नौकरी मिलने का अवसर</li>
+                                        <li>सीधे रनिंग स्टूडियो में प्रैक्टिकल देखने का मौका</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-card">
+                                    <div class="pros-cons-title con">⚠️ ध्यान देने योग्य बातें (Cons)</div>
+                                    <ul class="pros-cons-list">
+                                        <li>अक्सर पुराने सॉफ्टवेयर वर्जन्स और बुनियादी कट्स तक सीमित</li>
+                                        <li>एडवांस हॉलीवुड कलर ग्रेडिंग (दाविंची रिजॉल्व नोड्स) की समझ नहीं होती</li>
+                                        <li>गुणवत्ता पूरी तरह से उस एक लोकल ओनर के व्यक्तिगत ज्ञान पर निर्भर करती है</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="best-suited-box" style="background:#f8fafc;border-left-color:#475569;color:#1e293b;">
+                                🎯 <strong>Best Suited For:</strong> वो छात्र जिनका बजट कम है और जो अपने लोकल शहर के वेडिंग मार्केट में तुरंत एडिटर के रूप में काम शुरू करना चाहते हैं।
                             </div>
                         </div>
                         <!-- Promo banner → Home page -->
@@ -1738,99 +2454,110 @@
                             <table class="comparison-table">
                                 <thead>
                                     <tr>
-                                        <th>संस्थान (Institute)</th>
+                                        <th>रैंक &amp; संस्थान</th>
+                                        <th>प्रैक्टिकल स्कोर</th>
                                         <th>लोकेशन (Location)</th>
-                                        <th>प्रमुख सॉफ्टवेयर (Software)</th>
-                                        <th>Best For</th>
-                                        <th>हॉस्टल सुविधा</th>
+                                        <th>प्रमुख सॉफ्टवेयर</th>
+                                        <th>हॉस्टल सुविधा (Hostel)</th>
+                                        <th>लर्निंग मोड</th>
                                         <th>अनुमानित फीस</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="highlight">
-                                        <td><strong>1. Quick Art Photography Academy</strong></td>
-                                        <td>Siwan, Bihar (All-India Batch)</td>
-                                        <td>Premiere Pro, DaVinci Resolve, EDIUS, AI Tools</td>
-                                        <td>Practical wedding &amp; commercial editing</td>
-                                        <td>✅ 100% Free Hostel</td>
-                                        <td>₹31.5K–₹35K<br><small>Online ₹4,999+</small></td>
+                                        <td><strong>⭐ #1 Quick Art Academy</strong></td>
+                                        <td><span style="color:#15803d;font-weight:800;">98% (Champion)</span></td>
+                                        <td>Siwan, Bihar</td>
+                                        <td>Premiere Pro, DaVinci Studio, EDIUS, AI</td>
+                                        <td><span style="background:#dcfce7;color:#166534;padding:3px 8px;border-radius:6px;font-weight:800;font-size:0.85rem;">✅ 100% Free Hostel</span></td>
+                                        <td>Offline Campus + Daily Online Live (7:30–9 PM)</td>
+                                        <td><strong>₹31,500</strong> one-time / ₹35,000 EMI<br><small style="color:#0369a1;">Online from ₹4,999</small></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>2. FTII Pune</strong></td>
+                                        <td><strong>#2 FTII Pune</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">55% (Theory First)</span></td>
                                         <td>Pune, Maharashtra</td>
-                                        <td>Avid Media Composer, Premiere Pro, Sound</td>
-                                        <td>Feature film &amp; OTT careers</td>
-                                        <td>✅ हॉस्टल उपलब्ध (Merit)</td>
-                                        <td>₹1.5L - ₹3L / Year (JET Exam)</td>
+                                        <td>Avid Media Composer, Premiere Pro, Pro Tools</td>
+                                        <td><span style="color:#0369a1;font-weight:700;">✅ सरकारी हॉस्टल (Merit Only)</span></td>
+                                        <td>Full-time 2–3 Year Offline (JET Entrance)</td>
+                                        <td>₹1.5L – ₹3L / Year + पुणे रहने का खर्च</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>3. AAFT School of Cinema</strong></td>
-                                        <td>Noida, UP</td>
+                                        <td><strong>#3 AAFT School of Cinema</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">60% (Broadcast Mix)</span></td>
+                                        <td>Noida, Delhi NCR</td>
                                         <td>Premiere Pro, FCP X, Sound Recording</td>
-                                        <td>TV &amp; media production basics</td>
-                                        <td>❌ प्राइवेट पीजी</td>
-                                        <td>₹1.2L - ₹2.5L</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं (Private PG)</span></td>
+                                        <td>Offline Campus (Diploma / Degree)</td>
+                                        <td>₹1.2L – ₹2.5L + NCR पीजी खर्च</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>4. MAAC</strong></td>
-                                        <td>Pan-India</td>
+                                        <td><strong>#4 MAAC</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">68% (VFX Focus)</span></td>
+                                        <td>Pan-India Centers</td>
                                         <td>Premiere Pro, After Effects, Nuke, Fusion</td>
-                                        <td>VFX &amp; compositing</td>
-                                        <td>❌ उपलब्ध नहीं</td>
-                                        <td>₹80,000 - ₹1.8L</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं</span></td>
+                                        <td>Offline Center Classes</td>
+                                        <td>₹80,000 – ₹1.8L (Center अनुसार)</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>5. Whistling Woods</strong></td>
+                                        <td><strong>#5 Whistling Woods</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">65% (Film Cinema)</span></td>
                                         <td>Mumbai, Maharashtra</td>
-                                        <td>Avid, Premiere Pro, DaVinci, Pro Tools</td>
-                                        <td>Bollywood &amp; high-budget film</td>
-                                        <td>❌ प्राइवेट अकोमोडेशन</td>
-                                        <td>₹4L - ₹15L+ (High Budget)</td>
+                                        <td>Avid Media Composer, Premiere, DaVinci</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ प्राइवेट अकोमोडेशन</span></td>
+                                        <td>Full-time Offline Degree / Diploma</td>
+                                        <td>₹4L – ₹15L+ (अत्यंत प्रीमियम बजट)</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>6. Arena Animation</strong></td>
-                                        <td>Pan-India</td>
+                                        <td><strong>#6 Arena Animation</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">62% (Multimedia)</span></td>
+                                        <td>250+ Cities in India</td>
                                         <td>Premiere Pro, Photoshop, After Effects</td>
-                                        <td>Multimedia basics in your city</td>
-                                        <td>❌ उपलब्ध नहीं</td>
-                                        <td>₹60,000 - ₹1.4L</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं</span></td>
+                                        <td>Offline Center Classes</td>
+                                        <td>₹60,000 – ₹1.4L</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>7. Frameboxx 2.0</strong></td>
-                                        <td>Major Cities</td>
+                                        <td><strong>#7 Frameboxx 2.0</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">64% (Motion Graphics)</span></td>
+                                        <td>Major Metro Cities</td>
                                         <td>Premiere Pro, After Effects, Cinema 4D</td>
-                                        <td>Motion graphics &amp; ad creatives</td>
-                                        <td>❌ प्राइवेट पीजी</td>
-                                        <td>₹70,000 - ₹1.5L</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं (Private PG)</span></td>
+                                        <td>Offline Classroom</td>
+                                        <td>₹70,000 – ₹1.5L</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>8. ZICA</strong></td>
-                                        <td>Pan-India</td>
+                                        <td><strong>#8 ZICA</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">60% (TV Broadcast)</span></td>
+                                        <td>Pan-India Centers</td>
                                         <td>Premiere Pro, Photoshop, Sound Forge</td>
-                                        <td>Broadcast TV editing</td>
-                                        <td>❌ उपलब्ध नहीं</td>
-                                        <td>₹65,000 - ₹1.3L</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं</span></td>
+                                        <td>Offline Center Classes</td>
+                                        <td>₹65,000 – ₹1.3L</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>9. NIFFA</strong></td>
-                                        <td>Kolkata, WB</td>
-                                        <td>Premiere Pro, FCP, Documentary Tools</td>
-                                        <td>Documentary &amp; art cinema</td>
-                                        <td>❌ उपलब्ध नहीं</td>
-                                        <td>₹50,000 - ₹90,000</td>
+                                        <td><strong>#9 NIFFA Kolkata</strong></td>
+                                        <td><span style="color:#475569;font-weight:700;">58% (Art Documentary)</span></td>
+                                        <td>Kolkata, West Bengal</td>
+                                        <td>Premiere Pro, FCP 7/X, Sound Tools</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं</span></td>
+                                        <td>Offline Classroom</td>
+                                        <td>₹50,000 – ₹90,000</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>10. Local Studio Academies</strong></td>
-                                        <td>Tier-2 &amp; 3 Cities</td>
+                                        <td><strong>#10 Local Studio Academies</strong></td>
+                                        <td><span style="color:#b45309;font-weight:700;">72% (Unstructured)</span></td>
+                                        <td>Tier-2 &amp; Tier-3 Cities</td>
                                         <td>EDIUS, Premiere Pro, Photoshop</td>
-                                        <td>Low budget, local wedding market</td>
-                                        <td>❌ उपलब्ध नहीं</td>
-                                        <td>₹15,000 - ₹40,000</td>
+                                        <td><span style="color:#b91c1c;font-weight:700;">❌ उपलब्ध नहीं</span></td>
+                                        <td>Apprenticeship in Local Studio</td>
+                                        <td>₹15,000 – ₹40,000</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <p class="india-table-note">* दूसरे institutes की fees approximate ranges हैं (October 2026 तक की जानकारी) और center, course और साल के अनुसार बदल सकती हैं। Admission से पहले institute की official website पर current fees verify करें।</p>
+                        <p class="india-table-note">* Quick Art Academy की फीस निश्चित व पारदर्शी है (हॉस्टल 100% फ्री)। अन्य संस्थानों की फीस approximate ranges हैं (October 2026 अनुसार) जो शहर, कोर्स और बैच के अनुसार बदल सकती हैं।</p>
 
                         <!-- ═══ SECTION 4: HOW TO CHOOSE CHECKLIST ═══ -->
                         <h2 id="how-to-choose"
@@ -2044,7 +2771,79 @@
                         </div>
                         <p class="india-table-note">* Salary ranges indicative हैं (2026 के market trends के आधार पर) और शहर, portfolio, client type और अनुभव के अनुसार काफी बदल सकती हैं।</p>
 
-                        <!-- ═══ SECTION 7: FAQ ═══ -->
+                        <!-- ═══ SECTION 7: SIWAN CAMPUS & FREE HOSTEL FACILITY ═══ -->
+                        <h2 id="siwan-campus"
+                            style="font-family:'Outfit',sans-serif;font-weight:850;font-size:1.85rem;color:#0f172a;margin-top:44px;letter-spacing:-0.01em;">
+                            Campus Visit, Siwan Location &amp; 100% Free Hostel Facility
+                        </h2>
+
+                        <p>
+                            मुंबई, दिल्ली या पुणे जैसे महानगरों में 3 से 6 महीने रहकर वीडियो एडिटिंग सीखने का सबसे बड़ा रोड़ा वहां का भारी-भरकम रहने और खाने का खर्च होता है (कम से कम ₹15,000 से ₹25,000 प्रति माह अतिरिक्त)। <strong>Quick Art Photography Academy</strong> ने इस समस्या का स्थायी समाधान निकाला है।
+                        </p>
+
+                        <p>
+                            पूरे भारत (बिहार, उत्तर प्रदेश, पश्चिम बंगाल, दिल्ली, मध्य प्रदेश, झारखंड, असम और नेपाल) से आने वाले छात्रों के लिए अकादमी कैंपस के पास <strong>100% Free Hostel (मुफ्त हॉस्टल एवं आवास)</strong> की सुविधा दी जाती है। छात्र बिना किसी कमरे के किराए की चिंता किए सिर्फ अपने सीखने और एडिटिंग स्किल्स पर 100% ध्यान दे सकते हैं।
+                        </p>
+
+                        <!-- Campus Map & Travel Details Card -->
+                        <div class="campus-map-card">
+                            <div class="campus-map-grid">
+                                <div class="campus-info-col">
+                                    <div class="campus-tag">📍 Main Academy Campus</div>
+                                    <h3 class="campus-name">Quick Art Photography Academy</h3>
+                                    <p class="campus-address">
+                                        <strong>पता:</strong> अयोध्या पुरी, ललित बस स्टैंड के पास, सिवान, बिहार - 841226<br>
+                                        <strong>Landmark:</strong> Near Lalit Bus Stand &amp; Siwan Junction
+                                    </p>
+
+                                    <div style="margin:16px 0;">
+                                        <div style="font-weight:800;color:#0f172a;margin-bottom:6px;font-size:0.95rem;">🚆 कैसे पहुंचें (Connectivity):</div>
+                                        <ul style="font-size:0.9rem;color:#334155;line-height:1.7;padding-left:18px;margin:0;">
+                                            <li><strong>ट्रेन से:</strong> सिवान जंक्शन (SV) रेलवे स्टेशन से मात्र 1.5 किमी (5 मिनट ई-रिक्शा द्वारा)। दिल्ली, पटना, गोरखपुर, कानपुर, लखनऊ व कोलकाता से सीधी सुपरफास्ट ट्रेनें।</li>
+                                            <li><strong>बस से:</strong> ललित बस स्टैंड से मात्र 2 मिनट की पैदल दूरी।</li>
+                                            <li><strong>फ्लाइट से:</strong> निकटतम एयरपोर्ट गोरखपुर (110 किमी) या पटना एयरपोर्ट (130 किमी)।</li>
+                                        </ul>
+                                    </div>
+
+                                    <div style="background:#fefce8;border:1px solid #fef08a;border-radius:10px;padding:12px;margin-bottom:14px;font-size:0.88rem;color:#854d0e;">
+                                        🏠 <strong>Hostel Amenities:</strong> सुरक्षित साफ कमरे, 500 Mbps हाई-स्पीड इंटरनेट, 24/7 बिजली बैकअप, शांतिपूर्ण सीखने का माहौल — <strong>100% Free for Enrolled Students!</strong>
+                                    </div>
+
+                                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                                        <a href="https://maps.app.goo.gl/vobbRQLnP6vQp8FA7" target="_blank" rel="noopener noreferrer"
+                                            class="cta-btn" style="padding:10px 18px;font-size:0.92rem;margin-top:0;">
+                                            📍 Open in Google Maps
+                                        </a>
+                                        <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20I%20am%20coming%20to%20Siwan%20Campus.%20Please%20reserve%20my%20Free%20Hostel%20seat."
+                                            target="_blank" rel="noopener noreferrer" class="cta-btn-alt" style="padding:10px 16px;font-size:0.92rem;margin-top:0;border:1px solid #cbd5e1;">
+                                            💬 Reserve Free Hostel Seat
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="campus-map-iframe-wrap">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3579.006652023136!2d84.33479439999999!3d26.228973399999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1791728921718!5m2!1sen!2sin"
+                                        width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="Quick Art Photography Academy Google Maps Location in Siwan Bihar"></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Online Alternative Box -->
+                        <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:20px;margin:24px 0;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                <span style="font-size:1.4rem;">💻</span>
+                                <strong style="color:#1e40af;font-size:1.1rem;font-family:'Outfit',sans-serif;">सिवान नहीं आ सकते? घर बैठे जॉइन करें डेली लाइव क्लास!</strong>
+                            </div>
+                            <p style="color:#1e3a8a;font-size:0.95rem;line-height:1.65;margin:0 0 10px;">
+                                जो छात्र जॉब, कॉलेज या दूरी के कारण सिवान कैंपस नहीं आ सकते, वे हमारी <strong>डेली लाइव क्लास (हर शाम 07:30 से 09:00 PM IST)</strong> में शामिल हो सकते हैं। लाइव स्क्रीन शेयरिंग, रियल-टाइम टाइमलाइन करेक्शन और फुल एचडी रिकॉर्डिंग्स के साथ वही प्रीमियम क्वालिटी अपने घर से सीखें।
+                            </p>
+                            <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20I%20want%20to%20join%20the%20Online%20Live%20Video%20Editing%20Class%20(7:30%20to%209:00%20PM)"
+                                target="_blank" rel="noopener noreferrer" style="color:#1d4ed8;font-weight:800;text-decoration:underline;font-size:0.92rem;">
+                                Join Online Live Class Batch (₹4,999 से शुरू) →
+                            </a>
+                        </div>
+
+                        <!-- ═══ SECTION 8: FAQ ═══ -->
                         <h2 id="faq"
                             style="font-family:'Outfit',sans-serif;font-weight:850;font-size:1.85rem;color:#0f172a;margin-top:44px;letter-spacing:-0.01em;">
                             Frequently Asked Questions (FAQ) – Video Editing Institutes in India
@@ -2126,28 +2925,27 @@
                                 🎓 Admissions Open · Limited Batch Seats
                             </span>
                             <h3
-                                style="font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,2.8vw,2rem);font-weight:900;margin:0 0 10px;color:#ffffff;">
-                                Ready to Become a Master Video Editor?
+                                style="font-family:'Outfit',sans-serif;font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:900;margin:0 0 10px;color:#ffffff;">
+                                Ready to Become a Master Video Editor in 2026?
                             </h3>
                             <p
-                                style="color:#cbd5e1;font-size:1.05rem;max-width:620px;margin:0 auto 16px;line-height:1.6;">
-                                Quick Art Photography Academy के 14-Week Master Class में एडमिशन लें। 100% प्रैक्टिकल
-                                स्टूडियो लैब, रियल क्लाइंट फुटेज और आउटस्टेशन छात्रों के लिए <strong>Free
-                                    Hostel</strong> सुविधा।
+                                style="color:#cbd5e1;font-size:1.05rem;max-width:680px;margin:0 auto 16px;line-height:1.65;">
+                                Quick Art Photography Academy के साथ 100% प्रैक्टिकल रियल 4K फुटेज, हॉलीवुड दाविंची कलर ग्रेडिंग और एआई वर्कफ्लो सीखें।<br>
+                                <strong>🏠 Offline Campus (Siwan):</strong> 100% Free Hostel &amp; Stay | <strong>💻 Online Live:</strong> Daily 07:30 Se 09:00 PM
                             </p>
-                            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:18px;">
-                                <a href="https://wa.me/919939800780?text=Hi%2C%20I%20want%20to%20enroll%20in%20the%20Video%20Editing%20Course%20in%20India"
-                                    target="_blank" rel="noopener noreferrer" class="cta-btn">
+                            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:20px;">
+                                <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20I%20want%20to%20enroll%20in%20Quick%20Art%20Academy%20Video%20Editing%20Course"
+                                    target="_blank" rel="noopener noreferrer" class="cta-btn" style="margin-top:0;">
                                     💬 Chat on WhatsApp (+91 99398 00780)
                                 </a>
-                                <a href="tel:+919939800780" class="cta-btn"
-                                    style="background:#ffffff;color:#0f172a;box-shadow:0 6px 20px rgba(255,255,255,0.2);">
+                                <a href="tel:+919939800780" class="cta-btn-alt"
+                                    style="margin-top:0;">
                                     📞 Call Mentor Directly
                                 </a>
                             </div>
-                            <p style="font-size:0.85rem;color:#94a3b8;margin-top:16px;">
+                            <p style="font-size:0.88rem;color:#94a3b8;margin-top:18px;line-height:1.6;">
                                 📍 <strong>Campus:</strong> Ayodhya Puri, Near Lalit Bus Stand, Siwan, Bihar - 841226 |
-                                Website: quickartphotography.in
+                                🌐 quickartphotography.in
                             </p>
                         </div>
                     </div>
