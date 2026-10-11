@@ -1407,6 +1407,96 @@
     .mobile-cta-price { align-items: baseline; }
     .m-price { font-size: 26px; }
     .m-timer { margin-top: 2px; }
+
+    /* Customer selection → auto folder demo */
+    .sync-demo { margin-top: 36px; border-radius: 24px; padding: 34px; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 36px; align-items: center; background: linear-gradient(135deg, rgba(216, 161, 83, 0.08), rgba(255, 255, 255, 0.03)); border-color: rgba(216, 161, 83, 0.3); }
+    .sd-kicker { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-2); background: rgba(216, 161, 83, 0.12); padding: 5px 12px; border-radius: 100px; margin-bottom: 14px; }
+    .sd-copy h3 { font-size: clamp(22px, 2.4vw, 30px); font-weight: 800; line-height: 1.2; color: #fff; margin-bottom: 14px; }
+    .sd-copy p { font-size: 15.5px; color: #c9cdd8; margin-bottom: 18px; }
+    .sd-copy p strong { color: var(--gold-2); }
+    .sd-points { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .sd-points li { display: flex; gap: 10px; font-size: 14.5px; color: #e6e8ee; }
+    .sd-points li span { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 900; background: rgba(22, 163, 74, 0.2); color: #4ade80; flex-shrink: 0; margin-top: 2px; }
+
+    .sd-visual { display: grid; grid-template-columns: 150px 1fr 1.35fr; align-items: center; gap: 10px; }
+
+    .sd-phone { position: relative; background: #0b0d12; border: 2px solid rgba(255, 255, 255, 0.18); border-radius: 26px; padding: 22px 9px 10px; box-shadow: 0 30px 50px -25px rgba(0, 0, 0, 0.9); }
+    .ph-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 46px; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.15); }
+    .ph-head { text-align: center; margin-bottom: 8px; line-height: 1.25; }
+    .ph-head b { display: block; font-size: 11px; color: #fff; }
+    .ph-head span { font-size: 9px; color: var(--muted-d); }
+    .ph-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .ph-tile { position: relative; aspect-ratio: 1; border-radius: 7px; background: url('../assets/premiere-pro-camera-wedding-couple.webp') no-repeat; background-size: 320%; overflow: hidden; }
+    .ph-tile.t1 { background-position: 78% 40%; }
+    .ph-tile.t2 { background-position: 20% 10%; }
+    .ph-tile.t3 { background-position: 95% 70%; }
+    .ph-tile.t4 { background-position: 55% 30%; filter: saturate(1.2) hue-rotate(-10deg); }
+    .ph-tile.t5 { background-position: 70% 90%; }
+    .ph-tile.t6 { background-position: 5% 80%; }
+    .ph-tile::after { content: ''; position: absolute; inset: 0; border: 2px solid transparent; border-radius: 7px; }
+    .heart { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; color: #fff; background: #e11d48; opacity: 0; transform: scale(0.3); }
+    .ph-tile.t1 .heart, .ph-tile.t3 .heart, .ph-tile.t4 .heart, .ph-tile.t6 .heart { animation: heart-pop 7s infinite; }
+    .ph-tile.t1::after, .ph-tile.t3::after, .ph-tile.t4::after, .ph-tile.t6::after { animation: tile-sel 7s infinite; }
+    .ph-tile.t3 .heart, .ph-tile.t3::after { animation-delay: 0.5s; }
+    .ph-tile.t4 .heart, .ph-tile.t4::after { animation-delay: 1s; }
+    .ph-tile.t6 .heart, .ph-tile.t6::after { animation-delay: 1.5s; }
+    @keyframes heart-pop { 0%, 6% { opacity: 0; transform: scale(0.3); } 10% { opacity: 1; transform: scale(1.25); } 14%, 80% { opacity: 1; transform: scale(1); } 88%, 100% { opacity: 0; transform: scale(0.3); } }
+    @keyframes tile-sel { 0%, 8% { border-color: transparent; } 12%, 80% { border-color: #e11d48; } 88%, 100% { border-color: transparent; } }
+    .ph-foot { margin-top: 8px; text-align: center; font-size: 9.5px; color: var(--muted-d); }
+    .ph-count::after { content: '0'; color: #fda4af; animation: count-up 7s infinite steps(1); }
+    @keyframes count-up { 0% { content: '0'; } 10% { content: '1'; } 17% { content: '2'; } 24% { content: '3'; } 31%, 85% { content: '4'; } 90%, 100% { content: '0'; } }
+
+    .sd-sync { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .sd-sync span { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); }
+    .sd-line { position: relative; width: 100%; min-width: 50px; height: 2px; background: rgba(216, 161, 83, 0.25); border-radius: 2px; overflow: visible; }
+    .sd-line i { position: absolute; top: -3px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-2); box-shadow: 0 0 10px var(--gold); animation: sync-dot 1.8s linear infinite; }
+    .sd-line i:nth-child(2) { animation-delay: 0.6s; }
+    .sd-line i:nth-child(3) { animation-delay: 1.2s; }
+    @keyframes sync-dot { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0; } }
+
+    .sd-pc { background: #0e1118; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 12px; overflow: hidden; box-shadow: 0 30px 50px -25px rgba(0, 0, 0, 0.9); }
+    .pc-bar { display: flex; align-items: center; gap: 5px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .pc-bar i { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+    .pc-bar i:nth-child(2) { background: #f59e0b; }
+    .pc-bar i:nth-child(3) { background: #22c55e; }
+    .pc-bar span { margin-left: 6px; font-size: 10.5px; color: var(--muted-d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pc-row { display: flex; align-items: center; gap: 8px; padding: 9px 12px; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #d6d9e2; border-bottom: 1px solid rgba(255, 255, 255, 0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pc-row.dim { color: #7c8193; }
+    .pc-row .fd { font-size: 14px; }
+    .pc-new { color: #fff; font-weight: 700; background: rgba(216, 161, 83, 0.14); border-bottom: 0; animation: folder-in 7s infinite; }
+    .pc-new em { font-style: normal; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 9px; font-weight: 800; color: #1a1205; background: var(--gold-2); padding: 2px 6px; border-radius: 5px; margin-left: auto; }
+    @keyframes folder-in {
+      0%, 34% { opacity: 0; transform: translateY(8px); max-height: 0; padding-top: 0; padding-bottom: 0; }
+      40% { opacity: 1; transform: none; max-height: 40px; padding-top: 9px; padding-bottom: 9px; box-shadow: inset 0 0 0 1px rgba(216, 161, 83, 0.8), 0 0 24px rgba(216, 161, 83, 0.45); }
+      55%, 84% { opacity: 1; transform: none; max-height: 40px; padding-top: 9px; padding-bottom: 9px; box-shadow: inset 0 0 0 1px rgba(216, 161, 83, 0.4); }
+      92%, 100% { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; }
+    }
+
+    @media (max-width: 1000px) {
+      .sync-demo { grid-template-columns: 1fr; padding: 24px; }
+    }
+    @media (max-width: 560px) {
+      .sync-demo { padding: 20px 14px; gap: 24px; }
+      .sd-visual { grid-template-columns: 1fr; justify-items: center; gap: 6px; }
+      .sd-phone { width: 170px; }
+      .sd-sync { flex-direction: row; }
+      .sd-line { width: 2px; height: 46px; min-width: 0; }
+      .sd-line i { left: -3px !important; animation-name: sync-dot-v; }
+      @keyframes sync-dot-v { 0% { top: 0; opacity: 0; } 15%, 85% { opacity: 1; } 100% { top: calc(100% - 8px); opacity: 0; } }
+      .sd-pc { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pc-new { opacity: 1 !important; max-height: none !important; }
+      .heart { opacity: 1 !important; transform: none !important; }
+    }
+
+    .ph-tile { background-size: 210%; }
+    .ph-tile.t1 { background-position: 88% 35%; }
+    .ph-tile.t2 { background-position: 8% 45%; }
+    .ph-tile.t3 { background-position: 100% 55%; }
+    .ph-tile.t4 { background-position: 66% 40%; filter: none; }
+    .ph-tile.t5 { background-position: 25% 55%; }
+    .ph-tile.t6 { background-position: 95% 100%; }
   </style>
 </head>
 
@@ -1521,6 +1611,41 @@
             <div class="tl-ic">✅</div>
             <h3>Customer Selected Folder</h3>
             <p>Customer mobile par photos select karega aur aapke computer me "Customer Selected" naam ka alag folder apne aap ban jayega.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sync-demo glass reveal">
+        <div class="sd-copy">
+          <span class="sd-kicker">✨ Magic moment</span>
+          <h3>Customer ne photo select ki — <span class="gold-gradient">folder turant aapke computer me</span></h3>
+          <p>Customer apne mobile par jaise hi photos select karta hai, aapke computer me <strong>"Customer Selected"</strong> naam ka alag folder apne aap ban jaata hai. Na list maangni, na file naam dhoondhne.</p>
+          <ul class="sd-points">
+            <li><span>✓</span> Selection ki koi galti nahi</li>
+            <li><span>✓</span> Album design turant shuru</li>
+            <li><span>✓</span> Customer ko premium experience</li>
+          </ul>
+        </div>
+
+        <div class="sd-visual" aria-hidden="true">
+          <div class="sd-phone">
+            <div class="ph-notch"></div>
+            <div class="ph-head"><b>Rahul ❤ Priya</b><span>Photos select kariye</span></div>
+            <div class="ph-grid"><div class="ph-tile t1"><span class="heart">❤</span></div><div class="ph-tile t2"><span class="heart">❤</span></div><div class="ph-tile t3"><span class="heart">❤</span></div><div class="ph-tile t4"><span class="heart">❤</span></div><div class="ph-tile t5"><span class="heart">❤</span></div><div class="ph-tile t6"><span class="heart">❤</span></div></div>
+            <div class="ph-foot">Selected: <b class="ph-count"></b></div>
+          </div>
+
+          <div class="sd-sync">
+            <div class="sd-line"><i></i><i></i><i></i></div>
+            <span>Auto Sync</span>
+          </div>
+
+          <div class="sd-pc">
+            <div class="pc-bar"><i></i><i></i><i></i><span>Wedding_Rahul_Priya</span></div>
+            <div class="pc-row"><span class="fd">📁</span>01_RAW_All_Photos</div>
+            <div class="pc-row dim"><span class="fd">📁</span>02_Duplicate_Blur_Rejected</div>
+            <div class="pc-row"><span class="fd">📁</span>03_AI_Edited</div>
+            <div class="pc-row pc-new"><span class="fd">📂</span>04_Customer_Selected <em>NEW</em></div>
           </div>
         </div>
       </div>
