@@ -1770,6 +1770,31 @@ function replayCurrentLesson() {
   }
 }
 
+function getAppCourseLessonStats(course) {
+  if (!course || !course.modules) return { total: 0, done: 0, pct: 0 };
+  const completedList = (currentStudent && currentStudent.completedLessons && currentStudent.completedLessons[course.id]) || [];
+  let total = 0;
+  let done = 0;
+  course.modules.forEach(m => {
+    (m.lessons || []).forEach(l => {
+      total++;
+      if (completedList.includes(l.id) || l.isCompleted) done++;
+    });
+  });
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return { total, done, pct };
+}
+
+function isAppCourseQuizPassed(courseId) {
+  if (!courseId) return false;
+  const stu = currentStudent || JSON.parse(localStorage.getItem('qaa_student_info') || '{}');
+  const stuPhone = stu.phone || '';
+  const localPassed = localStorage.getItem(`qaa_quiz_passed_${stuPhone}_${courseId}`) === 'true' ||
+                      localStorage.getItem(`qaa_quiz_passed_${courseId}`) === 'true';
+  const stuPassed = Boolean(stu.passedQuizzes && stu.passedQuizzes[courseId]);
+  return localPassed || stuPassed;
+}
+
 async function toggleCurrentLessonComplete() {
   if (!activeCourse || !activeLesson) return;
   const courseId = activeCourse.id;
@@ -1811,7 +1836,22 @@ async function toggleCurrentLessonComplete() {
       if (icon) icon.textContent = drawerRow.classList.contains('playing') ? '▶' : (nowDone ? '✓' : '○');
     }
 
-    toast(nowDone ? '🎉 Lesson marked as completed!' : 'Lesson status updated.');
+    if (nowDone) {
+      const stats = getAppCourseLessonStats(activeCourse);
+      if (stats.pct >= 100) {
+        const quizDone = isAppCourseQuizPassed(activeCourse.id);
+        if (quizDone) {
+          toast('🎓 Outstanding! Course lessons & test 100% completed!');
+        } else {
+          toast('🎉 Sabhi lessons poore ho gaye! Certificate unlock karne ke liye Quiz tab me Test complete karein.');
+          switchClassroomSubtab('quiz');
+        }
+      } else {
+        toast('🎉 Lesson marked as completed!');
+      }
+    } else {
+      toast('Lesson status updated.');
+    }
   } catch (err) {
     toast('Progress update failed', false);
   }
@@ -1838,7 +1878,18 @@ function goToNextLesson() {
   if (nextLesson) {
     loadLessonToPlayer(activeCourse.id, nextLesson.id);
   } else {
-    toast('🎓 Congratulations! You reached the end of this course!');
+    const stats = getAppCourseLessonStats(activeCourse);
+    if (stats.pct >= 100) {
+      const quizDone = isAppCourseQuizPassed(activeCourse.id);
+      if (quizDone) {
+        toast('🎓 Congratulations! You reached the end of this course!');
+      } else {
+        toast('🎉 Sabhi lessons poore ho gaye! Certificate paane ke liye Certification Quiz / Test paas karein.');
+        switchClassroomSubtab('quiz');
+      }
+    } else {
+      toast('Aapne is module ke sabhi lessons dekh liye hain.');
+    }
   }
 }
 
@@ -2022,18 +2073,119 @@ function renderLessonNotes(lesson) {
   container.innerHTML = lesson.summary || lesson.notes || 'Is lecture ke practical points aur keyboard shortcuts mentor ke dwara study notes me shamil hain.';
 }
 
+const APP_DEFAULT_QUIZ = [
+  {
+    question: "Video editing me Timeline pe clip ko cut ya split karne ke liye default shortcut tool kaun sa hota hai?",
+    options: ["Selection Tool (V)", "Razor Tool (C)", "Pen Tool (P)", "Hand Tool (H)"],
+    answer: 1
+  },
+  {
+    question: "Final video export karte samay standard web aur mobile playback ke liye best universal format kaun sa hai?",
+    options: ["AVI Uncompressed", "H.264 / MP4", "QuickTime Animation", "WMV"],
+    answer: 1
+  },
+  {
+    question: "Color Grading karte samay contrast aur exposure balance karne ke liye kis panel/tool ka upyog kiya jata hai?",
+    options: ["Lumetri Curves & Wheels", "Crop Effect", "Audio Gain", "Speed/Duration"],
+    answer: 0
+  }
+];
+
 function renderLessonQuiz(lesson) {
   const container = document.getElementById('cr-quiz-container');
   if (!container) return;
+
+  const quiz = (activeCourse && activeCourse.quiz && activeCourse.quiz.length) ? activeCourse.quiz : APP_DEFAULT_QUIZ;
+  const isPassed = isAppCourseQuizPassed(activeCourse?.id);
+
   container.innerHTML = `
-    <div style="background:var(--bg-card);padding:14px;border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
-      <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;color:#fff;">Module Quick Assessment</h4>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Is module ke important editing workflows par based questions ka answer karein.</p>
-      <button type="button" class="btn-primary" onclick="toast('Quiz feature is ready and synced with your accreditation status!')">
-        Start Module Quiz ➔
+    <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <h4 style="font-size:14px;font-weight:700;margin:0;color:#fff;">📝 Certification Knowledge Check</h4>
+        <span style="font-size:11px;padding:3px 8px;border-radius:12px;background:${isPassed ? 'rgba(16,185,129,0.15)' : 'rgba(216,161,83,0.15)'};color:${isPassed ? '#34d399' : '#d8a153'};font-weight:700;">
+          ${isPassed ? '✓ Passed (70%+)' : 'Required for Certificate'}
+        </span>
+      </div>
+      <div id="app-quiz-result-banner" class="${isPassed ? '' : 'hidden'}" style="margin-bottom:12px;padding:10px 12px;border-radius:8px;background:${isPassed ? 'rgba(16,185,129,0.15);border:1px solid #10b981;color:#34d399;' : 'rgba(239,68,68,0.15);border:1px solid #ef4444;color:#fca5a5;'}font-size:12px;line-height:1.4;">
+        ${isPassed ? '🎉 Aapne yeh Certification Test paas kar liya hai!' : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        ${quiz.map((q, qIdx) => `
+          <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);">
+            <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:10px;">${qIdx + 1}. ${escHtml(q.question)}</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              ${q.options.map((opt, oIdx) => `
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#cbd5e1;cursor:pointer;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,0.02);">
+                  <input type="radio" name="app_quiz_q_${qIdx}" value="${oIdx}" style="accent-color:var(--gold);" />
+                  <span>${escHtml(opt)}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <button type="button" class="btn-primary" onclick="submitAppQuiz()" style="width:100%;margin-top:14px;padding:12px;font-weight:700;">
+        Submit Quiz Answers ➔
       </button>
     </div>
   `;
+}
+
+function submitAppQuiz() {
+  if (!activeCourse) return;
+  const quiz = (activeCourse.quiz && activeCourse.quiz.length) ? activeCourse.quiz : APP_DEFAULT_QUIZ;
+  let correctCount = 0;
+  let allAnswered = true;
+
+  quiz.forEach((q, qIdx) => {
+    const selected = document.querySelector(`input[name="app_quiz_q_${qIdx}"]:checked`);
+    const expected = typeof q.answer === 'number' ? q.answer : (typeof q.correct === 'number' ? q.correct : 0);
+    if (!selected) {
+      allAnswered = false;
+    } else if (parseInt(selected.value, 10) === expected) {
+      correctCount++;
+    }
+  });
+
+  if (!allAnswered) {
+    toast('Kripya sabhi sawalon ke jawab select karein!', false);
+    return;
+  }
+
+  const total = quiz.length;
+  const scorePct = Math.round((correctCount / total) * 100);
+  const banner = document.getElementById('app-quiz-result-banner');
+
+  if (scorePct >= 70) {
+    if (banner) {
+      banner.className = '';
+      banner.style.cssText = 'margin-bottom:12px;padding:10px 12px;border-radius:8px;background:rgba(16,185,129,0.15);border:1px solid #10b981;color:#34d399;font-size:12px;';
+      banner.innerHTML = `🎉 Badhai ho! Aapne ${correctCount}/${total} (${scorePct}%) score kiya aur certification test paas kar liya!`;
+    }
+    const stuPhone = (currentStudent && currentStudent.phone) || '';
+    localStorage.setItem(`qaa_quiz_passed_${stuPhone}_${activeCourse.id}`, 'true');
+    localStorage.setItem(`qaa_quiz_passed_${activeCourse.id}`, 'true');
+    if (!currentStudent) currentStudent = {};
+    if (!currentStudent.passedQuizzes) currentStudent.passedQuizzes = {};
+    currentStudent.passedQuizzes[activeCourse.id] = true;
+    try {
+      localStorage.setItem('qaa_student_info', JSON.stringify(currentStudent));
+    } catch (_) {}
+
+    const stats = getAppCourseLessonStats(activeCourse);
+    if (stats.pct >= 100) {
+      toast('🎓 Outstanding! Course lessons aur quiz 100% complete! Certificate unlocked in Profile.');
+    } else {
+      toast(`🎉 Quiz Passed (${scorePct}%)! Baaki lessons complete karne ke baad certificate unlock hoga.`);
+    }
+  } else {
+    if (banner) {
+      banner.className = '';
+      banner.style.cssText = 'margin-bottom:12px;padding:10px 12px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid #ef4444;color:#fca5a5;font-size:12px;';
+      banner.innerHTML = `Aapka score ${correctCount}/${total} (${scorePct}%) raha. Passing score 70% hai. Kripya dobara try karein.`;
+    }
+    toast('Score 70% se kam hai. Dobara test attempt karein!', false);
+  }
 }
 
 function renderLessonAssignment(lesson) {
@@ -2527,6 +2679,11 @@ async function sendStudentLivePing() {
         handRaised: isStudentHandRaised
       }
     });
+
+    if (res && (res.status === 'completed' || res.status === 'ended') && !window._isCurrentReplaySession) {
+      handleAppLiveBroadcastEnded();
+      return;
+    }
 
     // Update Viewer Count Display (Classroom Mode vs Stealth Webinar Mode)
     const pill = document.getElementById('live-attendees-pill-mini');
@@ -3587,7 +3744,85 @@ window.unmuteLiveStream = function() {
   }
 };
 
-// Zero-Pause Continuous Broadcast Guard (Only active in Pure Live Mode)
+window._isAppLiveEndedActive = false;
+
+function handleAppLiveBroadcastEnded() {
+  if (window._isAppLiveEndedActive) return;
+  window._isAppLiveEndedActive = true;
+
+  if (typeof livePingTimer !== 'undefined' && livePingTimer) { clearInterval(livePingTimer); livePingTimer = null; }
+  if (typeof liveDoubtsPollTimer !== 'undefined' && liveDoubtsPollTimer) { clearInterval(liveDoubtsPollTimer); liveDoubtsPollTimer = null; }
+
+  const iframe = document.getElementById('live-stream-iframe');
+  if (iframe) {
+    try {
+      iframe.src = 'about:blank';
+      iframe.style.display = 'none';
+    } catch (_) {}
+  }
+  const video = document.getElementById('main-video-el');
+  if (video) {
+    try { video.pause(); } catch (_) {}
+  }
+
+  const mount = document.getElementById('live-video-mount');
+  const box = document.getElementById('live-video-box');
+  const targetContainer = mount || box;
+
+  if (targetContainer) {
+    let curtain = document.getElementById('live-ended-curtain');
+    if (!curtain) {
+      curtain = document.createElement('div');
+      curtain.id = 'live-ended-curtain';
+      curtain.className = 'live-ended-curtain active';
+      targetContainer.appendChild(curtain);
+    } else {
+      curtain.classList.add('active');
+    }
+
+    let countdown = 4;
+    curtain.innerHTML = `
+      <div class="live-ended-card">
+        <div class="live-ended-badge">
+          <span>🔴 BROADCAST ENDED</span>
+        </div>
+        <h2 class="live-ended-title">Live Class Has Ended</h2>
+        <p class="live-ended-desc">
+          Session END — Thank you for watching and participating! Recording jald hi Replay section me upload kar di jayegi.
+        </p>
+        <div class="live-ended-countdown">
+          Redirecting to My Courses in <span id="live-ended-seconds">${countdown}</span>s...
+        </div>
+        <button type="button" class="live-ended-btn" onclick="redirectAfterAppLiveEnd()">
+          📚 Go to My Courses Now ➔
+        </button>
+      </div>
+    `;
+
+    const timer = setInterval(() => {
+      countdown--;
+      const secEl = document.getElementById('live-ended-seconds');
+      if (secEl) secEl.textContent = countdown;
+      if (countdown <= 0) {
+        clearInterval(timer);
+        redirectAfterAppLiveEnd();
+      }
+    }, 1000);
+  } else {
+    redirectAfterAppLiveEnd();
+  }
+}
+
+function redirectAfterAppLiveEnd() {
+  window._isAppLiveEndedActive = false;
+  const curtain = document.getElementById('live-ended-curtain');
+  if (curtain) curtain.remove();
+  closeLiveStudio();
+  switchTab('courses');
+  toast('📚 Returned to My Courses');
+}
+
+// Zero-Pause Continuous Broadcast Guard & Live Ended Detection:
 window.addEventListener('message', (event) => {
   try {
     const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
@@ -3605,10 +3840,36 @@ window.addEventListener('message', (event) => {
             }
           }
         }
+      } else if (data.info === 0) {
+        // YouTube State 0 = ENDED: Trigger instant black curtain & auto redirect
+        if (!window._isCurrentReplaySession) {
+          handleAppLiveBroadcastEnded();
+        }
       }
     }
   } catch (e) {}
 });
+
+// Anti-Download & Security Protection for mobile app
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && ['s', 'S', 'u', 'U', 'p', 'P'].includes(e.key)) {
+    const inClassroom = document.getElementById('view-classroom') && !document.getElementById('view-classroom').classList.contains('hidden');
+    const inLive = document.getElementById('view-live-classroom') && !document.getElementById('view-live-classroom').classList.contains('hidden');
+    if (inClassroom || inLive) {
+      e.preventDefault();
+      e.stopPropagation();
+      toast('🔒 Video download is restricted by Quick Art Photography Academy');
+      return false;
+    }
+  }
+}, { capture: true });
+
+document.addEventListener('contextmenu', (e) => {
+  if (e.target && (e.target.tagName === 'VIDEO' || e.target.closest('#cr-video-box') || e.target.closest('#live-video-box') || e.target.closest('#cr-video-mount') || e.target.closest('#live-video-mount'))) {
+    e.preventDefault();
+    return false;
+  }
+}, { capture: true });
 
 // Dedicated Replay Controls (⏪ 10s Backward, ⏯️ Pause/Play, ⏩ 10s Forward, Speed)
 let liveReplayCurrentEstTime = 0;
@@ -4712,6 +4973,20 @@ function openCertificatesModal(courseId) {
     } else {
       pickerRow.style.display = 'none';
       pickerRow.innerHTML = '';
+    }
+  }
+
+  // Verify course completion and quiz eligibility
+  if (selectedCourse && selectedCourse.modules && selectedCourse.modules.length > 0) {
+    const stats = getAppCourseLessonStats(selectedCourse);
+    const isQuizDone = isAppCourseQuizPassed(selectedCourse.id);
+    if (stats.total > 0 && stats.pct < 100) {
+      toast(`⚠️ Certificate locked: Aapne ${stats.done}/${stats.total} lessons (${stats.pct}%) dekhe hain. 100% lessons poore karein!`, false);
+      return;
+    }
+    if (stats.total > 0 && !isQuizDone) {
+      toast('⚠️ Certificate locked: Kripya pehle Module Quiz / Test paas karein (Min 70%)!', false);
+      return;
     }
   }
 

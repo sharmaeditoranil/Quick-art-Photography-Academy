@@ -25,7 +25,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="portal.css?v=20261011_cleanplayer" />
+  <link rel="stylesheet" href="portal.css?v=20261011_liveprotect" />
   <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
@@ -769,8 +769,8 @@
 
         <!-- Navigation bar -->
         <div class="classroom-topbar">
-          <button type="button" class="btn-sm btn-outline" onclick="showDashboard()">
-            <span aria-hidden="true">←</span> Back to Dashboard
+          <button type="button" class="btn-sm btn-outline classroom-back-btn" onclick="showDashboard()">
+            ← Back
           </button>
           <div class="topbar-course-info">
             <h2 class="course-mini-title" id="player-course-title">Adobe Premiere Pro Masterclass</h2>
@@ -778,6 +778,9 @@
           <div class="topbar-progress-pill" id="player-progress-badge">
             0% Complete
           </div>
+          <button type="button" class="classroom-lessons-toggle-btn" onclick="openPortalLessonsDrawer()">
+            📚 All Lessons ▾
+          </button>
         </div>
 
         <!-- In-Classroom Live Session Alert Container -->
@@ -791,7 +794,7 @@
 
             <!-- Video Container -->
             <div class="video-wrapper">
-              <div class="video-container" id="video-box" oncontextmenu="return false;">
+              <div class="video-container" id="video-box" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
                 <!-- Watermark Layer (Disabled for Clean Video Playback) -->
                 <div id="watermark-overlay" class="watermark-overlay" style="display: none !important;"
                   aria-hidden="true">
@@ -938,17 +941,21 @@
             <!-- Comment / Discussion Tab — FIRST (default active) -->
             <div id="ltab-discussion" class="lesson-tab-content">
               <div class="discussion-card">
+                <div class="comments-card-header">
+                  <div class="comments-card-title">💬 Lesson Discussion &amp; Comments</div>
+                  <div class="comments-card-subtitle">Ask questions, get mentor &amp; peer feedback</div>
+                </div>
 
                 <!-- Post a comment form -->
                 <div class="discussion-form-wrap">
-                  <div class="discussion-avatar" id="discussion-avatar-initials">A</div>
+                  <div class="discussion-avatar" id="discussion-avatar-initials" style="display:none;">A</div>
                   <div class="discussion-form-inner">
                     <textarea id="discussion-comment-input" class="discussion-textarea"
-                      placeholder="Apna sawaal ya feedback likhein…" rows="3" maxlength="1000"></textarea>
+                      placeholder="Apna sawaal ya doubt yahan likhein…" rows="2" maxlength="1000"></textarea>
                     <div class="discussion-form-footer">
-                      <span class="discussion-char-count" id="discussion-char-count">0 / 1000</span>
+                      <span class="discussion-post-role">Post as Enrolled Student</span>
                       <button type="button" id="btn-post-comment" class="btn btn-gold btn-sm"
-                        onclick="postDiscussionComment()" style="padding:8px 20px;font-size:13px;">
+                        onclick="postDiscussionComment()">
                         Post Comment 💬
                       </button>
                     </div>
@@ -1909,11 +1916,36 @@
         </div>
       </div>
 
+      <!-- ================= PORTAL CURRICULUM BOTTOM SHEET (MOBILE) ================= -->
+      <div id="portal-modal-all-lessons" class="portal-sheet-backdrop" onclick="closePortalLessonsDrawer()">
+        <div class="portal-bottom-sheet" onclick="event.stopPropagation()">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header">
+            <div style="flex:1; min-width:0; padding-right:12px;">
+              <h3 class="sheet-title" id="portal-drawer-course-name">Course Lessons</h3>
+              <div id="portal-drawer-course-stat" style="font-size:11.5px; color:#94a3b8; margin-top:3px;">
+                0 of 0 Lessons Completed (0%)
+              </div>
+            </div>
+            <button type="button" class="sheet-close-btn" onclick="closePortalLessonsDrawer()" aria-label="Close">✕</button>
+          </div>
+
+          <!-- Course Progress Track -->
+          <div style="background:rgba(255,255,255,0.08); height:6px; border-radius:3px; overflow:hidden; margin-bottom:14px;">
+            <div id="portal-drawer-prog-bar" style="width:0%; height:100%; background:linear-gradient(135deg, #f5c879, #d8a153); transition:width 0.3s ease;"></div>
+          </div>
+
+          <div class="sheet-body" id="portal-drawer-modules-container" style="overflow-y:auto; -webkit-overflow-scrolling:touch; padding-right:2px; flex:1;">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </div>
+
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       <script src="qrcode.min.js"></script>
       <script src="html2canvas.min.js"></script>
       <script src="/qa-purchase-tracking.js"></script>
-      <script src="portal.js?v=20261011_cleanplayer"></script>
+      <script src="portal.js?v=20261011_liveprotect"></script>
       <script src="/meta-events.js?v=5" defer></script>
 </body>
 

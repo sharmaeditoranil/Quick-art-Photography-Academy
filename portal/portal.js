@@ -1199,6 +1199,9 @@ function renderCurriculum(course) {
 }
 
 async function loadLesson(courseId, lessonId) {
+  // Close mobile curriculum drawer if open
+  closePortalLessonsDrawer();
+
   // Clear any existing countdown or overlay immediately
   if (_autoNextTimer) { clearInterval(_autoNextTimer); _autoNextTimer = null; }
   document.getElementById('autonext-overlay')?.remove();
@@ -1395,8 +1398,11 @@ async function loadLesson(courseId, lessonId) {
       video.controls = true;
       video.autoplay = false;
       video.playsInline = true;
-      video.setAttribute('controlslist', 'nodownload');
-      video.setAttribute('disablepictureinpicture', 'false');
+      video.setAttribute('controlslist', 'nodownload noplaybackrate');
+      video.setAttribute('disablepictureinpicture', 'true');
+      video.setAttribute('oncontextmenu', 'return false;');
+      video.setAttribute('ondragstart', 'return false;');
+      video.setAttribute('onselectstart', 'return false;');
       video.style.width = '100%';
       video.style.height = '100%';
       video.style.pointerEvents = 'auto';
@@ -1473,6 +1479,116 @@ async function loadLesson(courseId, lessonId) {
   }
 }
 
+function getCourseLessonStats(course) {
+  if (!course || !course.modules) return { total: 0, done: 0, pct: 0 };
+  let total = 0;
+  let done = 0;
+  course.modules.forEach(m => {
+    (m.lessons || []).forEach(les => {
+      total++;
+      if (les.isCompleted) done++;
+    });
+  });
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return { total, done, pct };
+}
+
+function isQuizPassed(courseId) {
+  if (!courseId) return false;
+  const stuPhone = (currentStudent && currentStudent.phone) || '';
+  const localPassed = localStorage.getItem(`qaa_quiz_passed_${stuPhone}_${courseId}`) === 'true' ||
+                      localStorage.getItem(`qaa_quiz_passed_${courseId}`) === 'true';
+  const studentPassed = Boolean(currentStudent && currentStudent.passedQuizzes && currentStudent.passedQuizzes[courseId]);
+  return localPassed || studentPassed;
+}
+
+function isCourseEligibleForCertificate(course) {
+  if (!course) return false;
+  const stats = getCourseLessonStats(course);
+  if (stats.total === 0 || stats.pct < 100 || stats.done < stats.total) {
+    return false;
+  }
+  return isQuizPassed(course.id);
+}
+
+// Mobile Curriculum Drawer Handlers
+function openPortalLessonsDrawer() {
+  if (!currentCourse) return;
+  const drawer = document.getElementById('portal-modal-all-lessons');
+  if (!drawer) return;
+  renderPortalDrawerLessons(currentCourse);
+  drawer.classList.add('active');
+}
+
+function closePortalLessonsDrawer() {
+  const drawer = document.getElementById('portal-modal-all-lessons');
+  if (drawer) drawer.classList.remove('active');
+}
+
+function renderPortalDrawerLessons(course) {
+  const container = document.getElementById('portal-drawer-modules-container');
+  if (!container || !course.modules) return;
+
+  const stats = getCourseLessonStats(course);
+  const nameEl = document.getElementById('portal-drawer-course-name');
+  if (nameEl) nameEl.textContent = course.title || 'Course Curriculum';
+  const statEl = document.getElementById('portal-drawer-course-stat');
+  if (statEl) statEl.textContent = `${stats.done} of ${stats.total} Lessons Completed (${stats.pct}%)`;
+  const barEl = document.getElementById('portal-drawer-prog-bar');
+  if (barEl) barEl.style.width = `${stats.pct}%`;
+
+  container.innerHTML = course.modules.map((m, mIdx) => `
+    <div class="drawer-module-group" style="margin-bottom:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;">
+      <div class="drawer-module-header" onclick="this.nextElementSibling.classList.toggle('hidden')" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:rgba(255,255,255,0.02);">
+        <span style="font-weight:700;font-size:13px;color:#fff;">${escapeHtml(m.title)}</span>
+        <span style="font-size:11px;color:#d8a153;font-weight:600;">${m.lessons?.length || 0} Lessons ▾</span>
+      </div>
+      <div class="drawer-module-lessons" style="display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.2);">
+        ${(m.lessons || []).map(l => {
+          const isDone = Boolean(l.isCompleted);
+          const isPlaying = Boolean(currentLesson && currentLesson.id === l.id);
+          return `
+            <div class="drawer-lesson-row ${isPlaying ? 'playing' : ''} ${isDone ? 'completed' : ''}"
+                 onclick="loadLesson('${course.id}', '${l.id}'); closePortalLessonsDrawer();"
+                 style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;${isPlaying ? 'background:rgba(216,161,83,0.12);border-left:3px solid #d8a153;' : ''}">
+              <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+                <span style="font-size:13px;color:${isPlaying ? '#f5c879' : (isDone ? '#34d399' : '#94a3b8')};font-weight:700;">
+                  ${isPlaying ? '▶' : (isDone ? '✓' : '○')}
+                </span>
+                <span style="font-size:12.5px;color:${isPlaying ? '#ffffff' : (isDone ? '#e2e8f0' : '#cbd5e1')};font-weight:${isPlaying ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                  ${escapeHtml(l.title)}
+                </span>
+              </div>
+              <span style="font-size:11px;color:#94a3b8;margin-left:8px;white-space:nowrap;">${l.duration || ''}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function switchLessonTab(targetTab) {
+  document.querySelectorAll('.lesson-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.ltab === targetTab);
+  });
+  ['notes', 'resources', 'quiz', 'assignments', 'discussion', 'support'].forEach(t => {
+    const el = document.getElementById(`ltab-${t}`);
+    if (el) el.classList.toggle('hidden', t !== targetTab);
+  });
+  if (targetTab === 'quiz' && currentCourse) {
+    renderQuiz(currentCourse);
+    const quizPane = document.getElementById('ltab-quiz');
+    if (quizPane) quizPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if (targetTab === 'assignments' && currentCourse) {
+    renderAssignments(currentCourse);
+  }
+  if (targetTab === 'discussion') {
+    loadDiscussionComments();
+  }
+}
+
 function updateCompleteBtnState(isCompleted) {
   const icon = document.getElementById('complete-btn-icon');
   const text = document.getElementById('complete-btn-text');
@@ -1524,16 +1640,16 @@ async function toggleLessonComplete() {
       }
     }
 
-    // Recalculate course completion
-    const allItems = document.querySelectorAll('.lesson-list-item');
-    const completedItems = document.querySelectorAll('.lesson-list-item.completed');
-    const total = allItems.length;
-    const done = completedItems.length;
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    // Accurate recalculation based on actual module lessons
+    const stats = getCourseLessonStats(currentCourse);
+    const { total, done, pct } = stats;
 
-    document.getElementById('curriculum-bar-fill').style.width = `${pct}%`;
-    document.getElementById('curriculum-stat-text').textContent = `${done} of ${total} Lessons Completed`;
-    document.getElementById('player-progress-badge').textContent = `${pct}% Complete`;
+    const fillBar = document.getElementById('curriculum-bar-fill');
+    if (fillBar) fillBar.style.width = `${pct}%`;
+    const statText = document.getElementById('curriculum-stat-text');
+    if (statText) statText.textContent = `${done} of ${total} Lessons Completed`;
+    const progBadge = document.getElementById('player-progress-badge');
+    if (progBadge) progBadge.textContent = `${pct}% Complete`;
 
     currentCourse.completedCount = done;
     currentCourse.progressPercent = pct;
@@ -1541,11 +1657,17 @@ async function toggleLessonComplete() {
     updateCertificateUnlockState();
 
     if (newState && pct >= 100) {
-      toast('🎓 Outstanding! Course completed 100%! Generating official certificate...');
-      triggerConfettiCelebration();
-      setTimeout(() => {
-        openCertificateModal(currentCourse.id);
-      }, 900);
+      const quizDone = isQuizPassed(currentCourse.id);
+      if (quizDone) {
+        toast('🎓 Outstanding! Course and Quiz completed 100%! Generating official certificate...');
+        triggerConfettiCelebration();
+        setTimeout(() => {
+          openCertificateModal(currentCourse.id);
+        }, 900);
+      } else {
+        toast('🎉 Sabhi lessons poore ho gaye! Certificate generate karne ke liye Quiz / Test complete karein.');
+        switchLessonTab('quiz');
+      }
     } else {
       toast(newState ? 'Lesson marked as completed! 🎉' : 'Lesson marked as uncompleted.');
       if (newState && pct < 100) {
@@ -1580,12 +1702,19 @@ function goToNextLesson() {
     loadLesson(currentCourse.id, nextLesson.id);
   } else {
     updateCertificateUnlockState();
-    if (currentCourse.progressPercent >= 100) {
-      toast('🎓 Congratulations! You reached the end of this course!');
-      triggerConfettiCelebration();
-      setTimeout(() => {
-        openCertificateModal(currentCourse.id);
-      }, 900);
+    const stats = getCourseLessonStats(currentCourse);
+    if (stats.pct >= 100) {
+      const quizDone = isQuizPassed(currentCourse.id);
+      if (quizDone) {
+        toast('🎓 Congratulations! You reached the end of this course!');
+        triggerConfettiCelebration();
+        setTimeout(() => {
+          openCertificateModal(currentCourse.id);
+        }, 900);
+      } else {
+        toast('🎉 Sabhi lessons poore ho gaye! Certificate paane ke liye Certification Quiz / Test paas karein.');
+        switchLessonTab('quiz');
+      }
     } else {
       toast('You have reached the end of this module. Complete remaining lessons to unlock your certificate!');
     }
@@ -1761,23 +1890,44 @@ function confirmAutoNext(lessonId) {
 
 function updateCertificateUnlockState() {
   const box = document.getElementById('certificate-unlock-box');
-  if (!box) return;
-  if (currentCourse && currentCourse.progressPercent >= 100) {
+  if (!box || !currentCourse) return;
+
+  const stats = getCourseLessonStats(currentCourse);
+  const quizDone = isQuizPassed(currentCourse.id);
+
+  if (stats.pct >= 100 && stats.total > 0) {
     box.classList.remove('hidden');
-    box.innerHTML = `
-      <div style="background: linear-gradient(135deg, rgba(201,151,56,0.2) 0%, rgba(16,185,129,0.15) 100%); border: 1.5px solid var(--border-gold); padding: 16px; border-radius: var(--radius-md); text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
-        <div style="font-size: 26px; margin-bottom: 4px;">🎓</div>
-        <div style="font-family: 'Cinzel', serif; font-weight: 800; color: #ecd394; font-size: 14px; letter-spacing: 0.05em;">
-          COURSE COMPLETED (100%)
+    if (quizDone) {
+      box.innerHTML = `
+        <div style="background: linear-gradient(135deg, rgba(201,151,56,0.2) 0%, rgba(16,185,129,0.15) 100%); border: 1.5px solid var(--border-gold); padding: 16px; border-radius: var(--radius-md); text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+          <div style="font-size: 26px; margin-bottom: 4px;">🎓</div>
+          <div style="font-family: 'Cinzel', serif; font-weight: 800; color: #ecd394; font-size: 14px; letter-spacing: 0.05em;">
+            COURSE &amp; QUIZ COMPLETED (100%)
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-muted); margin: 4px 0 12px;">
+            Your official accredited certificate is ready!
+          </div>
+          <button type="button" class="btn btn-gold" style="width: 100%; box-shadow: 0 4px 12px rgba(201,151,56,0.4);" onclick="openCertificateModal('${currentCourse.id}')">
+            🎓 View &amp; Download Certificate
+          </button>
         </div>
-        <div style="font-size: 11.5px; color: var(--text-muted); margin: 4px 0 12px;">
-          Your official accredited certificate is ready!
+      `;
+    } else {
+      box.innerHTML = `
+        <div style="background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(15,23,42,0.6) 100%); border: 1.5px solid rgba(245,158,11,0.5); padding: 16px; border-radius: var(--radius-md); text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+          <div style="font-size: 26px; margin-bottom: 4px;">📝</div>
+          <div style="font-family: 'Outfit', sans-serif; font-weight: 800; color: #fcd34d; font-size: 13.5px; letter-spacing: 0.03em;">
+            ALL LESSONS COMPLETED (100%)
+          </div>
+          <div style="font-size: 11.5px; color: #94a3b8; margin: 4px 0 12px; line-height: 1.4;">
+            Certificate unlock karne ke liye Certification Quiz / Test paas karein (Min 70% passing score).
+          </div>
+          <button type="button" class="btn btn-gold" style="width: 100%; box-shadow: 0 4px 12px rgba(245,158,11,0.3);" onclick="switchLessonTab('quiz')">
+            📝 Take Certification Quiz Now ➔
+          </button>
         </div>
-        <button type="button" class="btn btn-gold" style="width: 100%; box-shadow: 0 4px 12px rgba(201,151,56,0.4);" onclick="openCertificateModal('${currentCourse.id}')">
-          🎓 View &amp; Download Certificate
-        </button>
-      </div>
-    `;
+      `;
+    }
   } else {
     box.classList.add('hidden');
   }
@@ -1951,6 +2101,19 @@ function populateCertificateUI(studentName, courseTitle, courseId, duration, cer
 
 function openCertificateModal(courseId) {
   const cid = courseId || (currentCourse ? currentCourse.id : '');
+  const course = (currentCourse && currentCourse.id === cid) ? currentCourse : (Array.isArray(enrolledCourses) ? enrolledCourses.find(c => c.id === cid) : null);
+  
+  if (course && !isCourseEligibleForCertificate(course)) {
+    const stats = getCourseLessonStats(course);
+    if (stats.pct < 100) {
+      toast(`⚠️ Certificate locked: Aapne ${stats.done}/${stats.total} lessons (${stats.pct}%) dekhe hain. 100% lessons poore karein!`, false);
+    } else {
+      toast('⚠️ Certificate locked: Kripya pehle Certification Quiz / Test paas karein (Min 70% passing score)!', false);
+      switchLessonTab('quiz');
+    }
+    return;
+  }
+
   const cTitle = currentCourse ? currentCourse.title : 'Adobe Premiere Pro Masterclass';
   const dur = currentCourse ? currentCourse.duration : '18 Credit Hours';
   populateCertificateUI(currentStudent ? currentStudent.name : 'Student', cTitle, cid, dur);
@@ -1958,6 +2121,16 @@ function openCertificateModal(courseId) {
 }
 
 function openCertificateModalFromCard(courseId, courseTitle) {
+  const course = (Array.isArray(enrolledCourses) ? enrolledCourses.find(c => c.id === courseId) : null) || (currentCourse && currentCourse.id === courseId ? currentCourse : { id: courseId, title: courseTitle });
+  if (course && !isCourseEligibleForCertificate(course)) {
+    const stats = getCourseLessonStats(course);
+    if (stats.total > 0 && stats.pct < 100) {
+      toast(`⚠️ Certificate locked: Course ${stats.pct}% complete hai. 100% lessons dekhne ke baad hi certificate generate hoga.`, false);
+    } else {
+      toast('⚠️ Certificate locked: Pehle lessons 100% karein aur Certification Quiz pass karein!', false);
+    }
+    return;
+  }
   const studentName = currentStudent ? currentStudent.name : 'Student';
   populateCertificateUI(studentName, courseTitle, courseId, '18 Credit Hours');
   document.getElementById('modal-certificate').classList.add('show');
@@ -2991,18 +3164,41 @@ function toggleCourseCinemaFullscreen() {
 
 // ---------- Module Quiz Logic ----------
 
+const DEFAULT_ACADEMY_QUIZ = [
+  {
+    question: "Video editing me Timeline pe clip ko cut ya split karne ke liye default shortcut tool kaun sa hota hai?",
+    options: ["Selection Tool (V)", "Razor Tool (C)", "Pen Tool (P)", "Hand Tool (H)"],
+    answer: 1
+  },
+  {
+    question: "Final video export karte samay standard web aur mobile playback ke liye best universal format kaun sa hai?",
+    options: ["AVI Uncompressed", "H.264 / MP4", "QuickTime Animation", "WMV"],
+    answer: 1
+  },
+  {
+    question: "Color Grading karte samay contrast aur exposure balance karne ke liye kis panel/tool ka upyog kiya jata hai?",
+    options: ["Lumetri Curves & Wheels", "Crop Effect", "Audio Gain", "Speed/Duration"],
+    answer: 0
+  }
+];
+
 function renderQuiz(course) {
   const container = document.getElementById('quiz-questions-wrap');
-  const quiz = course.quiz || [];
+  if (!container) return;
 
-  if (!quiz.length) {
-    container.innerHTML = '<p class="muted">No quiz required for this module. Continue your practical lessons!</p>';
-    document.getElementById('btn-submit-quiz').classList.add('hidden');
-    return;
-  }
+  const quiz = (course && course.quiz && course.quiz.length) ? course.quiz : DEFAULT_ACADEMY_QUIZ;
 
   document.getElementById('btn-submit-quiz').classList.remove('hidden');
-  document.getElementById('quiz-result-banner').classList.add('hidden');
+  const banner = document.getElementById('quiz-result-banner');
+  if (banner) {
+    if (isQuizPassed(course?.id)) {
+      banner.className = 'quiz-result-banner pass';
+      banner.innerHTML = '🎉 Aapne yeh Certification Test pehle hi safalta-poorvak paas kar liya hai (Score: 100%). Aap chahein toh dobara test de sakte hain.';
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
 
   container.innerHTML = quiz.map((q, qIdx) => `
     <div class="quiz-q-item" data-qidx="${qIdx}">
@@ -3026,8 +3222,8 @@ function selectQuizOption(input) {
 }
 
 function submitQuiz() {
-  if (!currentCourse || !currentCourse.quiz) return;
-  const quiz = currentCourse.quiz;
+  if (!currentCourse) return;
+  const quiz = (currentCourse.quiz && currentCourse.quiz.length) ? currentCourse.quiz : DEFAULT_ACADEMY_QUIZ;
   let correctCount = 0;
   let allAnswered = true;
 
@@ -3042,7 +3238,7 @@ function submitQuiz() {
   });
 
   if (!allAnswered) {
-    toast('Please answer all questions before submitting', false);
+    toast('Kripya sabhi sawalon ke jawab select karein!', false);
     return;
   }
 
@@ -3054,11 +3250,34 @@ function submitQuiz() {
 
   if (scorePct >= 70) {
     banner.className = 'quiz-result-banner pass';
-    banner.innerHTML = `🎉 Congratulations! You scored ${correctCount}/${total} (${scorePct}%). You passed the module knowledge check!`;
-    toast('Quiz Passed! Great job!');
+    banner.innerHTML = `🎉 Badhai ho! Aapne ${correctCount}/${total} (${scorePct}%) score kiya aur certification test paas kar liya!`;
+    
+    // Save quiz pass
+    const stuPhone = (currentStudent && currentStudent.phone) || '';
+    localStorage.setItem(`qaa_quiz_passed_${stuPhone}_${currentCourse.id}`, 'true');
+    localStorage.setItem(`qaa_quiz_passed_${currentCourse.id}`, 'true');
+    if (!currentStudent) currentStudent = {};
+    if (!currentStudent.passedQuizzes) currentStudent.passedQuizzes = {};
+    currentStudent.passedQuizzes[currentCourse.id] = true;
+    try {
+      localStorage.setItem('qaa_student_info', JSON.stringify(currentStudent));
+    } catch (_) {}
+
+    updateCertificateUnlockState();
+    const stats = getCourseLessonStats(currentCourse);
+    if (stats.pct >= 100) {
+      toast('🎓 Outstanding! Course lessons aur test 100% complete! Generating certificate...');
+      triggerConfettiCelebration();
+      setTimeout(() => {
+        openCertificateModal(currentCourse.id);
+      }, 900);
+    } else {
+      toast(`🎉 Test passed (${scorePct}%)! Baaki lessons complete karne ke baad certificate unlock hoga.`);
+    }
   } else {
     banner.className = 'quiz-result-banner fail';
-    banner.innerHTML = `You scored ${correctCount}/${total} (${scorePct}%). Review the lessons and try again.`;
+    banner.innerHTML = `Aapka score ${correctCount}/${total} (${scorePct}%) raha. Passing score 70% hai. Kripya video revise karke dobara try karein.`;
+    toast('Score 70% se kam hai. Dobara test attempt karein!', false);
   }
 }
 
@@ -6567,7 +6786,88 @@ window.unmuteLiveStream = function() {
   }
 };
 
-// Zero-Pause Continuous Broadcast Guard & Cinematic Branding Cover Sync:
+window._isLiveBroadcastEndedActive = false;
+
+function handleLiveBroadcastEnded() {
+  if (window._isLiveBroadcastEndedActive) return;
+  window._isLiveBroadcastEndedActive = true;
+
+  // Clear live ping timers & doubt pollers immediately
+  if (typeof livePingTimer !== 'undefined' && livePingTimer) { clearInterval(livePingTimer); livePingTimer = null; }
+  if (typeof liveDoubtsPollTimer !== 'undefined' && liveDoubtsPollTimer) { clearInterval(liveDoubtsPollTimer); liveDoubtsPollTimer = null; }
+
+  // Blank out YouTube iframe immediately to prevent YouTube logo / recommendations leak
+  const iframe = document.getElementById('live-stream-iframe');
+  if (iframe) {
+    try {
+      iframe.src = 'about:blank';
+      iframe.style.display = 'none';
+    } catch (_) {}
+  }
+  const video = document.getElementById('main-video-el');
+  if (video) {
+    try { video.pause(); } catch (_) {}
+  }
+
+  // Display pitch-black curtain overlay on live-video-mount / live-video-box
+  const mount = document.getElementById('live-video-mount');
+  const box = document.getElementById('live-video-box');
+  const targetContainer = mount || box;
+  
+  if (targetContainer) {
+    let curtain = document.getElementById('live-ended-curtain');
+    if (!curtain) {
+      curtain = document.createElement('div');
+      curtain.id = 'live-ended-curtain';
+      curtain.className = 'live-ended-curtain active';
+      targetContainer.appendChild(curtain);
+    } else {
+      curtain.classList.add('active');
+    }
+
+    let countdown = 4;
+    curtain.innerHTML = `
+      <div class="live-ended-card">
+        <div class="live-ended-badge">
+          <span class="live-ended-badge-dot"></span>
+          <span>🔴 BROADCAST ENDED</span>
+        </div>
+        <h2 class="live-ended-title">Live Class Has Ended</h2>
+        <p class="live-ended-desc">
+          Session END — Thank you for watching and participating! Recording jald hi Replay section me upload kar di jayegi.
+        </p>
+        <div class="live-ended-countdown">
+          Redirecting to My Courses in <span id="live-ended-seconds">${countdown}</span>s...
+        </div>
+        <button type="button" class="live-ended-btn" onclick="redirectAfterLiveEnd()">
+          📚 Go to My Courses Now ➔
+        </button>
+      </div>
+    `;
+
+    const timer = setInterval(() => {
+      countdown--;
+      const secEl = document.getElementById('live-ended-seconds');
+      if (secEl) secEl.textContent = countdown;
+      if (countdown <= 0) {
+        clearInterval(timer);
+        redirectAfterLiveEnd();
+      }
+    }, 1000);
+  } else {
+    redirectAfterLiveEnd();
+  }
+}
+
+function redirectAfterLiveEnd() {
+  window._isLiveBroadcastEndedActive = false;
+  const curtain = document.getElementById('live-ended-curtain');
+  if (curtain) curtain.remove();
+  showDashboard();
+  toast('📚 Returned to My Courses');
+}
+
+// Zero-Pause Continuous Broadcast Guard & Live Ended Detection:
 window.addEventListener('message', (event) => {
   try {
     const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
@@ -6585,10 +6885,36 @@ window.addEventListener('message', (event) => {
             }
           }
         }
+      } else if (data.info === 0) {
+        // YouTube State 0 = ENDED: Trigger instant black curtain & auto redirect
+        if (!window._isCurrentReplaySession) {
+          handleLiveBroadcastEnded();
+        }
       }
     }
   } catch (e) {}
 });
+
+// Anti-Download & Security Protection for all video players
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && ['s', 'S', 'u', 'U', 'p', 'P'].includes(e.key)) {
+    const inClassroom = document.getElementById('view-classroom') && !document.getElementById('view-classroom').classList.contains('hidden');
+    const inLive = document.getElementById('view-live-studio') && !document.getElementById('view-live-studio').classList.contains('hidden');
+    if (inClassroom || inLive) {
+      e.preventDefault();
+      e.stopPropagation();
+      toast('🔒 Video download is restricted by Quick Art Photography Academy');
+      return false;
+    }
+  }
+}, { capture: true });
+
+document.addEventListener('contextmenu', (e) => {
+  if (e.target && (e.target.tagName === 'VIDEO' || e.target.closest('#video-box') || e.target.closest('#live-video-box') || e.target.closest('.video-player-wrap'))) {
+    e.preventDefault();
+    return false;
+  }
+}, { capture: true });
 
 // Dedicated Cinema Replay Video Controls & Timeline Engine
 let portalReplayCurrentEstTime = 0;
@@ -6826,6 +7152,11 @@ async function sendStudentLivePing() {
         handRaised: portalIsStudentHandRaised
       }
     });
+
+    if (res && (res.status === 'completed' || res.status === 'ended') && !window._isCurrentReplaySession) {
+      handleLiveBroadcastEnded();
+      return;
+    }
 
     const pill = document.getElementById('live-attendees-pill-mini');
     if (pill) {

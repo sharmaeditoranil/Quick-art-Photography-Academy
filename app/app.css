@@ -6766,3 +6766,81 @@ button.prof-row-danger:active {
   margin-top: 8px;
 }
 
+/* ==============================================================
+   LIVE CLASS ZERO-LEAK ENDED CURTAIN & ANTI-DOWNLOAD (APP)
+   ============================================================== */
+.live-ended-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  background: #060a14 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 20px;
+  color: #ffffff;
+  animation: app-curtain-fadein 0.25s ease forwards;
+  box-sizing: border-box;
+}
+@keyframes app-curtain-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.live-ended-badge {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.live-ended-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 6px;
+}
+.live-ended-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  max-width: 440px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+.live-ended-countdown {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f5c879;
+  margin-bottom: 16px;
+}
+.live-ended-btn {
+  background: linear-gradient(135deg, #f5c879, #d8a153);
+  color: #0c0e12;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.35);
+  transition: transform 0.18s ease;
+}
+
+/* Anti-Download & Right Click Guard */
+video::-internal-media-controls-download-button {
+  display: none !important;
+}
+video::-webkit-media-controls-enclosure {
+  overflow: hidden;
+}
+#cr-video-mount, #cr-video-box, #live-video-box, #live-video-mount, video {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
