@@ -1148,6 +1148,80 @@
       .countdown-box .timer-num { font-size: 26px; }
       .video-pills span:nth-child(n+3), .tool-pills span:nth-child(n+5) { display: none; }
     }
+
+    /* Hero readability: long admin titles stay compact */
+    .hero-center .hero-title .gold-gradient { display: block; font-size: 0.62em; line-height: 1.25; font-weight: 700; margin-top: 10px; }
+    .hero-center .video-card { margin-top: 6px; }
+    .header-book { white-space: nowrap; }
+    .hb-short { display: none; }
+
+    @media (max-width: 760px) {
+      .hero-center .hero-title { font-size: 27px; margin-bottom: 16px; }
+      .hero-center .hero-title .gold-gradient { font-size: 17px; margin-top: 8px; }
+      .hero-center .hero-sub {
+        font-size: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .live-badge { font-size: 11px; padding: 6px 12px; margin-bottom: 16px; }
+      .hb-long { display: none; }
+      .hb-short { display: inline; }
+      .header-actions .btn { padding: 0 14px; }
+      .brand-title { font-size: 13.5px; }
+    }
+
+    /* ── Unified dark glass theme (whole page transparent look) ── */
+    .section.light, .section.light-2 {
+      color: var(--text-d);
+      background:
+        radial-gradient(ellipse 50% 45% at 100% 0%, rgba(216, 161, 83, 0.12), transparent 60%),
+        radial-gradient(ellipse 45% 45% at 0% 100%, rgba(99, 102, 241, 0.09), transparent 60%),
+        var(--ink);
+    }
+    .section.light-2 { background-color: var(--ink-2); }
+    .section.light + .section, .section + .section.light, .section + .section.light-2 { border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+    .light .eyebrow, .light-2 .eyebrow { color: var(--gold); }
+    .light .sec-sub, .light-2 .sec-sub { color: var(--muted-d); }
+    .light .gold-gradient, .light-2 .gold-gradient {
+      background: linear-gradient(120deg, #f7d79b 0%, #d8a153 55%, #f0c27a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .outcome, .aud-card, .review, .compare-col.old, .compare-col.new, .faq details, .cert-list .ic, .rating-card {
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 20px 40px -26px rgba(0, 0, 0, 0.7);
+      color: var(--text-d);
+    }
+    .compare-col.new { background: rgba(216, 161, 83, 0.07); border-color: rgba(216, 161, 83, 0.3); }
+    .outcome:hover { box-shadow: 0 24px 40px -24px rgba(216, 161, 83, 0.35); border-color: rgba(216, 161, 83, 0.35); }
+
+    .outcome-num { color: var(--gold-2); }
+    .outcome-unit, .outcome p, .aud-card p, .old li, .reviewer span, .cert-list span, .faq .ans { color: var(--muted-d); }
+    .outcome h3, .aud-card h3, .compare-col h3, .review blockquote, .reviewer strong, .cert-list strong, .faq summary { color: #fff; }
+    .old .compare-tag { background: rgba(239, 68, 68, 0.14); color: #fca5a5; }
+    .old .mark { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .avatar { background: rgba(216, 161, 83, 0.15); color: var(--gold-2); }
+    .faq details[open] { border-color: rgba(216, 161, 83, 0.4); }
+    .faq summary::after, .faq .ans a { color: var(--gold-2); }
+    .btn-outline-dark { color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+    .btn-outline-dark:hover { border-color: var(--gold); color: var(--gold-2); }
+    .more-reviews .btn-dark { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); }
+    .cert-frame { border-color: rgba(216, 161, 83, 0.45); }
+
+    @media (max-width: 760px) {
+      .schedule-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .schedule-strip .schedule-pill.gold { grid-column: 1 / -1; justify-content: center; }
+      .schedule-pill { padding: 10px 12px; gap: 8px; }
+      .sch-icon { font-size: 18px; }
+      .sch-val { font-size: 14px; }
+    }
   </style>
 </head>
 
@@ -1171,7 +1245,7 @@
         </a>
         <div class="header-actions">
           <a href="../portal/" class="btn btn-ghost" target="_blank" rel="noopener">Student Login</a>
-          <a href="#register" class="btn btn-gold">Seat Book Karein</a>
+          <a href="#register" class="btn btn-gold header-book"><span class="hb-long">Seat Book Karein</span><span class="hb-short">Book Seat</span></a>
         </div>
       </header>
 
@@ -1185,6 +1259,17 @@
           Wedding Photo Editing Me AI Ka Sahi Use <br>
           <span class="gold-gradient">1-Click Me 2,000+ RAW Photos Filter, Bulk Edit &amp; Online Client Selection</span>
         </h1>
+
+        <div class="video-card glass" id="hero-video-box">
+          <div class="hero-video-frame" id="hero-video-mount">
+            <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="video-pills">
+            <span>🔴 1-Day Live Workshop Demo</span>
+            <span>⚡ 2,000+ RAW Live Workflow</span>
+            <span>🎙️ Hindi Step-by-Step</span>
+          </div>
+        </div>
 
         <p class="hero-sub" id="masterclass-sub">
           Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
@@ -1202,17 +1287,6 @@
           <div class="glass schedule-pill gold">
             <span class="sch-icon">🎟️</span>
             <div><span class="sch-label">Launch pass</span><strong class="sch-val">Only <span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></strong></div>
-          </div>
-        </div>
-
-        <div class="video-card glass" id="hero-video-box">
-          <div class="hero-video-frame" id="hero-video-mount">
-            <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-pills">
-            <span>🔴 1-Day Live Workshop Demo</span>
-            <span>⚡ 2,000+ RAW Live Workflow</span>
-            <span>🎙️ Hindi Step-by-Step</span>
           </div>
         </div>
 
@@ -2043,7 +2117,7 @@
 
             // Hero Badge
             if (landing.heroBadge && document.getElementById('hero-badge-tag')) {
-              document.getElementById('hero-badge-tag').textContent = landing.heroBadge;
+              document.getElementById('hero-badge-tag').textContent = landing.heroBadge.replace(/^[\s\u{1F534}\u{1F7E2}\u{26A1}\u{2B50}]+/u, '').trim();
             }
 
             // Title & Highlight
