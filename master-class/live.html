@@ -1663,6 +1663,29 @@
     .hs-when { margin-bottom: 26px; }
     .hs-right .cta-green { margin: 6px 0 8px; }
     .hs-note { margin-top: 20px; }
+
+    /* Subtle background texture: film grain + faint dot grid */
+    body.lp::before,
+    body.lp::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body.lp::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.92  0 0 0 0 0.8  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.07;
+      mix-blend-mode: overlay;
+    }
+    body.lp::after {
+      background-image: radial-gradient(rgba(255, 230, 190, 0.07) 1px, transparent 1.2px);
+      background-size: 26px 26px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+    }
+    body.lp > *:not(.mobile-sticky-cta):not(.cert-modal-overlay):not(.vt-modal) { position: relative; z-index: 1; }
   </style>
 </head>
 
