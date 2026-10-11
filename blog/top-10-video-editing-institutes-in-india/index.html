@@ -73,9 +73,10 @@
     <link rel="stylesheet" href="../../home-assets/d268ef7c2fc87b.css">
     <link rel="stylesheet" href="../../home-assets/4c1165f32ac2c4.css">
     <link rel="stylesheet" href="../../site.css?v=20261010_mc3">
-    <link rel="stylesheet" href="../../header.css">
-    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
     <link rel="stylesheet" href="../../design-system.css">
+    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
+    <link rel="stylesheet" href="../../home-polish.css?v=4.1">
+    <link rel="stylesheet" href="../../mobile-refinements.css?v=4.1">
     <link rel="stylesheet" href="../blog.css">
     <link rel="manifest" href="../../site.webmanifest">
     <link rel="icon" href="../../home-assets/ec55a6be3747a9.webp" type="image/webp">
@@ -316,19 +317,34 @@
             box-shadow: 0 4px 14px rgba(216, 161, 83, 0.4);
             margin-bottom: 16px;
         }
-        .winner-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: clamp(1.6rem, 3vw, 2.15rem);
-            font-weight: 900;
-            color: #ffffff;
-            margin: 0 0 10px;
-            line-height: 1.25;
+        .winner-title,
+        .blog-article-body .winner-spotlight h2,
+        .winner-spotlight h2 {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: clamp(1.6rem, 3vw, 2.15rem) !important;
+            font-weight: 900 !important;
+            color: #ffffff !important;
+            margin: 0 0 10px !important;
+            line-height: 1.25 !important;
+            border: none !important;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
         }
-        .winner-desc {
-            color: #cbd5e1;
-            font-size: 1.02rem;
-            line-height: 1.7;
-            margin: 0 0 20px;
+        .blog-article-body .winner-spotlight h2::after,
+        .winner-spotlight h2::after {
+            display: none !important;
+        }
+        .winner-desc,
+        .blog-article-body .winner-spotlight p,
+        .winner-spotlight p {
+            color: #e2e8f0 !important;
+            font-size: 1.02rem !important;
+            line-height: 1.7 !important;
+            margin: 0 0 20px !important;
+        }
+        .blog-article-body .winner-spotlight strong,
+        .winner-spotlight strong {
+            color: #fce7b2 !important;
         }
         .winner-highlights-grid {
             display: grid;
@@ -1564,8 +1580,8 @@
                         <!-- ═══ EXECUTIVE WINNER SPOTLIGHT CARD ═══ -->
                         <div class="winner-spotlight">
                             <div class="winner-ribbon">⭐ OVERALL WINNER · BEST PRACTICAL &amp; COMMERCIAL ACADEMY IN INDIA</div>
-                            <h2 class="winner-title">Quick Art Photography Academy – Siwan, Bihar</h2>
-                            <p class="winner-desc">
+                            <h2 class="winner-title" style="color: #ffffff !important; border: none !important; border-bottom: none !important; margin-top: 0 !important;">Quick Art Photography Academy – Siwan, Bihar</h2>
+                            <p class="winner-desc" style="color: #e2e8f0 !important;">
                                 Best practical-first academy for wedding filmmaking, Premiere Pro, Hollywood DaVinci Resolve color grading &amp; EDIUS. Students train on <strong>100% uncut 4K multi-cam raw footage</strong> under direct 1-on-1 mentorship of Anil Sharma, with <strong>100% Free Hostel</strong> for outstation students or daily interactive online live classes.
                             </p>
                             <div class="winner-highlights-grid">

@@ -60,9 +60,10 @@
     <link rel="stylesheet" href="../../home-assets/d268ef7c2fc87b.css">
     <link rel="stylesheet" href="../../home-assets/4c1165f32ac2c4.css">
     <link rel="stylesheet" href="../../site.css?v=20261010_mc3">
-    <link rel="stylesheet" href="../../header.css">
-    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
     <link rel="stylesheet" href="../../design-system.css">
+    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
+    <link rel="stylesheet" href="../../home-polish.css?v=4.1">
+    <link rel="stylesheet" href="../../mobile-refinements.css?v=4.1">
     <link rel="stylesheet" href="../blog.css">
     <link rel="manifest" href="../../site.webmanifest">
     <link rel="icon" href="../../home-assets/ec55a6be3747a9.webp" type="image/webp">
@@ -103,6 +104,23 @@
             --text-muted: #64748b;
             --border-light: #e2e8f0;
             --border-gold: rgba(216, 161, 83, 0.35);
+        }
+
+        /* Responsive Post Title */
+        .blog-post-title {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: clamp(1.65rem, 3.8vw, 2.35rem) !important;
+            font-weight: 850 !important;
+            line-height: 1.22 !important;
+            color: #0f172a !important;
+            margin: 10px 0 14px !important;
+            letter-spacing: -0.02em !important;
+        }
+        @media (max-width: 640px) {
+            .blog-post-title {
+                font-size: 1.65rem !important;
+                line-height: 1.25 !important;
+            }
         }
 
         /* Clean Compact Stat Counter Row */
@@ -746,6 +764,15 @@
                             </div>
                         </div>
                     </div>
+                </div><a href="../../master-class/">Masterclass</a>
+                <div class="ref-dropdown ref-resources"><button class="ref-toggle" type="button" aria-expanded="false"
+                        aria-controls="ref-resources">Free Resources<span class="ref-chevron"
+                            aria-hidden="true"></span></button>
+                    <div class="ref-resource-panel" id="ref-resources" hidden><a href="../../about-us/">About Us</a><a
+                            href="../../blog/">Blog</a><a href="../../downloads/course-details.pdf">Course Brochure</a><a
+                            href="https://www.youtube.com/@QuickartPhotographyAcademy/videos" target="_blank"
+                            rel="noopener noreferrer">YouTube · Free Courses</a><a href="../../alumni/">Alumni Directory</a>
+                    </div>
                 </div><a href="../../alumni/">Alumni</a><a href="../../contact-us/">Contact</a>
             </nav><a class="ref-login" href="../../portal/">Login</a><button class="ref-mobile-programs" type="button"
                 aria-label="Explore Programs"><span>Programs</span><svg class="ref-programs-arrow" width="12"
@@ -813,7 +840,11 @@
                         Free Courses</span></a>
                 <a class="ref-course" href="../../alumni/"><span class="ref-course-icon"
                         aria-hidden="true">Al</span><span>Alumni Directory &amp; Hall of Fame</span></a>
-            </details><a href="../../about-us/">About Us</a><a href="../../contact-us/">Contact</a>
+                <a class="ref-course"
+                    href="../../downloads/quickart-academy-release.apk"
+                    download="quickart-academy.apk"><span class="ref-course-icon"
+                        aria-hidden="true">Ap</span><span>Download Our App (APK)</span></a>
+            </details><a href="../../alumni/">Alumni Hall of Fame</a><a href="../../contact-us/">Contact</a>
         </nav>
     </header>
 
@@ -840,7 +871,7 @@
                     <div class="blog-post-header">
                         <div class="blog-tag-badge">Begusarai District Guide · Album Design</div>
                         <h1 class="blog-post-title" itemprop="headline">
-                            Wedding Album Design Course in Begusarai: Professional Photoshop &amp; Layout Training
+                            Wedding Album Design Course in Begusarai
                         </h1>
                         <p class="blog-post-subtitle">
                             Photography ke sath professional album designing ki demand Begusarai aur poore Bihar me tezi se badh rahi hai. Har couple chahta hai ki unki wedding memories ko beautiful, clean aur creative tarike se present kiya jaye. Photoshop tools, balanced layouts aur print workflow ka complete guide.
@@ -868,8 +899,8 @@
                     <!-- Featured Hero Image with High Quality Picture Tag -->
                     <figure class="blog-featured-figure">
                         <picture>
-                            <source srcset="../../assets/wedding-album-design-course-in-begusarai.webp" type="image/webp">
-                            <img src="../../assets/wedding-album-design-course-in-begusarai.jpg" alt="Wedding Album Design Course in Begusarai — Quick Art Photography Academy" class="blog-featured-img" width="1024" height="576" loading="eager" itemprop="image">
+                            <source srcset="../../assets/wedding-album-design-course-in-begusarai.webp?v=2" type="image/webp">
+                            <img src="../../assets/wedding-album-design-course-in-begusarai.jpg?v=2" alt="Wedding Album Design Course in Begusarai — Quick Art Photography Academy" class="blog-featured-img" width="1024" height="576" loading="eager" itemprop="image">
                         </picture>
                         <figcaption class="blog-featured-caption">
                             📍 Quick Art Photography Academy: Wedding Album Design Course in Begusarai ke students ke liye Photoshop software, creative spreads aur commercial printing workflow.
