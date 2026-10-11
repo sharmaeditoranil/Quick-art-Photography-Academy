@@ -2533,7 +2533,7 @@ if ($action === 'get-live-classes' && $method === 'GET') {
             $safeItem['zoomUrl'] = $c['zoomUrl'] ?? '';
             $safeItem['zoomMeetingId'] = $c['zoomMeetingId'] ?? '';
             $safeItem['zoomPasscode'] = $c['zoomPasscode'] ?? '';
-            $safeItem['zoomEmbedMode'] = !empty($c['zoomEmbedMode']);
+            $safeItem['zoomEmbedMode'] = ($c['zoomEmbedMode'] ?? true) !== false;
             $safeItem['resources'] = $c['resources'] ?? [];
             if ($c['status'] === 'completed' && !empty($c['replayUrl'])) {
                 $safeItem['replayUrl'] = $c['replayUrl'];
@@ -2727,7 +2727,7 @@ if ($action === 'get-live-session' && ($method === 'GET' || $method === 'POST'))
         'zoomUrl'                   => $target['zoomUrl'] ?? '',
         'zoomMeetingId'             => $target['zoomMeetingId'] ?? '',
         'zoomPasscode'              => $target['zoomPasscode'] ?? '',
-        'zoomEmbedMode'             => !empty($target['zoomEmbedMode']),
+        'zoomEmbedMode'             => ($target['zoomEmbedMode'] ?? true) !== false,
         'showViewerCountToStudents' => $showViewers,
         'viewerCount'               => $viewerCount,
         'allowStudentMic'           => !empty($target['allowStudentMic']),

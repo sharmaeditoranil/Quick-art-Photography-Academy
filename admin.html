@@ -7350,10 +7350,22 @@ async function saveLiveClassAdmin() {
 
   const streamType = document.getElementById('liveStreamType') ? document.getElementById('liveStreamType').value : 'google_meet';
   const meetUrl = document.getElementById('liveGoogleMeetUrl') ? document.getElementById('liveGoogleMeetUrl').value.trim() : '';
-  const zoomUrl = document.getElementById('liveZoomUrl') ? document.getElementById('liveZoomUrl').value.trim() : '';
-  const zoomMeetingId = document.getElementById('liveZoomMeetingId') ? document.getElementById('liveZoomMeetingId').value.trim() : '';
-  const zoomPasscode = document.getElementById('liveZoomPasscode') ? document.getElementById('liveZoomPasscode').value.trim() : '';
+  let zoomUrl = document.getElementById('liveZoomUrl') ? document.getElementById('liveZoomUrl').value.trim() : '';
+  let zoomMeetingId = document.getElementById('liveZoomMeetingId') ? document.getElementById('liveZoomMeetingId').value.trim() : '';
+  let zoomPasscode = document.getElementById('liveZoomPasscode') ? document.getElementById('liveZoomPasscode').value.trim() : '';
   const zoomEmbedMode = document.getElementById('liveZoomEmbedMode') ? document.getElementById('liveZoomEmbedMode').checked : true;
+  if (zoomUrl) {
+    const mMid = zoomUrl.match(/\/(?:j|wc|w|s)\/(\d{9,12})/i) || zoomUrl.match(/[?&]confno=(\d{9,12})/i);
+    if (!zoomMeetingId && mMid) {
+      zoomMeetingId = mMid[1];
+      if (document.getElementById('liveZoomMeetingId')) document.getElementById('liveZoomMeetingId').value = zoomMeetingId;
+    }
+    const mPwd = zoomUrl.match(/[?&]pwd=([^&#]+)/i);
+    if (!zoomPasscode && mPwd) {
+      zoomPasscode = mPwd[1];
+      if (document.getElementById('liveZoomPasscode')) document.getElementById('liveZoomPasscode').value = zoomPasscode;
+    }
+  }
   const cloudflareVideoId = document.getElementById('liveCloudflareVideoId') ? document.getElementById('liveCloudflareVideoId').value.trim() : '';
   const cloudflareStreamKey = document.getElementById('liveCloudflareStreamKey') ? document.getElementById('liveCloudflareStreamKey').value.trim() : '';
   let bunnyVideoId = document.getElementById('liveBunnyVideoId') ? document.getElementById('liveBunnyVideoId').value.trim() : '';

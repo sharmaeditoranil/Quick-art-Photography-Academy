@@ -1321,7 +1321,7 @@ if ($action === 'save-live-class' && $method === 'POST') {
         'zoomUrl'                   => trim($item['zoomUrl'] ?? ''),
         'zoomMeetingId'             => trim($item['zoomMeetingId'] ?? ''),
         'zoomPasscode'              => trim($item['zoomPasscode'] ?? ''),
-        'zoomEmbedMode'             => !empty($item['zoomEmbedMode']),
+        'zoomEmbedMode'             => ($item['zoomEmbedMode'] ?? true) !== false,
         'showViewerCountToStudents' => !empty($item['showViewerCountToStudents']),
         'allowStudentMic'           => !empty($item['allowStudentMic']),
         'allowStudentScreen'        => !empty($item['allowStudentScreen']),

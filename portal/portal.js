@@ -5954,9 +5954,9 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     return;
   }
 
-  // ── 0B. ZOOM MEETING (WEB CLIENT EMBED + RELIABLE APP FALLBACK) ──
-  const zoomUrlRaw = (session && session.zoomUrl) || (session && session.streamType === 'zoom' ? (session.streamId || '') : '') || (streamId && streamId.includes('zoom.us') ? streamId : '');
-  const zoomUrl = /^https:\/\/([a-z0-9-]+\.)*zoom\.us\//i.test(String(zoomUrlRaw).trim()) ? String(zoomUrlRaw).trim() : '';
+  // ── 0B. ZOOM MEETING (CLEAN CLASSROOM EMBED • 100% IN-WEBSITE • ZERO REDIRECT) ──
+  const zoomUrlRaw = (session && session.zoomUrl) || (session && session.streamType === 'zoom' ? (session.streamId || '') : '') || (streamId && String(streamId).includes('zoom.') ? streamId : '');
+  const zoomUrl = /^https:\/\/([a-z0-9-]+\.)*zoom\.(?:us|com)\//i.test(String(zoomUrlRaw).trim()) ? String(zoomUrlRaw).trim() : '';
   let zoomMeetingId = String((session && session.zoomMeetingId) || '').replace(/\D/g, '');
   let encryptedPwdHash = '';
 
@@ -5969,101 +5969,200 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
     zoomMeetingId = String(zoomUrlRaw).replace(/\D/g, '');
   }
 
-  // Plain numeric passcode (shown to student). The encrypted ?pwd= token is never shown as a "passcode".
+  // Plain numeric/text passcode (shown cleanly below player)
   const rawPass = String((session && session.zoomPasscode) || '').trim();
   const plainPass = rawPass && rawPass !== encryptedPwdHash ? rawPass : '';
 
   const isZoomSession = (session && session.streamType === 'zoom') || Boolean(zoomUrl) || Boolean(zoomMeetingId);
 
   if (isZoomSession) {
+    // 1. Completely remove all shields, masks, pause cues & floating watermarks from video area
     if (shield) { shield.style.display = 'none'; shield.style.pointerEvents = 'none'; }
     if (startMask) { startMask.style.display = 'none'; }
-
-    // Clean screen: Hide redundant website controls so Zoom native controls have full focus
-    const streamBar = document.querySelector('.live-stream-bar');
-    if (streamBar) streamBar.style.display = 'none';
+    const pauseCue = document.getElementById('live-center-pause-cue');
+    if (pauseCue) pauseCue.style.display = 'none';
     const cinemaDock = document.getElementById('live-cinema-control-dock');
     if (cinemaDock) cinemaDock.style.display = 'none';
+    const replayDeck = document.getElementById('live-cinema-bottom-deck');
+    if (replayDeck) replayDeck.style.display = 'none';
+    const watermarkEl = document.getElementById('watermark-overlay');
+    if (watermarkEl) watermarkEl.style.display = 'none';
+    const liveWText = document.getElementById('live-watermark-text');
+    if (liveWText) liveWText.remove();
+    const liveWLayer = document.getElementById('live-watermark-layer');
+    if (liveWLayer) liveWLayer.remove();
+
+    // 2. Add dedicated responsive sizing to video box
+    if (liveBox) liveBox.classList.add('is-zoom');
 
     const zEsc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const studentName = (typeof currentStudent !== 'undefined' && currentStudent && currentStudent.name)
       ? currentStudent.name
       : (localStorage.getItem('qa_user_name') || localStorage.getItem('qaa_student_name') || 'Student');
-    const sessionTitle = (session && session.title) || 'Interactive Live Session';
+    const sessionTitle = (session && session.title) || 'Live Masterclass Session';
 
-    // App / new-tab join link: the original admin link (keeps Zoom's encrypted pwd token) — opens Zoom app without passcode prompt
-    const directJoinLink = zoomUrl || (zoomMeetingId ? `https://zoom.us/j/${zoomMeetingId}${encryptedPwdHash ? `?pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}` : '');
+    // Direct app join link - ALWAYS bypasses /wc/ web client lobby
+    let directJoinLink = '';
+    if (zoomMeetingId) {
+      directJoinLink = `https://zoom.us/j/${zoomMeetingId}${encryptedPwdHash ? `?pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}`;
+    } else if (zoomUrl) {
+      directJoinLink = zoomUrl.replace(/\/wc\/(\d{9,12})\/join/i, '/j/$1');
+    }
 
-    // Web client only accepts the ENCRYPTED token in `pwd` and a plain display name in `uname`.
-    // Sending the plain passcode as `pwd` or a non-base64 `un` makes Zoom show "Invalid meeting / passcode" errors.
+    // Construct Zoom Web Client Join URL with base64 encoded username if needed
+    const b64Name = btoa(unescape(encodeURIComponent(studentName)));
     const zoomEmbedUrl = zoomMeetingId
-      ? `https://app.zoom.us/wc/${zoomMeetingId}/join?prefer=1${encryptedPwdHash ? `&pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}&uname=${encodeURIComponent(studentName)}`
+      ? `https://app.zoom.us/wc/${zoomMeetingId}/join?prefer=1${encryptedPwdHash ? `&pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}&un=${encodeURIComponent(b64Name)}`
       : '';
 
-    const passPill = plainPass ? `
-          <div class="zoom-pass-pill" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#94a3b8;background:rgba(15,23,42,0.85);padding:6px 14px;border-radius:20px;border:1px solid rgba(59,130,246,0.3)">
-            <span>Passcode: <strong style="color:#60a5fa;font-family:monospace;font-size:13px">${zEsc(plainPass)}</strong></span>
-            <button type="button" data-copy="${zEsc(plainPass)}" onclick="copyText(this.dataset.copy, 'Passcode')" style="background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.5);color:#93c5fd;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:6px;cursor:pointer">📋 Copy</button>
-          </div>` : '';
-
-    const renderZoomLauncher = (note) => {
-      mount.innerHTML = `
-        <div class="zoom-mobile-launcher" style="position:relative;width:100%;height:100%;min-height:300px;background:radial-gradient(circle at center, #0f1c3f 0%, #060a14 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;box-sizing:border-box;text-align:center;color:#fff">
-          <div style="width:62px;height:62px;border-radius:18px;background:rgba(37,99,235,0.22);border:2px solid rgba(59,130,246,0.45);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px;box-shadow:0 8px 24px rgba(37,99,235,0.35)">🔷</div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#93c5fd;margin-bottom:6px">Live 2-Way Interactive Class</div>
-          <h3 style="font-size:17px;font-weight:800;color:#fff;margin:0 0 ${note ? '8px' : '16px'} 0;line-height:1.3;max-width:340px">${zEsc(sessionTitle)}</h3>
-          ${note ? `<p style="font-size:12.5px;color:#fca5a5;margin:0 0 14px 0;max-width:340px;line-height:1.5">${zEsc(note)}</p>` : ''}
-          <div style="display:flex;flex-direction:column;width:100%;max-width:290px;gap:10px;margin-bottom:14px">
-            ${directJoinLink ? `<a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#fff;font-size:14px;font-weight:800;padding:13px 20px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 25px rgba(37,99,235,0.5)">
-              <span>🚀 Zoom App me Join karein</span><span style="font-size:16px">➔</span>
-            </a>` : ''}
-            ${zoomEmbedUrl ? `<button type="button" onclick="loadZoomIframeDirectly()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#cbd5e1;font-size:12px;padding:9px 12px;border-radius:8px;cursor:pointer">🖥️ Yahi Browser Me Chalayein</button>` : ''}
-          </div>
-          ${passPill}
-        </div>
-      `;
-    };
-
     window.loadZoomIframeDirectly = function() {
-      if (!zoomEmbedUrl) { renderZoomLauncher('Zoom Meeting ID nahi mila. Admin se sahi Zoom link update karwayein.'); return; }
+      if (!zoomEmbedUrl) return;
       mount.innerHTML = `
-        <div style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
+        <div class="zoom-embed-container" style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
           <iframe
             id="live-stream-iframe"
             class="zoom-embed-frame interactive-frame"
             src="${zEsc(zoomEmbedUrl)}"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;"
-            allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write"
-            allowfullscreen="true">
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;background:#000;"
+            allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write; speaker-selection"
+            allowfullscreen="true"
+            webkitallowfullscreen="true"
+            mozallowfullscreen="true">
           </iframe>
-          <div class="zoom-embed-fallback" style="position:absolute;top:8px;right:8px;z-index:5;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 16px)">
-            ${plainPass ? `<button type="button" data-copy="${zEsc(plainPass)}" onclick="copyText(this.dataset.copy, 'Passcode')" style="background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.45);color:#93c5fd;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer">🔑 ${zEsc(plainPass)}</button>` : ''}
-            ${directJoinLink ? `<a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" title="Browser me error aaye to Zoom App me kholein" style="background:rgba(37,99,235,0.92);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;text-decoration:none">Error? Zoom App me kholein ↗</a>` : ''}
-          </div>
         </div>
       `;
     };
 
-    if (!zoomMeetingId) {
-      renderZoomLauncher(directJoinLink ? '' : 'Zoom Meeting ID nahi mila. Admin se sahi Zoom link update karwayein.');
-      return;
+    // 3. Ensure Floating Exit Fullscreen Button exists inside video box (auto-hides, zero static text)
+    if (liveBox) {
+      let exitBtn = document.getElementById('live-fs-exit-btn');
+      if (!exitBtn) {
+        exitBtn = document.createElement('button');
+        exitBtn.type = 'button';
+        exitBtn.id = 'live-fs-exit-btn';
+        exitBtn.className = 'live-fs-exit-btn';
+        exitBtn.setAttribute('title', 'Exit Fullscreen (Esc / Press F)');
+        exitBtn.setAttribute('aria-label', 'Exit Fullscreen');
+        exitBtn.innerHTML = `<span>✕</span> Exit Fullscreen`;
+        exitBtn.onclick = function(e) {
+          e.stopPropagation();
+          toggleLiveCinemaFullscreen();
+        };
+        liveBox.appendChild(exitBtn);
+      }
     }
 
-    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
-    const embedAllowed = !(session && session.zoomEmbedMode === false);
+    // 4. Render 1-Click Instant Join Cinema Stage (Zero forms, zero "Enter Meeting Info", instant connection)
+    mount.innerHTML = `
+      <div class="zoom-direct-stage" style="position:relative;width:100%;height:100%;min-height:380px;background:radial-gradient(circle at center, #0f1c3f 0%, #060a14 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;box-sizing:border-box;text-align:center;color:#fff">
+        <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg, rgba(37,99,235,0.3), rgba(30,58,138,0.5));border:2px solid rgba(59,130,246,0.55);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px;box-shadow:0 8px 25px rgba(37,99,235,0.4)">
+          🔷
+        </div>
 
-    // Mobile browsers block Zoom's third-party cookies inside iframes → always offer the native app first
-    if (isMobileDevice || !embedAllowed) {
-      renderZoomLauncher('');
-      return;
+        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#fca5a5;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.8px;margin-bottom:10px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
+          <span>LIVE 2-WAY MASTERCLASS ACTIVE</span>
+        </div>
+
+        <h2 style="font-size:20px;font-weight:800;color:#fff;margin:0 0 4px 0;line-height:1.3;max-width:520px">
+          ${zEsc(sessionTitle)}
+        </h2>
+        <div style="font-size:12.5px;color:#93c5fd;font-weight:600;margin-bottom:18px">
+          Mentor Anil Sharma • Quick Art Photography Academy
+        </div>
+
+        <!-- Primary 1-Click Direct Join Button (No forms, direct entry) -->
+        ${directJoinLink ? `
+          <a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);color:#fff;font-size:15px;font-weight:800;padding:15px 32px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(37,99,235,0.6);border:1px solid rgba(147,197,253,0.4);transition:all 0.2s ease;margin-bottom:14px">
+            <span style="font-size:18px">🚀</span>
+            <span>Click Karke Direct Class Join Karein</span>
+            <span style="font-size:18px">➔</span>
+          </a>
+        ` : ''}
+
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:14px;max-width:440px;line-height:1.5">
+          ⚡ <strong>Instant Entry:</strong> Koi form ya name fill karne ki zaroorat nahi hai. Button dabate hi class me direct connect ho jayenge.
+        </div>
+
+        <!-- Quick Meeting ID & Passcode pills -->
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">
+          ${zoomMeetingId ? `
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.35);padding:5px 12px;border-radius:20px;font-size:11.5px;color:#cbd5e1">
+              <span style="color:#94a3b8">Meeting ID:</span>
+              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(zoomMeetingId)}</strong>
+              <button type="button" onclick="copyText('${zEsc(zoomMeetingId)}', 'Meeting ID')" style="background:none;border:none;color:#93c5fd;font-size:11px;cursor:pointer;padding:0 2px" title="Copy Meeting ID">📋</button>
+            </div>
+          ` : ''}
+          ${plainPass ? `
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.35);padding:5px 12px;border-radius:20px;font-size:11.5px;color:#cbd5e1">
+              <span style="color:#94a3b8">Passcode:</span>
+              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(plainPass)}</strong>
+              <button type="button" onclick="copyText('${zEsc(plainPass)}', 'Passcode')" style="background:none;border:none;color:#93c5fd;font-size:11px;cursor:pointer;padding:0 2px" title="Copy Passcode">📋</button>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Optional Browser Web Mode link -->
+        ${zoomEmbedUrl ? `
+          <button type="button" onclick="loadZoomIframeDirectly()" style="background:none;border:none;color:#64748b;font-size:11.5px;cursor:pointer;text-decoration:underline;padding:4px 8px">
+            🖥️ Yahi Browser me Iframe Player kholein
+          </button>
+        ` : ''}
+      </div>
+    `;
+
+    // 5. Build Clean Classroom Toolbar BELOW the video player
+    const streamBar = document.querySelector('.live-stream-bar');
+    if (streamBar) {
+      streamBar.style.display = 'flex';
+      streamBar.className = 'live-stream-bar zoom-classroom-bar';
+      streamBar.innerHTML = `
+        <div class="live-stream-status" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="live-broadcast-badge" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#fca5a5;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:0.5px">
+            <span class="live-blink-circle" style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
+            <span>LIVE CLASSROOM</span>
+          </span>
+          ${zoomMeetingId ? `
+            <div class="zoom-info-chip">
+              <span style="color:#94a3b8">Meeting ID:</span>
+              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(zoomMeetingId)}</strong>
+              <button type="button" onclick="copyText('${zEsc(zoomMeetingId)}', 'Meeting ID')" style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#93c5fd;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;cursor:pointer" title="Copy Meeting ID">📋 Copy</button>
+            </div>
+          ` : ''}
+          ${plainPass ? `
+            <div class="zoom-info-chip">
+              <span style="color:#94a3b8">Passcode:</span>
+              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(plainPass)}</strong>
+              <button type="button" onclick="copyText('${zEsc(plainPass)}', 'Passcode')" style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#93c5fd;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;cursor:pointer" title="Copy Passcode">📋 Copy</button>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${directJoinLink ? `
+            <a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" class="live-btn-fs-preview" style="text-decoration:none" title="1-Click Direct Join">
+              <span>🚀 1-Click Join</span>
+            </a>
+          ` : ''}
+
+          <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </button>
+        </div>
+      `;
     }
-
-    // DESKTOP: In-player Zoom web client (with an always-visible "open in Zoom app" fallback)
-    window.loadZoomIframeDirectly();
     return;
   } else {
+    if (liveBox) liveBox.classList.remove('is-zoom');
+    const exitBtn = document.getElementById('live-fs-exit-btn');
+    if (exitBtn) exitBtn.remove();
     const streamBar = document.querySelector('.live-stream-bar');
-    if (streamBar) streamBar.style.display = '';
+    if (streamBar) {
+      streamBar.classList.remove('zoom-classroom-bar');
+      streamBar.style.display = '';
+    }
   }
 
   // 1. CHECK FOR CLOUDFLARE STREAM (BOTH LIVE & REPLAY • 100% PRIVATE • ZERO YOUTUBE)
@@ -6799,6 +6898,20 @@ function toggleLiveCinemaFullscreen() {
 
 function updateLiveFullscreenUI() {
   const isFs = isLiveFullscreenActive();
+
+  const fsPreviewBtn = document.querySelector('.live-btn-fs-preview');
+  if (fsPreviewBtn) {
+    if (isFs) {
+      fsPreviewBtn.classList.add('active-fs');
+      fsPreviewBtn.style.background = 'rgba(220,38,38,0.9)';
+      fsPreviewBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg><span>Exit Full Screen</span>`;
+    } else {
+      fsPreviewBtn.classList.remove('active-fs');
+      fsPreviewBtn.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+      fsPreviewBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg><span>Full Screen Preview</span>`;
+    }
+  }
+
   const btns = document.querySelectorAll('.live-fs-btn');
   btns.forEach(btn => {
     if (btn.classList.contains('live-video-overlay-fs')) {
@@ -7042,6 +7155,14 @@ function exitLiveStudio() {
   if (box) {
     box.classList.remove('show-controls');
     box.classList.remove('is-fullscreen');
+    box.classList.remove('is-zoom');
+  }
+  const exitBtn = document.getElementById('live-fs-exit-btn');
+  if (exitBtn) exitBtn.remove();
+  const streamBar = document.querySelector('.live-stream-bar');
+  if (streamBar) {
+    streamBar.classList.remove('zoom-classroom-bar');
+    streamBar.style.display = '';
   }
   document.body.classList.remove('live-fs-open');
   try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch(_) {}
