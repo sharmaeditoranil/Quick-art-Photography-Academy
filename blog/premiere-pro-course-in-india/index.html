@@ -60,9 +60,10 @@
     <link rel="stylesheet" href="../../home-assets/d268ef7c2fc87b.css">
     <link rel="stylesheet" href="../../home-assets/4c1165f32ac2c4.css">
     <link rel="stylesheet" href="../../site.css?v=20261010_mc3">
-    <link rel="stylesheet" href="../../header.css">
-    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
     <link rel="stylesheet" href="../../design-system.css">
+    <link rel="stylesheet" href="../../reference-header.css?v=4.4">
+    <link rel="stylesheet" href="../../home-polish.css?v=4.1">
+    <link rel="stylesheet" href="../../mobile-refinements.css?v=4.1">
     <link rel="stylesheet" href="../blog.css">
     <link rel="manifest" href="../../site.webmanifest">
     <link rel="icon" href="../../home-assets/ec55a6be3747a9.webp" type="image/webp">
@@ -103,6 +104,23 @@
             --text-muted: #64748b;
             --border-light: #e2e8f0;
             --border-gold: rgba(216, 161, 83, 0.35);
+        }
+
+        /* Responsive Post Title */
+        .blog-post-title {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: clamp(1.65rem, 3.8vw, 2.35rem) !important;
+            font-weight: 850 !important;
+            line-height: 1.22 !important;
+            color: #0f172a !important;
+            margin: 10px 0 14px !important;
+            letter-spacing: -0.02em !important;
+        }
+        @media (max-width: 640px) {
+            .blog-post-title {
+                font-size: 1.65rem !important;
+                line-height: 1.25 !important;
+            }
         }
 
         /* Clean Compact Stat Counter Row */
@@ -151,10 +169,16 @@
 
         /* Learning Mode Grid (Offline Free Stay + Online Live) */
         .qaa-mode-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin: 32px 0;
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 20px !important;
+            margin: 32px 0 !important;
+        }
+        @media (max-width: 768px) {
+            .qaa-mode-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
         }
         .qaa-mode-card {
             background: #ffffff;
@@ -267,6 +291,7 @@
             text-transform: uppercase;
             letter-spacing: 0.04em;
             margin-bottom: 12px;
+        }
         .blog-article-body .qaa-call-trigger-box h3,
         .blog-article-body .qaa-call-trigger-box .qaa-call-box-title,
         .qaa-call-trigger-box .qaa-call-box-title,
@@ -275,25 +300,30 @@
             font-size: clamp(1.35rem, 2.6vw, 1.85rem) !important;
             font-weight: 900 !important;
             line-height: 1.3 !important;
-            color: #fce09b !important;
-            -webkit-text-fill-color: #fce09b !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
             margin: 0 0 10px !important;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+            border: none !important;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+        }
+        .blog-article-body .qaa-call-trigger-box h3::after {
+            display: none !important;
         }
         .blog-article-body .qaa-call-trigger-box p,
         .blog-article-body .qaa-call-trigger-box .qaa-call-box-text,
         .qaa-call-trigger-box .qaa-call-box-text,
         .qaa-call-box-text {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            font-size: 0.96rem !important;
+            color: #e2e8f0 !important;
+            -webkit-text-fill-color: #e2e8f0 !important;
+            font-size: 0.98rem !important;
             line-height: 1.65 !important;
             margin: 0 0 18px !important;
         }
         .blog-article-body .qaa-call-trigger-box strong,
         .qaa-call-trigger-box strong {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            color: #fce7b2 !important;
+            -webkit-text-fill-color: #fce7b2 !important;
             font-weight: 800 !important;
         }
         .qaa-call-actions {
@@ -729,6 +759,15 @@
                             </div>
                         </div>
                     </div>
+                </div><a href="../../master-class/">Masterclass</a>
+                <div class="ref-dropdown ref-resources"><button class="ref-toggle" type="button" aria-expanded="false"
+                        aria-controls="ref-resources">Free Resources<span class="ref-chevron"
+                            aria-hidden="true"></span></button>
+                    <div class="ref-resource-panel" id="ref-resources" hidden><a href="../../about-us/">About Us</a><a
+                            href="../../blog/">Blog</a><a href="../../downloads/course-details.pdf">Course Brochure</a><a
+                            href="https://www.youtube.com/@QuickartPhotographyAcademy/videos" target="_blank"
+                            rel="noopener noreferrer">YouTube · Free Courses</a><a href="../../alumni/">Alumni Directory</a>
+                    </div>
                 </div><a href="../../alumni/">Alumni</a><a href="../../contact-us/">Contact</a>
             </nav><a class="ref-login" href="../../portal/">Login</a><button class="ref-mobile-programs" type="button"
                 aria-label="Explore Programs"><span>Programs</span><svg class="ref-programs-arrow" width="12"
@@ -796,7 +835,11 @@
                         Free Courses</span></a>
                 <a class="ref-course" href="../../alumni/"><span class="ref-course-icon"
                         aria-hidden="true">Al</span><span>Alumni Directory &amp; Hall of Fame</span></a>
-            </details><a href="../../about-us/">About Us</a><a href="../../contact-us/">Contact</a>
+                <a class="ref-course"
+                    href="../../downloads/quickart-academy-release.apk"
+                    download="quickart-academy.apk"><span class="ref-course-icon"
+                        aria-hidden="true">Ap</span><span>Download Our App (APK)</span></a>
+            </details><a href="../../alumni/">Alumni Hall of Fame</a><a href="../../contact-us/">Contact</a>
         </nav>
     </header>
 
@@ -832,8 +875,8 @@
                         </div>
 
                         <!-- Main H1 with Targeted Primary Keyword -->
-                        <h1 class="blog-article-title" itemprop="headline">
-                            Premiere Pro Course in India – Professional Video Editing Training, Storytelling &amp; Mentorship
+                        <h1 class="blog-article-title blog-post-title" itemprop="headline">
+                            Premiere Pro Course in India
                         </h1>
 
                         <!-- First 100 Words Natural Introduction -->
@@ -871,8 +914,8 @@
                     <!-- Hero Featured Image -->
                     <div class="blog-article-hero-wrap" style="position:relative;border-radius:16px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
                         <picture>
-                            <source srcset="../../assets/premiere-pro-course-in-india.webp" type="image/webp">
-                            <img src="../../assets/premiere-pro-course-in-india.jpg"
+                            <source srcset="../../assets/premiere-pro-course-in-india.webp?v=3" type="image/webp">
+                            <img src="../../assets/premiere-pro-course-in-india.jpg?v=3"
                                 alt="Premiere Pro Course in India - Quick Art Photography Academy"
                                 class="blog-article-hero-img" width="1024" height="576" loading="eager" decoding="async" itemprop="image" style="width:100%;height:auto;display:block;">
                         </picture>
@@ -968,8 +1011,8 @@
                         <!-- ═══ CALL OUT BOX 1 ═══ -->
                         <div class="qaa-call-trigger-box">
                             <span class="qaa-urgent-pill">⚡ Offline &amp; Online Batches Open</span>
-                            <h3 class="qaa-call-box-title">Start Your Video Editing Journey Today!</h3>
-                            <p class="qaa-call-box-text">
+                            <h3 class="qaa-call-box-title" style="color:#ffffff !important;border:none !important;border-bottom:none !important;margin:0 0 10px !important;">Start Your Video Editing Journey Today!</h3>
+                            <p class="qaa-call-box-text" style="color:#e2e8f0 !important;">
                                 Chahe aap Siwan campus mein aakar <strong>Free Room Stay</strong> ke saath offline seekhein ya daily <strong>07:30 to 09:00 PM Live Online</strong> join karein — master trainer Anil Sharma se direct mentorship lene ke liye abhi call ya WhatsApp karein.
                             </p>
                             <div class="qaa-call-actions">
@@ -1165,8 +1208,8 @@
                         <!-- Final Brand CTA Box -->
                         <div class="qaa-call-trigger-box" style="margin-top:36px;">
                             <span class="qaa-urgent-pill">🎯 Take The Next Step</span>
-                            <h3 class="qaa-call-box-title">Quick Art Photography Academy</h3>
-                            <p class="qaa-call-box-text">
+                            <h3 class="qaa-call-box-title" style="color:#ffffff !important;border:none !important;border-bottom:none !important;margin:0 0 10px !important;">Quick Art Photography Academy</h3>
+                            <p class="qaa-call-box-text" style="color:#e2e8f0 !important;">
                                 📍 Ayodhya Puri, Near Lalit Bus Stand, Siwan, Bihar - 841226<br>
                                 📞 Call / WhatsApp: <strong>+91 99398 00780</strong><br>
                                 🏠 <strong>Offline Course:</strong> Free Room / Hostel Stay in Siwan<br>

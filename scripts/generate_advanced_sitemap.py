@@ -471,7 +471,7 @@ for item in sitemap_data:
 lines.append('</urlset>')
 lines.append('')
 
-workspace = "/Users/anilsharma/Documents/Quick art Photography Academy (Website)/Quick-Art-Photography-QAA"
+workspace = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(workspace, "sitemap.xml"), "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
 
