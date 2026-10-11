@@ -1614,6 +1614,55 @@
     .cta-green:hover { background: linear-gradient(135deg, #fbe2b0 0%, #e7b36a 45%, #cf9545 100%); }
     .cta-sub { opacity: 1; color: #3d2a0c; }
     .cta-sub b { color: #7a1d1d; }
+
+    /* ── Website colours (warm black + gold) & more transparency ── */
+    :root {
+      --ink: #0a0a0a;
+      --ink-2: #11100f;
+      --ink-3: #1b1916;
+      --line-d: rgba(255, 240, 220, 0.09);
+    }
+    body.lp {
+      background-color: #0a0a0a;
+      background-image:
+        radial-gradient(ellipse 55% 40% at 20% 8%, rgba(168, 109, 17, 0.16), transparent 70%),
+        radial-gradient(ellipse 45% 35% at 85% 35%, rgba(216, 161, 83, 0.10), transparent 70%),
+        radial-gradient(ellipse 50% 40% at 15% 65%, rgba(168, 109, 17, 0.10), transparent 70%),
+        radial-gradient(ellipse 45% 35% at 85% 90%, rgba(216, 161, 83, 0.09), transparent 70%);
+      background-attachment: fixed;
+    }
+    /* Sections become see-through so the warm glow shows behind glass cards */
+    .hero {
+      background:
+        radial-gradient(ellipse 60% 50% at 25% 30%, rgba(168, 109, 17, 0.20), transparent 75%),
+        radial-gradient(ellipse 45% 40% at 85% 60%, rgba(216, 161, 83, 0.08), transparent 70%);
+    }
+    .section, .section.light, .section.light-2, .section.dark-2, #curriculum, #fast-editing, #fayda, .offer, .final-cta {
+      background: transparent !important;
+      border-top: 1px solid rgba(255, 240, 220, 0.05);
+    }
+    .final-cta { background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(216, 161, 83, 0.16), transparent 70%) !important; }
+    .top-announcement { background: linear-gradient(90deg, #15100a, #2a1f10, #15100a); }
+
+    .glass, .module, .session-card, .value-stack, .mentor-stat, .outcome, .aud-card, .review,
+    .faq details, .cert-list .ic, .rating-card, .tl-card, .benefit, .sync-demo, .fayda-strip {
+      background-color: rgba(255, 245, 230, 0.03) !important;
+      border-color: rgba(255, 240, 220, 0.10) !important;
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+    }
+    .tl-card.tl-key, .sync-demo, .fayda-strip { background-color: rgba(216, 161, 83, 0.06) !important; border-color: rgba(216, 161, 83, 0.28) !important; }
+    .ticket-card { background: rgba(255, 252, 246, 0.96); }
+
+    /* Breathing room around hero CTA */
+    .hs-when { margin-bottom: 24px; }
+    .hs-right .cta-green { margin: 4px 0 6px; }
+    .hs-note { margin-top: 18px; }
+
+    .hs-left .video-card.glass { background-color: #fff !important; border: 0 !important; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .hs-when { margin-bottom: 26px; }
+    .hs-right .cta-green { margin: 6px 0 8px; }
+    .hs-note { margin-top: 20px; }
   </style>
 </head>
 
@@ -1634,26 +1683,26 @@
         </div>
 
         <h1 class="hero-title" id="masterclass-title">
-          Wedding Photo Editing Me AI Ka Sahi Use <br>
-          <span class="gold-gradient">1-Click Me 2,000+ RAW Photos Filter, Bulk Edit &amp; Online Client Selection</span>
+          AI से Wedding Photo Editing — Ekdam Aasan <br>
+          <span class="gold-gradient">1 Click Me Poori Shaadi Ki Photo Chhantiye, Edit Kariye Aur Customer Ko Bhejiye</span>
         </h1>
 
         <p class="hero-sub" id="masterclass-sub">
-          Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
+          Wedding photographer bhaiyon ke liye 1 din ki live class. Sikhiye kaise <strong>AI se achhi photo chhantein</strong>, <strong>ek click me edit karein</strong>, aur customer <strong>mobile se khud photo select kare</strong> — sab Hindi me, ekdam seedhi bhasha me.
         </p>
 
       </div>
 
       <div class="hero-split">
         <div class="hs-left">
-          <p class="watch-note">Ye video poora dekhiye 👇</p>
+          <p class="watch-note">पहले ये वीडियो पूरा देखिए 👇</p>
           <div class="video-card glass" id="hero-video-box">
             <div class="hero-video-frame" id="hero-video-mount">
               <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
           </div>
           <div class="hs-timer" id="countdown-wrap">
-            <p class="hs-timer-lbl">🔥 Launch offer khatam hone me...</p>
+            <p class="hs-timer-lbl">🔥 ₹21 wala offer khatam hone me...</p>
             <div class="timer-wrap">
               <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-lbl">days</div></div>
               <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">hours</div></div>
@@ -1665,19 +1714,19 @@
 
         <div class="hs-right">
           <div class="feat-pills">
-            <span class="feat-pill"><i>🎥</i>Live HD Class + Q&amp;A</span>
-            <span class="feat-pill"><i>🗣️</i>Training Language: Hindi</span>
-            <span class="feat-pill"><i>⏪</i>30-Day Replay Access</span>
-            <span class="feat-pill"><i>🎓</i>Trained 1,800+ Students</span>
+            <span class="feat-pill"><i>🎥</i>Live Class + Sawal-Jawab</span>
+            <span class="feat-pill"><i>🗣️</i>Bhasha: Ekdam Hindi</span>
+            <span class="feat-pill"><i>⏪</i>30 Din Tak Recording</span>
+            <span class="feat-pill"><i>🎓</i>1,800+ Log Sikh Chuke</span>
           </div>
-          <p class="hs-lead">Ab AI se wedding editing seekhna pehle se kahin aasaan hai, hamari</p>
+          <p class="hs-lead">Ab AI se photo editing sikhna bahut aasan hai — hamari</p>
           <h2 class="hs-course">1-Day Wedding Photo Editing<br>AI Live Masterclass</h2>
           <p class="hs-when">📅 <strong id="next-session-date">This Sunday</strong> • 7:00 – 9:30 PM IST</p>
           <a href="#register" class="cta-green cta-rock">
             <span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span>
-            <span class="cta-sub">Limited Launch Offer • Baad me <span class="dynamic-orig-price">₹999</span></span>
+            <span class="cta-sub">Abhi ka offer • Baad me <span class="dynamic-orig-price">₹999</span> lagega</span>
           </a>
-          <p class="hs-note">Replay + bonuses 30 din tak Student Portal me</p>
+          <p class="hs-note">Class ki recording 30 din tak aapke paas rahegi</p>
         </div>
       </div>
 
@@ -1695,9 +1744,9 @@
   <section class="section" id="fast-editing">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">AI se fast editing</span>
-        <h2 class="sec-title">Apni Editing Ko Fast Kariye — <span class="gold-gradient">AI Ki Help Se</span></h2>
-        <p class="sec-sub">Seekhiye kaise sirf <strong style="color:#fff">single click</strong> me poori shaadi ki photos edit hoti hain — culling se le kar color aur client selection tak.</p>
+        <span class="eyebrow">काम कैसे होगा</span>
+        <h2 class="sec-title">AI Se Editing Fast Kaise Hogi? <span class="gold-gradient">Bas 5 Step</span></h2>
+        <p class="sec-sub">Shaadi ki saari photo daaliye, baaki kaam AI karega. Dekhiye kaise:</p>
       </div>
 
       <div class="timeline">
@@ -1705,8 +1754,8 @@
           <div class="tl-dot">1</div>
           <div class="tl-card glass tl-key">
             <div class="tl-ic">🔍</div>
-            <h3>AI Photo Filter</h3>
-            <p>2,000+ RAW photos me se AI khud achhi photos select karega — blur, band aankhein aur kharab shots pakad lega.</p>
+            <h3>AI Achhi Photo Chhantega</h3>
+            <p>2,000+ photo me se AI khud achhi photo chun lega. Blur wali, aankh band wali — sab pakad lega.</p>
           </div>
         </div>
         <div class="tl-step reveal">
@@ -1714,15 +1763,15 @@
           <div class="tl-card glass">
             <div class="tl-ic">🗂️</div>
             <h3>Duplicate &amp; Bekar Alag</h3>
-            <p>Duplicate aur bekar photos apne aap alag folder me chali jaayengi. Aapke paas sirf kaam ki photos bachengi.</p>
+            <p>Ek jaisi aur kharab photo apne aap alag folder me chali jaayegi. Aapke paas sirf kaam ki photo bachegi.</p>
           </div>
         </div>
         <div class="tl-step reveal">
           <div class="tl-dot">3</div>
           <div class="tl-card glass">
             <div class="tl-ic">✨</div>
-            <h3>1 Click AI Editing</h3>
-            <p>Selected photos ko AI se ek click me edit kariye — natural skin tone aur poori shaadi me ek jaisa color.</p>
+            <h3>1 Click Me Editing</h3>
+            <p>Ek click me saari photo edit. Dulhan ka chehra natural, aur poori shaadi ka color ek jaisa.</p>
           </div>
         </div>
         <div class="tl-step reveal">
@@ -1730,7 +1779,7 @@
           <div class="tl-card glass">
             <div class="tl-ic">🔗</div>
             <h3>Customer Ko Link Bhejiye</h3>
-            <p>Edited photos ka online gallery link customer ko WhatsApp par bhejiye. Pen drive ki zaroorat nahi.</p>
+            <p>Customer ko WhatsApp par bas ek link bhejiye. Pen drive ka jhanjhat khatam.</p>
           </div>
         </div>
         <div class="tl-step reveal">
@@ -1738,20 +1787,20 @@
           <div class="tl-card glass tl-key">
             <div class="tl-ic">✅</div>
             <h3>Customer Selected Folder</h3>
-            <p>Customer mobile par photos select karega aur aapke computer me "Customer Selected" naam ka alag folder apne aap ban jayega.</p>
+            <p>Customer mobile par photo pasand karega, aur aapke computer me "Customer Selected" folder apne aap ban jayega.</p>
           </div>
         </div>
       </div>
 
       <div class="sync-demo glass reveal">
         <div class="sd-copy">
-          <span class="sd-kicker">✨ Magic moment</span>
-          <h3>Customer ne photo select ki — <span class="gold-gradient">folder turant aapke computer me</span></h3>
-          <p>Customer apne mobile par jaise hi photos select karta hai, aapke computer me <strong>"Customer Selected"</strong> naam ka alag folder apne aap ban jaata hai. Na list maangni, na file naam dhoondhne.</p>
+          <span class="sd-kicker">✨ सबसे बढ़िया बात</span>
+          <h3>Customer ne photo chuni — <span class="gold-gradient">folder seedha aapke computer me</span></h3>
+          <p>Customer jaise hi mobile par photo pasand karta hai, aapke computer me <strong>"Customer Selected"</strong> naam ka folder apne aap ban jaata hai. Na list maangna, na photo ka naam dhoondhna.</p>
           <ul class="sd-points">
-            <li><span>✓</span> Selection ki koi galti nahi</li>
-            <li><span>✓</span> Album design turant shuru</li>
-            <li><span>✓</span> Customer ko premium experience</li>
+            <li><span>✓</span> Selection me koi galti nahi</li>
+            <li><span>✓</span> Album ka kaam turant shuru</li>
+            <li><span>✓</span> Customer bolega — wah, kya service hai!</li>
           </ul>
         </div>
 
@@ -1779,7 +1828,7 @@
       </div>
 
       <div class="flow-cta reveal">
-        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Ye Workflow Seekhiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class • Hindi me • Sunday 7 PM</span></a>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Ye Tarika Sikhiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class • Hindi me • Sunday shaam 7 baje</span></a>
       </div>
     </div>
   </section>
@@ -1788,49 +1837,49 @@
   <section class="section" id="fayda">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Aapka fayda</span>
-        <h2 class="sec-title">Is workshop ke baad <span class="gold-gradient">aapko kya milega?</span></h2>
-        <p class="sec-sub">Sirf naya software nahi — aapke business me seedha badlav. Ek shaam ki class, poore season ka fayda.</p>
+        <span class="eyebrow">आपका फायदा</span>
+        <h2 class="sec-title">Class Ke Baad <span class="gold-gradient">Aapko Kya Fayda Hoga?</span></h2>
+        <p class="sec-sub">Ek shaam ki class, aur poore season ka kaam aasan.</p>
       </div>
 
       <div class="benefits">
         <div class="benefit glass reveal">
           <div class="b-ic">⏱️</div>
-          <h3>Din ka kaam ghanton me</h3>
-          <p>Jo culling aur editing 3-4 din leti thi, wo AI workflow se kuch ghanton me. Raat bhar jagna band.</p>
+          <h3>3-4 din ka kaam, kuch ghante me</h3>
+          <p>Jo editing me 3-4 din lagta tha, wo AI se kuch ghante me ho jayega. Raat bhar jagna band.</p>
         </div>
         <div class="benefit glass reveal">
           <div class="b-ic">📅</div>
-          <h3>Season me zyada shaadiyan</h3>
-          <p>Editing ka time bachega to aap ek season me pehle se zyada bookings le paayenge — bina extra editor rakhe.</p>
+          <h3>Zyada shaadi ka order le paayenge</h3>
+          <p>Editing ka time bachega, to ek season me zyada booking le sakte hain — bina extra aadmi rakhe.</p>
         </div>
         <div class="benefit glass reveal">
           <div class="b-ic">🚀</div>
-          <h3>Fast delivery, khush client</h3>
-          <p>Hafton ki jagah dinon me photos deliver kariye. Khush client = achhe Google reviews aur referral bookings.</p>
+          <h3>Jaldi delivery, khush customer</h3>
+          <p>Hafte bhar ki jagah 1-2 din me photo dijiye. Customer khush, to Google par achha review aur naya customer.</p>
         </div>
         <div class="benefit glass reveal">
           <div class="b-ic">📱</div>
-          <h3>Professional client experience</h3>
-          <p>Pen drive ki jagah WhatsApp par online gallery link. Client ko lagega aap bade studio jaisa kaam karte hain.</p>
+          <h3>Bade studio jaisa kaam</h3>
+          <p>Pen drive ki jagah WhatsApp par link. Customer ko lagega aap bade studio wale hain.</p>
         </div>
         <div class="benefit glass reveal">
           <div class="b-ic">👰</div>
-          <h3>Har photo me consistent quality</h3>
-          <p>Natural bridal skin tone aur Haldi se Reception tak ek jaisa color — album premium dikhega, complaints kam.</p>
+          <h3>Har photo ek jaisi sundar</h3>
+          <p>Dulhan ka rang natural, Haldi se Reception tak ek jaisa color. Album dekh ke customer khush.</p>
         </div>
         <div class="benefit glass reveal">
           <div class="b-ic">💰</div>
-          <h3>Kam kharcha, zyada kamai ka mauka</h3>
-          <p>Outsourcing aur extra staff ka kharcha bachega. Bacha hua time naye clients aur upsell (album, reels) me lagaiye.</p>
+          <h3>Kharcha kam, kamai ka mauka zyada</h3>
+          <p>Bahar editing bhejne ka kharcha bachega. Bache time me naye customer aur album-reel ka kaam lijiye.</p>
         </div>
       </div>
 
       <div class="fayda-strip glass reveal">
-        <div><span class="fs-lbl">Aapka invest</span><strong><span class="dynamic-ticket-price">₹21</span> + ek shaam</strong></div>
+        <div><span class="fs-lbl">Aap lagayenge</span><strong><span class="dynamic-ticket-price">₹21</span> + ek shaam</strong></div>
         <div class="fs-arrow">→</div>
-        <div><span class="fs-lbl">Aapko milega</span><strong>Har shaadi par kai din ki bachat</strong></div>
-        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Fayda Uthaiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Seat abhi book kariye</span></a>
+        <div><span class="fs-lbl">Aapko milega</span><strong>Har shaadi me kai din ki bachat</strong></div>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Fayda Uthaiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Abhi seat pakki kariye</span></a>
       </div>
     </div>
   </section>
@@ -1839,34 +1888,34 @@
   <section class="section light-2">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Results jo aap le kar jayenge</span>
-        <h2 class="sec-title">Ek shaam, chaar skills — <span class="gold-gradient">poora season aasaan</span></h2>
+        <span class="eyebrow">क्लास में क्या सीखेंगे</span>
+        <h2 class="sec-title">Class Me Ye <span class="gold-gradient">4 Kaam Sikhenge</span></h2>
       </div>
 
       <div class="outcomes">
         <div class="outcome reveal">
           <div class="outcome-num">2,000+</div>
-          <div class="outcome-unit">RAW photos</div>
-          <h3>1-Click AI Culling</h3>
-          <p>Blurry shots, band aankhein aur duplicates AI khud tag aur filter karega.</p>
+          <div class="outcome-unit">photo</div>
+          <h3>Achhi Photo Chhantna</h3>
+          <p>Blur, aankh band aur ek jaisi photo AI khud alag kar dega.</p>
         </div>
         <div class="outcome reveal">
           <div class="outcome-num">15</div>
-          <div class="outcome-unit">Minute</div>
-          <h3>Bulk Color Grading</h3>
-          <p>Har event ke liye preset banao aur poori gallery ek click me export karo.</p>
+          <div class="outcome-unit">minute me</div>
+          <h3>Saari Photo Ek Saath Edit</h3>
+          <p>Ek baar setting banaiye, poori shaadi ki photo ek click me ready.</p>
         </div>
         <div class="outcome reveal">
           <div class="outcome-num">100%</div>
-          <div class="outcome-unit">Natural skin</div>
-          <h3>Bridal Skin Protect</h3>
-          <p>Haldi, LED aur stage light me bhi glowing, real Indian skin tone.</p>
+          <div class="outcome-unit">natural rang</div>
+          <h3>Dulhan Ka Natural Rang</h3>
+          <p>Haldi ki peeli light ho ya stage ki light — chehra natural aur sundar dikhega.</p>
         </div>
         <div class="outcome reveal">
           <div class="outcome-num">1</div>
           <div class="outcome-unit">WhatsApp link</div>
-          <h3>Online Client Selection</h3>
-          <p>Client phone par tap karke select kare, aapko instant filename list mile.</p>
+          <h3>Customer Khud Photo Chunega</h3>
+          <p>Customer mobile par photo pasand karega, aapko turant list mil jayegi.</p>
         </div>
       </div>
     </div>
@@ -1876,15 +1925,15 @@
   <section class="section" id="curriculum">
     <div class="wrap curriculum-grid">
       <aside class="curr-aside reveal">
-        <span class="eyebrow">Live curriculum</span>
-        <h2 class="sec-title">Actual shaadi ke RAW photos par, step-by-step</h2>
-        <p class="sec-sub">Theory nahi — aap screen par poora workflow live dekhenge aur saath-saath practice karenge.</p>
+        <span class="eyebrow">क्लास का सिलेबस</span>
+        <h2 class="sec-title">Asli Shaadi Ki Photo Par, <span class="gold-gradient">Step-by-Step</span></h2>
+        <p class="sec-sub">Sirf baat nahi — screen par sab kuch karke dikhayenge, aap saath-saath karte jaiye.</p>
         <div class="session-card">
-          <div class="session-row"><span>Format</span><span>Live online (HD stream)</span></div>
+          <div class="session-row"><span>Format</span><span>Live online class</span></div>
           <div class="session-row"><span>Duration</span><span>Sunday, 7:00 – 9:30 PM</span></div>
           <div class="session-row"><span>Language</span><span>Hindi</span></div>
           <div class="session-row"><span>Replay</span><span>30 din tak portal me</span></div>
-          <div class="session-row"><span>Live Q&amp;A</span><span>Haan, session ke end me</span></div>
+          <div class="session-row"><span>Sawal-jawab</span><span>Haan, class ke end me</span></div>
         </div>
       </aside>
 
@@ -1892,36 +1941,36 @@
         <div class="module reveal">
           <div class="module-num">01</div>
           <div>
-            <h3>1-Click AI RAW Culling &amp; Quality Filter</h3>
-            <p>2,000+ RAW wedding photos 2 minute me scan karna — blurry frames, blinks, duplicates aur bad expressions auto-tag aur filter.</p>
+            <h3>AI Se Achhi Photo Chhantna</h3>
+            <p>2,000+ photo 2 minute me check. Blur, aankh band, ek jaisi aur kharab photo apne aap alag.</p>
           </div>
         </div>
         <div class="module reveal">
           <div class="module-num">02</div>
           <div>
-            <h3>Indian Bridal Skin Tone &amp; Haldi Light Correction</h3>
-            <p>Haldi ki harsh yellow light, dark banquet hall aur mixed LED stage light ko correct karke natural, radiant skin tone.</p>
+            <h3>Dulhan Ka Rang Aur Haldi Ki Light Theek Karna</h3>
+            <p>Haldi ki peeli light, andhera hall ya stage ki rang-birangi light — sab theek karke chehra natural banana.</p>
           </div>
         </div>
         <div class="module reveal">
           <div class="module-num">03</div>
           <div>
-            <h3>Bulk AI Color Grading in 15 Minutes</h3>
-            <p>Haldi, Mehendi, Jaimala, Baraat aur Reception ke liye consistent cinematic presets aur single-click bulk export.</p>
+            <h3>15 Minute Me Poori Shaadi Ka Color</h3>
+            <p>Haldi, Mehendi, Jaimala, Baraat, Reception — sab ka ek jaisa sundar color, aur ek click me export.</p>
           </div>
         </div>
         <div class="module reveal">
           <div class="module-num">04</div>
           <div>
-            <h3>Client Online Photo Selection via WhatsApp</h3>
-            <p>Interactive mobile gallery link bhejna — client tap karke select kare, aapko ready filename list mile. No Drive, no pen drive.</p>
+            <h3>WhatsApp Se Customer Ka Photo Selection</h3>
+            <p>Customer ko link bhejiye, wo mobile par tap karke photo chunega, aapko list turant mil jayegi.</p>
           </div>
         </div>
         <div class="module reveal">
           <div class="module-num">05</div>
           <div>
-            <h3>Generative Cleanup &amp; 300 DPI Album Export</h3>
-            <p>Mandap ke peeche ke log aur wires hatana, aur album printing ke liye 300 DPI color profile ke saath final export.</p>
+            <h3>Faltu Cheez Hatana Aur Album Ke Liye Export</h3>
+            <p>Mandap ke peeche ke log aur taar hatana, aur album print ke liye sahi quality (300 DPI) me export.</p>
           </div>
         </div>
       </div>
@@ -1932,29 +1981,29 @@
   <section class="section light">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Ye workshop kiske liye hai</span>
-        <h2 class="sec-title">Agar aap shaadi ki photos deliver karte hain, <span class="gold-gradient">ye aapke liye hai</span></h2>
+        <span class="eyebrow">ये क्लास किसके लिए है</span>
+        <h2 class="sec-title">Shaadi Ki Photo Ka Kaam Karte Hain? <span class="gold-gradient">To Ye Aapke Liye Hai</span></h2>
       </div>
       <div class="audience">
         <div class="aud-card reveal">
           <div class="aud-icon">📸</div>
           <h3>Wedding Photographers</h3>
-          <p>Jo season me 4-5 shaadiyan ek saath handle karte hain aur delivery time kam karna chahte hain.</p>
+          <p>Season me ek saath 4-5 shaadi ka kaam hai aur delivery jaldi karni hai.</p>
         </div>
         <div class="aud-card reveal">
           <div class="aud-icon">🏢</div>
           <h3>Studio Owners</h3>
-          <p>Jo team ka kaam fast karna aur zyada projects lena chahte hain bina staff badhaye.</p>
+          <p>Team ka kaam fast karna hai aur zyada order lena hai.</p>
         </div>
         <div class="aud-card reveal">
           <div class="aud-icon">🖥️</div>
           <h3>Photo Editors</h3>
-          <p>Jo freelance editing karte hain aur per-project kamai badhana chahte hain.</p>
+          <p>Freelance editing karte hain aur kamai badhani hai.</p>
         </div>
         <div class="aud-card reveal">
           <div class="aud-icon">🎓</div>
-          <h3>Beginners &amp; Students</h3>
-          <p>Jo wedding industry me professional workflow ke saath shuruaat karna chahte hain.</p>
+          <h3>Naye Log &amp; Students</h3>
+          <p>Abhi sikh rahe hain aur sahi tarike se shuru karna chahte hain.</p>
         </div>
       </div>
     </div>
@@ -1964,9 +2013,9 @@
   <section class="section offer" id="register">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Aapka live pass</span>
-        <h2 class="sec-title">Ek cup chai ki keemat me <span class="gold-gradient">poora live workshop</span></h2>
-        <p class="sec-sub">Sab kuch jo aapko chahiye — live class, replay, presets aur certificate — ek hi pass me.</p>
+        <span class="eyebrow">आपका पास</span>
+        <h2 class="sec-title">Ek Cup Chai Ke Daam Me <span class="gold-gradient">Poori Live Class</span></h2>
+        <p class="sec-sub">Live class, recording, presets aur certificate — sab ek hi pass me.</p>
       </div>
 
       <div class="offer-grid">
@@ -2065,9 +2114,9 @@
   <section class="section light-2" id="reviews">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Success stories</span>
+        <span class="eyebrow">students की बात</span>
         <h2 class="sec-title">1,800+ students ka <span class="gold-gradient">bharosa</span></h2>
-        <p class="sec-sub">Sunein hamare students se — unhi ki zubani.</p>
+        <p class="sec-sub">Suniye, hamare students khud kya bolte hain.</p>
       </div>
 
       <div class="vt-grid">
@@ -2152,8 +2201,8 @@
       </div>
 
       <div class="reveal">
-        <span class="eyebrow">Verified certificate</span>
-        <h2 class="sec-title" style="text-align:left">Skills ka proof jo clients <span class="gold-gradient">online verify</span> kar sakein</h2>
+        <span class="eyebrow">पक्का सर्टिफिकेट</span>
+        <h2 class="sec-title" style="text-align:left">Certificate Jo Customer <span class="gold-gradient">Online Check</span> Kar Sake</h2>
         <ul class="cert-list">
           <li><span class="ic">🛡️</span><div><strong>Unique ID &amp; online verification</strong><span>Koi bhi client ek click me certificate check kar sakta hai.</span></div></li>
           <li><span class="ic">🏛️</span><div><strong>ISO 9001:2015 &amp; MSME registered academy</strong><span>Market me aapki credibility badhata hai.</span></div></li>
@@ -2193,7 +2242,7 @@
         <div class="mentor-role">Aapke mentor</div>
         <h2 class="mentor-name" id="lp-mentor-name">Anil Sharma</h2>
         <p class="mentor-bio" id="lp-mentor-bio">
-          Founder, Quick Art Photography Academy. 10+ saal ka professional wedding editing aur cinematic color grading experience. India bhar me 1,800+ editors, photographers aur studio owners ko train kar chuke hain — aur is workshop me aapko personally guide karenge.
+          Quick Art Photography Academy ke founder. 10+ saal se wedding editing aur color ka kaam kar rahe hain. India bhar me 1,800+ photographer aur editor ko sikha chuke hain — is class me khud aapko sikhayenge.
         </p>
         <div class="mentor-stats">
           <div class="mentor-stat"><strong>1,800+</strong><span>Students</span></div>
@@ -2225,8 +2274,8 @@
           <div class="ans">Haan, class mobile par dekh sakte hain. Lekin saath-saath practice ke liye laptop ya PC behtar rahega.</div>
         </details>
         <details>
-          <summary>Main beginner hoon, kya samajh aayega?</summary>
-          <div class="ans">Haan. Sab kuch Hindi me, step-by-step screen par dikhaya jayega. Basic computer chalana aata ho to kaafi hai.</div>
+          <summary>Main naya hoon, samajh aayega?</summary>
+          <div class="ans">Haan, ekdam. Sab kuch Hindi me, aaram se step-by-step dikhayenge. Computer chalana aata hai to kaafi hai.</div>
         </details>
         <details>
           <summary>Payment safe hai?</summary>
@@ -2239,9 +2288,9 @@
   <!-- ═══════════ FINAL CTA ═══════════ -->
   <section class="final-cta">
     <div class="wrap">
-      <h2 class="sec-title reveal">Is season, editing me nahi — <span class="gold-gradient">naye clients me time lagaiye</span></h2>
-      <p class="sec-sub reveal">Sunday 7 PM, live. Ek shaam ka invest, poore season ka fayda.</p>
-      <a href="#register" class="cta-green cta-rock reveal"><span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Limited Launch Offer • Baad me <span class="dynamic-orig-price">₹999</span></span></a>
+      <h2 class="sec-title reveal">Is Season Raat Bhar Editing Nahi — <span class="gold-gradient">Naye Customer Pe Dhyan Dijiye</span></h2>
+      <p class="sec-sub reveal">Sunday shaam 7 baje, live. Ek shaam dijiye, poora season aasan.</p>
+      <a href="#register" class="cta-green cta-rock reveal"><span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Abhi ka offer • Baad me <span class="dynamic-orig-price">₹999</span> lagega</span></a>
       <small>Batch ke baad price ₹999 ho jayegi</small>
     </div>
   </section>
