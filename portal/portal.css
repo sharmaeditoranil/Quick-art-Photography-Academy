@@ -7958,94 +7958,180 @@ video::-webkit-media-controls-download-button {
   display: none !important;
 }
 
-/* Floating controls on player display (Icon-only: Fullscreen & Comments) */
-.live-display-top-controls {
+/* ── YouTube Zero-Leak Initial Connection Curtain (5s Splash) ── */
+.live-curtain-loader {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 22;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.live-display-float-icon-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #fff;
-  display: inline-flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 35;
+  background: radial-gradient(circle at center, #0b1329 0%, #030611 100%);
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
+  gap: 14px;
+  color: #ffffff;
+  pointer-events: auto;
+  user-select: none;
+  opacity: 1;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s ease;
 }
-.live-display-float-icon-btn:hover {
-  background: rgba(37, 99, 235, 0.95);
-  border-color: #60a5fa;
-  transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
-}
-.live-video-box.is-fullscreen .live-display-top-controls {
-  display: none !important;
+.live-curtain-loader.fade-out {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
-/* Stream bar chat toggle button */
-.live-btn-chat-toggle {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+.live-curtain-spinner-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #3b82f6;
+  border-right-color: #60a5fa;
+  animation: liveCurtainSpin 0.9s infinite linear;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+}
+
+@keyframes liveCurtainSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.live-curtain-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.live-curtain-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #f8fafc;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
-  font-weight: 700;
   font-family: inherit;
-  transition: all 0.2s ease;
 }
-.live-btn-chat-toggle:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
+.live-curtain-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+  animation: liveCurtainDotBlink 1.2s infinite ease-in-out alternate;
+}
+@keyframes liveCurtainDotBlink {
+  0% { opacity: 0.4; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1.15); }
 }
 
-/* Floating Exit Button in Fullscreen Mode (Always clickable & clearly visible) */
+.live-curtain-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.2px;
+}
+
+.live-curtain-progress-track {
+  width: 160px;
+  height: 3.5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.live-curtain-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2563eb, #60a5fa, #93c5fd);
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  animation: liveCurtainProgress 5s linear forwards;
+}
+
+@keyframes liveCurtainProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Stream bar chat toggle button (Live Doubts) */
+.live-btn-chat-toggle {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f1f5f9;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.live-btn-chat-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.38);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.live-btn-chat-toggle:active {
+  transform: scale(0.97);
+}
+
+/* Floating Exit Button in Fullscreen Mode (Ultra-sleek, compact, professional size) */
 .live-fs-exit-btn {
   display: none;
   position: fixed !important;
-  top: 14px !important;
-  right: 14px !important;
+  top: 10px !important;
+  right: 10px !important;
   z-index: 2147483647 !important;
-  background: rgba(220, 38, 38, 0.92);
+  background: rgba(15, 23, 42, 0.85) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-  padding: 8px 18px;
-  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f8fafc !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
   cursor: pointer;
   align-items: center;
-  gap: 7px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
+  gap: 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease, border-color 0.2s ease;
   pointer-events: none;
+  line-height: 1 !important;
+  font-family: inherit;
 }
 .live-fs-exit-btn:hover {
-  background: #b91c1c;
-  border-color: #fca5a5;
-  transform: translateY(0) scale(1.05);
+  background: rgba(220, 38, 38, 0.9) !important;
+  border-color: rgba(252, 165, 165, 0.6) !important;
+  color: #fff !important;
+  transform: translateY(0) scale(1.04);
+}
+.live-fs-exit-icon {
+  color: #ef4444;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+.live-fs-exit-btn:hover .live-fs-exit-icon {
+  color: #ffffff;
 }
 .live-video-box.is-fullscreen .live-fs-exit-btn,
 .live-video-box:fullscreen .live-fs-exit-btn,
@@ -8054,6 +8140,20 @@ video::-webkit-media-controls-download-button {
   opacity: 1 !important;
   transform: translateY(0) !important;
   pointer-events: auto !important;
+}
+
+@media (max-width: 768px), (max-height: 500px) {
+  .live-fs-exit-btn {
+    top: 8px !important;
+    right: 8px !important;
+    padding: 4px 9px !important;
+    font-size: 10.5px !important;
+    gap: 4px !important;
+    background: rgba(15, 23, 42, 0.9) !important;
+  }
+  .live-fs-exit-desktop-text {
+    display: none !important;
+  }
 }
 
 /* ── Zoom Classroom Bottom Control Deck ── */
@@ -8084,23 +8184,32 @@ video::-webkit-media-controls-download-button {
 }
 .live-btn-fs-preview {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border: 1px solid rgba(96, 165, 250, 0.5);
-  color: #fff;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  color: #ffffff;
   font-weight: 700;
-  font-size: 12.5px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  font-size: 11.5px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
-  transition: all 0.2s ease;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 .live-btn-fs-preview:hover {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #bfdbfe;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
-  border-color: #93c5fd;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+}
+.live-btn-fs-preview:active {
+  transform: scale(0.97);
 }
 
 /* ── Zoom 1-Click Direct Join Stage ── */
@@ -8634,11 +8743,11 @@ body.live-fs-open #view-live-studio {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
-  padding: 0 14px;
-  background: #060911;
+  height: 44px;
+  padding: 0 12px;
+  background: #070b14;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 10px;
+  gap: 8px;
   flex-wrap: nowrap !important;
   white-space: nowrap !important;
   box-sizing: border-box;
@@ -8647,7 +8756,7 @@ body.live-fs-open #view-live-studio {
 .live-stream-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
 }
@@ -8656,26 +8765,35 @@ body.live-fs-open #view-live-studio {
 .live-broadcast-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: #ffffff;
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 11px;
+  font-family: inherit;
+  font-size: 10.5px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 5px 10px;
-  border-radius: 6px;
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.06em;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
   flex-shrink: 0;
   white-space: nowrap;
+  box-sizing: border-box;
   animation: liveBadgePulse 2.2s infinite ease-in-out;
 }
+.live-broadcast-badge.is-recorded {
+  background: rgba(216, 161, 83, 0.18);
+  border: 1px solid rgba(216, 161, 83, 0.45);
+  color: #fde68a;
+  box-shadow: none;
+  animation: none;
+}
 .live-blink-circle {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 0 6px #ffffff;
+  box-shadow: 0 0 5px #ffffff;
   animation: liveBlinkDot 1s infinite alternate ease-in-out;
   flex-shrink: 0;
 }
@@ -8693,10 +8811,10 @@ body.live-fs-open #view-live-studio {
 }
 @keyframes liveBadgePulse {
   0%, 100% {
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
   }
   50% {
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.75);
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
   }
 }
 
@@ -8704,47 +8822,49 @@ body.live-fs-open #view-live-studio {
 .live-watching-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 5px 10px;
-  border-radius: 6px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 5px;
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   flex-shrink: 0;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 .live-watching-badge svg {
   color: #10b981;
   flex-shrink: 0;
 }
 .live-watching-badge .attendees-num {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
+  font-family: inherit;
+  font-weight: 700;
   color: #10b981;
-  font-size: 13px;
+  font-size: 12px;
 }
 .live-watching-badge .watching-word {
   color: #94a3b8;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 500;
 }
 
-/* 3. Icon-Only Action Buttons */
+/* 3. Action Buttons Deck */
 .live-stream-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: nowrap !important;
   flex-shrink: 0;
 }
 .live-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: #cbd5e1;
   display: inline-flex;
   align-items: center;
@@ -8755,46 +8875,60 @@ body.live-fs-open #view-live-studio {
   box-sizing: border-box;
 }
 .live-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
   color: #ffffff;
   transform: translateY(-1px);
 }
 .live-icon-btn:active {
-  transform: scale(0.94);
-}
-.live-icon-btn.live-fs-btn {
-  color: var(--gold, #d8a153);
-  border-color: rgba(216, 161, 83, 0.32);
-  background: rgba(216, 161, 83, 0.1);
-}
-.live-icon-btn.live-fs-btn:hover {
-  background: rgba(216, 161, 83, 0.25);
-  border-color: #d8a153;
-  color: #ffffff;
+  transform: scale(0.95);
 }
 
 @media (max-width: 480px) {
   .live-stream-bar {
-    height: 44px;
-    padding: 0 10px;
-    gap: 6px;
+    height: 40px;
+    padding: 0 8px;
+    gap: 5px;
+  }
+  .live-stream-status {
+    gap: 4px;
   }
   .live-broadcast-badge {
-    padding: 4px 8px;
-    font-size: 10.5px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    gap: 4px;
   }
   .live-watching-badge {
-    padding: 4px 8px;
-    font-size: 11px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 10.5px;
+    gap: 4px;
   }
   .live-watching-badge .watching-word {
     display: none; /* Show icon + count on small screens for clean look */
   }
+  .live-stream-actions {
+    gap: 4px;
+  }
+  .live-btn-fs-preview {
+    height: 27px;
+    padding: 0 8px;
+    font-size: 10.5px;
+    gap: 4px;
+    border-radius: 5px;
+  }
+  .live-btn-chat-toggle {
+    height: 27px;
+    padding: 0 8px;
+    font-size: 10.5px;
+    gap: 4px;
+    border-radius: 5px;
+  }
   .live-icon-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 7px;
+    width: 27px;
+    height: 27px;
+    border-radius: 5px;
   }
 }
 
