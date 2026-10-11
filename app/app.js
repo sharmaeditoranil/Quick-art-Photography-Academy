@@ -3032,29 +3032,11 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
       directJoinLink = zoomUrl.replace(/\/wc\/(\d{9,12})\/join/i, '/j/$1');
     }
 
-    // Construct Zoom Web Client Join URL with base64 encoded username if needed
+    // Construct Zoom Web Client Join URL with base64 encoded username
     const b64Name = btoa(unescape(encodeURIComponent(studentName)));
     const zoomEmbedUrl = zoomMeetingId
-      ? `https://app.zoom.us/wc/${zoomMeetingId}/join?prefer=1${encryptedPwdHash ? `&pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}&un=${encodeURIComponent(b64Name)}`
+      ? `https://app.zoom.us/wc/${zoomMeetingId}/join?prefer=1${encryptedPwdHash ? `&pwd=${encodeURIComponent(encryptedPwdHash)}` : ''}&un=${encodeURIComponent(b64Name)}&uname=${encodeURIComponent(studentName)}`
       : '';
-
-    window.loadZoomIframeDirectly = function() {
-      if (!zoomEmbedUrl) return;
-      mount.innerHTML = `
-        <div class="zoom-embed-container" style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
-          <iframe
-            id="live-stream-iframe"
-            class="zoom-embed-frame interactive-frame"
-            src="${zEsc(zoomEmbedUrl)}"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;background:#000;"
-            allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write; speaker-selection"
-            allowfullscreen="true"
-            webkitallowfullscreen="true"
-            mozallowfullscreen="true">
-          </iframe>
-        </div>
-      `;
-    };
 
     // 3. Ensure Floating Exit Fullscreen Button exists inside video box (auto-hides, zero static text)
     if (liveBox) {
@@ -3075,64 +3057,33 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
       }
     }
 
-    // 4. Render 1-Click Instant Join Cinema Stage (Zero forms, zero "Enter Meeting Info", instant connection)
-    mount.innerHTML = `
-      <div class="zoom-direct-stage" style="position:relative;width:100%;height:100%;min-height:380px;background:radial-gradient(circle at center, #0f1c3f 0%, #060a14 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;box-sizing:border-box;text-align:center;color:#fff">
-        <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg, rgba(37,99,235,0.3), rgba(30,58,138,0.5));border:2px solid rgba(59,130,246,0.55);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px;box-shadow:0 8px 25px rgba(37,99,235,0.4)">
-          🔷
+    // 4. Mount Zoom Web Client directly inside classroom player (100% in-website, zero redirect)
+    if (zoomEmbedUrl) {
+      mount.innerHTML = `
+        <div class="zoom-embed-container" style="position:relative;width:100%;height:100%;background:#000;overflow:hidden">
+          <iframe
+            id="live-stream-iframe"
+            class="zoom-embed-frame interactive-frame"
+            src="${zEsc(zoomEmbedUrl)}"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;outline:0;pointer-events:auto !important;background:#000;"
+            allow="camera *; microphone *; autoplay *; display-capture *; fullscreen *; clipboard-read *; clipboard-write *"
+            allowfullscreen="true"
+            webkitallowfullscreen="true"
+            mozallowfullscreen="true">
+          </iframe>
         </div>
-
-        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#fca5a5;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.8px;margin-bottom:10px">
-          <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
-          <span>LIVE 2-WAY MASTERCLASS ACTIVE</span>
+      `;
+    } else {
+      mount.innerHTML = `
+        <div class="zoom-waiting-stage" style="position:relative;width:100%;height:100%;min-height:380px;background:radial-gradient(circle at center, #0f1c3f 0%, #060a14 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;box-sizing:border-box;text-align:center;color:#fff">
+          <div style="width:64px;height:64px;border-radius:20px;background:rgba(37,99,235,0.25);border:2px solid rgba(59,130,246,0.55);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px">🔷</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#93c5fd;margin-bottom:6px">Live 2-Way Interactive Classroom</div>
+          <h3 style="font-size:18px;font-weight:800;color:#fff;margin:0 0 10px 0;line-height:1.3;max-width:420px">${zEsc(sessionTitle)}</h3>
+          <p style="font-size:13px;color:#cbd5e1;margin:0 0 18px 0;max-width:400px;line-height:1.5">Classroom connect ho raha hai. Mentor Anil Sharma ke session live karte hi yahan screen active ho jayegi.</p>
+          <button type="button" onclick="pollLiveStatus()" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);border:none;color:#fff;font-size:13px;font-weight:700;padding:11px 22px;border-radius:10px;cursor:pointer">🔄 Refresh Status</button>
         </div>
-
-        <h2 style="font-size:20px;font-weight:800;color:#fff;margin:0 0 4px 0;line-height:1.3;max-width:520px">
-          ${zEsc(sessionTitle)}
-        </h2>
-        <div style="font-size:12.5px;color:#93c5fd;font-weight:600;margin-bottom:18px">
-          Mentor Anil Sharma • Quick Art Photography Academy
-        </div>
-
-        <!-- Primary 1-Click Direct Join Button (No forms, direct entry) -->
-        ${directJoinLink ? `
-          <a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);color:#fff;font-size:15px;font-weight:800;padding:15px 32px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(37,99,235,0.6);border:1px solid rgba(147,197,253,0.4);transition:all 0.2s ease;margin-bottom:14px">
-            <span style="font-size:18px">🚀</span>
-            <span>Click Karke Direct Class Join Karein</span>
-            <span style="font-size:18px">➔</span>
-          </a>
-        ` : ''}
-
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:14px;max-width:440px;line-height:1.5">
-          ⚡ <strong>Instant Entry:</strong> Koi form ya name fill karne ki zaroorat nahi hai. Button dabate hi class me direct connect ho jayenge.
-        </div>
-
-        <!-- Quick Meeting ID & Passcode pills -->
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">
-          ${zoomMeetingId ? `
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.35);padding:5px 12px;border-radius:20px;font-size:11.5px;color:#cbd5e1">
-              <span style="color:#94a3b8">Meeting ID:</span>
-              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(zoomMeetingId)}</strong>
-              <button type="button" onclick="copyText('${zEsc(zoomMeetingId)}', 'Meeting ID')" style="background:none;border:none;color:#93c5fd;font-size:11px;cursor:pointer;padding:0 2px" title="Copy Meeting ID">📋</button>
-            </div>
-          ` : ''}
-          ${plainPass ? `
-            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(15,23,42,0.85);border:1px solid rgba(59,130,246,0.35);padding:5px 12px;border-radius:20px;font-size:11.5px;color:#cbd5e1">
-              <span style="color:#94a3b8">Passcode:</span>
-              <strong style="color:#60a5fa;font-family:monospace;letter-spacing:0.5px">${zEsc(plainPass)}</strong>
-              <button type="button" onclick="copyText('${zEsc(plainPass)}', 'Passcode')" style="background:none;border:none;color:#93c5fd;font-size:11px;cursor:pointer;padding:0 2px" title="Copy Passcode">📋</button>
-            </div>
-          ` : ''}
-        </div>
-
-        <!-- Optional Browser Web Mode link -->
-        ${zoomEmbedUrl ? `
-          <button type="button" onclick="loadZoomIframeDirectly()" style="background:none;border:none;color:#64748b;font-size:11.5px;cursor:pointer;text-decoration:underline;padding:4px 8px">
-            🖥️ Yahi Browser me Iframe Player kholein
-          </button>
-        ` : ''}
-      </div>
-    `;
+      `;
+    }
 
     // 5. Build Clean Classroom Toolbar BELOW the video player
     const streamBar = document.querySelector('.live-stream-bar');
@@ -3162,17 +3113,24 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
         </div>
 
         <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          ${directJoinLink ? `
-            <a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" class="live-btn-fs-preview" style="text-decoration:none" title="1-Click Direct Join">
-              <span>🚀 1-Click Join</span>
-            </a>
-          ` : ''}
+          <button type="button" class="live-btn-fs-preview" onclick="toggleLiveCinemaFullscreen()" title="Full Screen Preview (Press F)" aria-label="Full Screen Preview">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <span>Full Screen Preview</span>
+          </button>
 
           <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
           </button>
+
+          ${directJoinLink ? `
+            <a href="${zEsc(directJoinLink)}" target="_blank" rel="noopener noreferrer" title="Zoom App me chalane ke liye optional option" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);color:#94a3b8;font-size:11px;font-weight:600;padding:7px 11px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+              <span>Zoom App</span><span style="font-size:12px">↗</span>
+            </a>
+          ` : ''}
         </div>
       `;
     }
