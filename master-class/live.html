@@ -928,8 +928,15 @@
     .mobile-cta-price { display: flex; align-items: baseline; gap: 8px; }
     .m-price { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
     .m-orig { font-size: 14px; color: var(--muted-d); text-decoration: line-through; }
-    .mobile-cta-seats { font-size: 11.5px; color: #fca5a5; font-weight: 600; }
-    .btn-mobile-book { min-height: 48px; padding: 0 20px; font-size: 15px; }
+    .mobile-cta-seats { font-size: 11px; color: #fca5a5; font-weight: 600; }
+    .m-timer { font-size: 12px; color: #e6e8ee; font-weight: 600; margin: 1px 0; white-space: nowrap; }
+    .m-timer b { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; color: var(--gold-2); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+    .btn-mobile-book { animation: book-pulse 2.2s ease-in-out infinite; }
+    @keyframes book-pulse {
+      0%, 100% { box-shadow: 0 10px 30px -8px rgba(216, 161, 83, 0.6); }
+      50% { box-shadow: 0 0 0 6px rgba(216, 161, 83, 0.18), 0 10px 30px -8px rgba(216, 161, 83, 0.8); }
+    }
+    .btn-mobile-book { min-height: 48px; padding: 0 16px; font-size: 15px; white-space: nowrap; flex-shrink: 0; }
 
     /* Reveal on scroll */
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
@@ -1054,6 +1061,93 @@
       .reviews-grid { grid-template-columns: 1fr; }
       .more-reviews .btn { width: 100%; }
     }
+
+    /* ── Centered hero + glass (transparent) look ── */
+    .glass {
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 20px 40px -24px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero {
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 60% 45% at 50% -5%, rgba(216, 161, 83, 0.22), transparent 65%),
+        radial-gradient(ellipse 40% 35% at 95% 55%, rgba(239, 68, 68, 0.09), transparent 60%),
+        radial-gradient(ellipse 40% 35% at 5% 45%, rgba(99, 102, 241, 0.1), transparent 60%);
+    }
+
+    .hero-center { max-width: 940px; margin: 40px auto 0; text-align: center; }
+    .hero-center .hero-title { font-size: clamp(30px, 4.2vw, 50px); line-height: 1.12; }
+    .hero-center .hero-sub { margin: 0 auto 28px; max-width: 760px; }
+
+    .schedule-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 30px; }
+    .schedule-pill { display: inline-flex; align-items: center; gap: 12px; padding: 11px 18px; border-radius: 14px; text-align: left; }
+    .schedule-pill.gold { background: rgba(216, 161, 83, 0.1); border-color: rgba(216, 161, 83, 0.4); }
+    .sch-icon { font-size: 22px; line-height: 1; }
+    .sch-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-d); }
+    .sch-val { font-family: 'Outfit', sans-serif; font-size: 15.5px; font-weight: 700; color: #fff; }
+    .schedule-pill.gold .sch-val { color: var(--gold-2); }
+    .sch-val del { font-weight: 400; opacity: 0.55; font-size: 13px; margin-left: 4px; }
+
+    .hero-center .video-card { border-radius: 22px; padding: 10px; margin: 0 auto 26px; background: rgba(255, 255, 255, 0.04); }
+    .video-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px 6px 4px; }
+    .video-pills span { font-size: 12.5px; font-weight: 600; color: #d6d9e2; padding: 5px 12px; border-radius: 100px; background: rgba(255, 255, 255, 0.06); }
+
+    .countdown-box { display: inline-flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 28px; border-radius: 18px; margin-bottom: 28px; }
+    .countdown-box .event-label { color: var(--gold-2); margin: 0; }
+    .countdown-box .timer-unit { min-width: 62px; }
+    .countdown-box .timer-num { font-size: 34px; }
+
+    .hero-center .hero-cta, .hero-center .trust-row { justify-content: center; }
+    .hero-center .trust-item { align-items: center; }
+
+    .tool-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 30px; }
+    .tool-pills span { font-size: 13px; font-weight: 600; color: #d6d9e2; padding: 7px 14px; border-radius: 100px; box-shadow: none; }
+
+    /* Glass cards on dark sections */
+    .module, .session-card, .value-stack, .mentor-stat {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.09);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    #curriculum, .dark-2 {
+      background:
+        radial-gradient(ellipse 45% 40% at 90% 10%, rgba(216, 161, 83, 0.1), transparent 60%),
+        radial-gradient(ellipse 40% 40% at 0% 90%, rgba(99, 102, 241, 0.08), transparent 60%),
+        var(--ink);
+    }
+
+    /* Frosted cards on light sections */
+    .section.light, .section.light-2 {
+      background:
+        radial-gradient(ellipse 45% 40% at 100% 0%, rgba(216, 161, 83, 0.12), transparent 60%),
+        radial-gradient(ellipse 40% 40% at 0% 100%, rgba(216, 161, 83, 0.08), transparent 60%),
+        var(--paper);
+    }
+    .section.light-2 { background-color: var(--paper-2); }
+
+    .outcome, .aud-card, .review, .compare-col.old, .faq details, .cert-list .ic {
+      background: rgba(255, 255, 255, 0.62);
+      border-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px -18px rgba(60, 40, 10, 0.25);
+    }
+
+    @media (max-width: 760px) {
+      .hero-center { margin-top: 20px; }
+      .schedule-strip { flex-direction: column; align-items: stretch; }
+      .schedule-pill { justify-content: flex-start; }
+      .countdown-box { display: flex; padding: 16px 12px; }
+      .countdown-box .timer-unit { min-width: 52px; }
+      .countdown-box .timer-num { font-size: 26px; }
+      .video-pills span:nth-child(n+3), .tool-pills span:nth-child(n+5) { display: none; }
+    }
   </style>
 </head>
 
@@ -1081,89 +1175,82 @@
         </div>
       </header>
 
-      <div class="hero-grid" style="margin-top:36px">
-        <div>
-          <div class="live-badge">
-            <span class="live-dot"></span>
-            <span id="hero-badge-tag">1-DAY LIVE WORKSHOP • THIS SUNDAY 7:00 PM</span>
+      <div class="hero-center">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          <span id="hero-badge-tag">1-DAY PRACTICAL LIVE WORKSHOP • THIS SUNDAY 7:00 PM</span>
+        </div>
+
+        <h1 class="hero-title" id="masterclass-title">
+          Wedding Photo Editing Me AI Ka Sahi Use <br>
+          <span class="gold-gradient">1-Click Me 2,000+ RAW Photos Filter, Bulk Edit &amp; Online Client Selection</span>
+        </h1>
+
+        <p class="hero-sub" id="masterclass-sub">
+          Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
+        </p>
+
+        <div class="schedule-strip">
+          <div class="glass schedule-pill">
+            <span class="sch-icon">🗓️</span>
+            <div><span class="sch-label">Live batch</span><strong class="sch-val" id="next-session-date">This Sunday</strong></div>
           </div>
-
-          <h1 class="hero-title" id="masterclass-title">
-            Wedding Photo Editing Me AI Ka Sahi Use <br>
-            <span class="gold-gradient">2,000+ RAW Photos — 1 Din Ka Kaam, 1 Ghante Me</span>
-          </h1>
-
-          <p class="hero-sub" id="masterclass-sub">
-            Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
-          </p>
-
-          <ul class="hero-points">
-            <li><span class="tick">✓</span> Blurry, blink aur duplicate photos seconds me auto-filter</li>
-            <li><span class="tick">✓</span> Poori shaadi ki gallery 15 minute me consistent color grade</li>
-            <li><span class="tick">✓</span> Client WhatsApp link se photo select kare — no pen drive, no wait</li>
-          </ul>
-
-          <div class="hero-cta">
-            <a href="#register" class="btn btn-gold">
-              <span class="price-inline">Book My Seat • <span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></span>
-            </a>
-            <a href="#curriculum" class="btn btn-ghost">Kya Seekhenge? ↓</a>
+          <div class="glass schedule-pill">
+            <span class="sch-icon">⏰</span>
+            <div><span class="sch-label">Timing</span><strong class="sch-val">7:00 – 9:30 PM IST</strong></div>
           </div>
-
-          <div class="trust-row">
-            <div class="trust-item">
-              <strong>4.9 <span class="stars">★★★★★</span></strong>
-              <span>257+ Google reviews</span>
-            </div>
-            <div class="trust-sep"></div>
-            <div class="trust-item">
-              <strong>1,800+</strong>
-              <span>Students trained</span>
-            </div>
-            <div class="trust-sep"></div>
-            <div class="trust-item">
-              <strong>ISO 9001:2015</strong>
-              <span>Certified academy</span>
-            </div>
+          <div class="glass schedule-pill gold">
+            <span class="sch-icon">🎟️</span>
+            <div><span class="sch-label">Launch pass</span><strong class="sch-val">Only <span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></strong></div>
           </div>
         </div>
 
-        <div class="video-card" id="hero-video-box">
+        <div class="video-card glass" id="hero-video-box">
           <div class="hero-video-frame" id="hero-video-mount">
             <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
-          <div class="video-meta">
-            <span>▶ <strong>Workshop preview</strong> dekhiye</span>
-            <span>Hindi • Live hands-on</span>
+          <div class="video-pills">
+            <span>🔴 1-Day Live Workshop Demo</span>
+            <span>⚡ 2,000+ RAW Live Workflow</span>
+            <span>🎙️ Hindi Step-by-Step</span>
           </div>
         </div>
-      </div>
 
-      <!-- Schedule + Countdown -->
-      <div class="event-band" id="countdown-wrap">
-        <div class="event-cell">
-          <span class="event-label">Date</span>
-          <div class="event-val" id="next-session-date">This Sunday</div>
-        </div>
-        <div class="event-cell">
-          <span class="event-label">Time</span>
-          <div class="event-val">7:00 – 9:30 PM IST</div>
-        </div>
-        <div class="event-cell">
-          <span class="event-label">Launch Price</span>
-          <div class="event-val gold"><span class="dynamic-ticket-price">₹21</span><del class="dynamic-orig-price">₹999</del></div>
-        </div>
-        <div class="event-cell countdown">
-          <span class="event-label">Live starts in</span>
+        <div class="glass countdown-box" id="countdown-wrap">
+          <span class="event-label">⏳ Next live batch starts in</span>
           <div class="timer-wrap">
             <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-lbl">Days</div></div>
             <div class="timer-colon">:</div>
-            <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">Hrs</div></div>
+            <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">Hours</div></div>
             <div class="timer-colon">:</div>
-            <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-lbl">Min</div></div>
+            <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-lbl">Minutes</div></div>
             <div class="timer-colon">:</div>
-            <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-lbl">Sec</div></div>
+            <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-lbl">Seconds</div></div>
           </div>
+        </div>
+
+        <div class="hero-cta">
+          <a href="#register" class="btn btn-gold">
+            <span class="price-inline">Book My Seat • <span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></span>
+          </a>
+          <a href="#curriculum" class="btn btn-ghost">Kya Seekhenge? ↓</a>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-item"><strong>4.9 <span class="stars">★★★★★</span></strong><span>257+ Google reviews</span></div>
+          <div class="trust-sep"></div>
+          <div class="trust-item"><strong>1,800+</strong><span>Students trained</span></div>
+          <div class="trust-sep"></div>
+          <div class="trust-item"><strong>ISO 9001:2015</strong><span>Certified academy</span></div>
+        </div>
+
+        <div class="tool-pills">
+          <span class="glass">⚡ 1-Click RAW Culling</span>
+          <span class="glass">👰 Bridal Skin Tone Protect</span>
+          <span class="glass">📱 Client Online Selection</span>
+          <span class="glass">✨ 15-Min Bulk Grading</span>
+          <span class="glass">📸 Blur &amp; Blink Filter</span>
+          <span class="glass">🎨 300 DPI Print Profiles</span>
         </div>
       </div>
     </div>
@@ -1735,6 +1822,7 @@
         <span class="m-price" id="m-sticky-price"><span class="dynamic-ticket-price">₹21</span></span>
         <span class="m-orig" id="m-sticky-orig"><span class="dynamic-orig-price">₹999</span></span>
       </div>
+      <div class="m-timer" aria-live="off">⏳ Batch shuru hone me <b id="m-timer">--:--:--</b></div>
       <div class="mobile-cta-seats" id="m-sticky-seats">🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></div>
     </div>
     <button type="button" class="btn btn-gold btn-mobile-book" onclick="scrollToCheckoutForm()">Book Seat →</button>
@@ -2048,6 +2136,11 @@
           if (document.getElementById('t-hours')) document.getElementById('t-hours').textContent = String(hours).padStart(2, '0');
           if (document.getElementById('t-mins')) document.getElementById('t-mins').textContent = String(mins).padStart(2, '0');
           if (document.getElementById('t-secs')) document.getElementById('t-secs').textContent = String(secs).padStart(2, '0');
+          const mTimer = document.getElementById('m-timer');
+          if (mTimer) {
+            const hms = [hours, mins, secs].map(n => String(n).padStart(2, '0')).join(':');
+            mTimer.textContent = days > 0 ? `${days}d ${hms}` : hms;
+          }
         };
         update();
         timerInterval = setInterval(update, 1000);
