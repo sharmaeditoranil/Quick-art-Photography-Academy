@@ -1686,6 +1686,23 @@
       mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
     }
     body.lp > *:not(.mobile-sticky-cta):not(.cert-modal-overlay):not(.vt-modal) { position: relative; z-index: 1; }
+
+    /* Exact website background (home hero: #0a0a0a + faint gold & purple glow) */
+    body.lp {
+      background-color: #0a0a0a;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 25% 42%, rgba(168, 109, 17, 0.10), transparent 80%),
+        radial-gradient(ellipse 50% 40% at 82% 60%, rgba(92, 56, 136, 0.07), transparent 65%);
+      background-attachment: fixed;
+    }
+    .hero {
+      background:
+        radial-gradient(ellipse 60% 50% at 25% 42%, rgba(168, 109, 17, 0.10), transparent 80%),
+        radial-gradient(ellipse at 82% 60%, rgba(92, 56, 136, 0.07), transparent 65%),
+        #0a0a0a;
+    }
+    .final-cta { background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(168, 109, 17, 0.10), transparent 70%) !important; }
+    .top-announcement { background: #0a0a0a; border-bottom-color: rgba(216, 161, 83, 0.22); }
   </style>
 </head>
 
