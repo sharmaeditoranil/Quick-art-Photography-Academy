@@ -908,6 +908,11 @@ a {
   transform: translateX(-2px);
 }
 
+/* All Lessons Drawer Toggle: Hidden on Desktop (Full sidebar is already present) */
+.classroom-lessons-toggle-btn {
+  display: none !important;
+}
+
 .topbar-course-info {
   display: flex;
   align-items: center;
@@ -4449,8 +4454,8 @@ a {
   }
 }
 
-/* ── Mobile Classroom: 480px (Exact Match to App Screenshot) ── */
-@media (max-width: 480px) {
+/* ── Mobile Classroom: <= 768px (Exact Match to App Screenshot) ── */
+@media (max-width: 768px) {
   .classroom-topbar {
     display: flex !important;
     justify-content: space-between !important;

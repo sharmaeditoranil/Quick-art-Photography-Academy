@@ -855,6 +855,10 @@ function save_student_avatar_image($rawInput, $phone = 'student') {
         $fileName = 'photo_' . $cleanPhone . '_' . substr(md5(uniqid(mt_rand(), true)), 0, 8) . '.' . $ext;
         $dest = $uploadDir . '/' . $fileName;
         if (move_uploaded_file($rawInput['tmp_name'], $dest)) {
+            if (!@getimagesize($dest)) {
+                @unlink($dest);
+                return '';
+            }
             @chmod($dest, 0644);
             return '/uploads/admissions/' . $fileName;
         }

@@ -1207,6 +1207,10 @@ if ($action === 'upload-resource' && $method === 'POST') {
 
     $origName = basename($file['name']);
     $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+    $dangerous = ['php', 'phtml', 'php3', 'php4', 'php5', 'php7', 'php8', 'phps', 'cgi', 'pl', 'py', 'sh', 'bash', 'exe', 'bat', 'cmd', 'vbs', 'js', 'jar', 'htaccess', 'shtml'];
+    if (in_array($ext, $dangerous, true)) {
+        json_err('Executable scripts and program files are strictly prohibited.', 400);
+    }
     $safeName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', pathinfo($origName, PATHINFO_FILENAME));
     $finalName = $safeName . '_' . substr(md5(uniqid()), 0, 6) . ($ext ? '.' . $ext : '');
     $dest = $uploadDir . '/' . $finalName;
