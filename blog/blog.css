@@ -696,10 +696,16 @@
   width: 100%;
   box-sizing: border-box;
   background: #ffffff;
-  border: 2px solid var(--blog-gold);
-  border-radius: 6px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(201, 146, 56, 0.12);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  transition: all 0.22s ease;
+}
+
+.blog-sidebar-search-bar:focus-within {
+  border-color: #d8a153;
+  box-shadow: 0 0 0 3px rgba(216, 161, 83, 0.16), 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
 .blog-sidebar-search-bar input.blog-search-input {
@@ -707,77 +713,100 @@
   min-width: 0;
   border: none;
   background: #ffffff;
-  padding: 13px 16px;
-  font-size: 15px;
-  color: var(--blog-ink);
+  padding: 12px 16px;
+  font-size: 14.5px;
+  color: #0f172a;
   outline: none;
   font-family: inherit;
 }
 
 .blog-sidebar-search-bar input.blog-search-input::placeholder {
-  color: #8c95a3;
+  color: #94a3b8;
 }
 
 .blog-sidebar-search-bar .blog-search-btn {
-  width: 56px;
-  background: var(--blog-gold-gradient);
+  width: 52px;
+  background: linear-gradient(135deg, #d8a153 0%, #f59e0b 100%);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #11141a;
+  color: #0b1120;
   cursor: pointer;
   transition: filter 0.2s ease, transform 0.2s ease;
   flex-shrink: 0;
 }
 
 .blog-sidebar-search-bar .blog-search-btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.08);
 }
 
-/* --- Exact User Reference Card Widget (Recent Posts & Categories - On-Brand) --- */
+/* --- Professional Sidebar Cards (Recent Posts, Categories, Related Guides) --- */
 .blog-ref-card {
   background: #ffffff;
-  border: 1px solid var(--blog-border);
-  border-radius: var(--blog-radius-md);
-  padding: 28px 24px;
-  box-shadow: var(--blog-shadow-sm);
+  border: 1.5px solid #ebd9be;
+  border-radius: 16px;
+  padding: 22px 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.blog-ref-title {
+.blog-ref-card:hover {
+  border-color: #d8a153;
+  box-shadow: 0 10px 26px rgba(216, 161, 83, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.blog-ref-title,
+.blog-sidebar .blog-ref-card h3 {
   font-family: var(--font-heading, "Outfit", sans-serif);
-  font-size: 22px;
+  font-size: 1.18rem;
   font-weight: 800;
-  color: var(--blog-ink);
-  letter-spacing: -0.02em;
+  color: #0f172a;
+  letter-spacing: -0.015em;
   margin: 0 0 8px 0;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .blog-ref-underline {
-  width: 46px;
+  width: 36px;
   height: 3px;
-  background: var(--blog-gold-gradient);
-  border-radius: 2px;
-  margin-bottom: 22px;
+  background: linear-gradient(90deg, #d8a153 0%, #f59e0b 100%);
+  border-radius: 999px;
+  margin-bottom: 16px;
 }
 
-.blog-ref-list {
+/* Sidebar List items (Styled as clean clickable cards) */
+.blog-ref-list,
+.blog-sidebar .blog-ref-card ul {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 9px;
 }
 
 .blog-ref-item {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 14.5px;
-  line-height: 1.5;
-  color: var(--blog-ink-soft);
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  transition: all 0.22s ease;
+  box-sizing: border-box;
+}
+
+.blog-ref-item:hover {
+  background: #fffdf8;
+  border-color: #ebd9be;
+  transform: translateX(3px);
+  box-shadow: 0 3px 10px rgba(216, 161, 83, 0.1);
 }
 
 .blog-ref-dot {
@@ -786,19 +815,29 @@
   border-radius: 50%;
   background: var(--blog-gold);
   box-shadow: 0 0 0 2px rgba(201, 146, 56, 0.2);
-  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.blog-ref-arrow {
+  color: #d8a153;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
   flex-shrink: 0;
 }
 
 .blog-ref-link {
-  color: var(--blog-ink-soft);
+  color: #1e293b;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 650;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  flex: 1;
   transition: color 0.2s ease;
 }
 
-.blog-ref-link:hover {
-  color: var(--blog-gold);
+.blog-ref-item:hover .blog-ref-link {
+  color: #b88636;
 }
 
 .blog-ref-cat-btn {
@@ -810,8 +849,8 @@
   border: none;
   padding: 0;
   font-size: 14.5px;
-  font-weight: 600;
-  color: var(--blog-ink-soft);
+  font-weight: 650;
+  color: #1e293b;
   cursor: pointer;
   text-align: left;
   transition: color 0.2s ease;
@@ -826,13 +865,71 @@
   font-weight: 800;
 }
 
+.blog-ref-count,
 .blog-ref-cat-count {
-  font-size: 12px;
-  color: var(--blog-gold);
-  background: var(--blog-gold-light);
-  border: 1px solid var(--blog-gold-border);
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 2px 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Standard HTML lists inside .blog-sidebar .blog-ref-card */
+.blog-sidebar .blog-ref-card ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.blog-sidebar .blog-ref-card ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  color: #0f172a !important;
+  font-weight: 700;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  text-decoration: none;
+  transition: all 0.22s ease;
+  box-sizing: border-box;
+}
+
+.blog-sidebar .blog-ref-card ul li a:hover {
+  background: #fffdf8;
+  border-color: #ebd9be;
+  color: #b88636 !important;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(216, 161, 83, 0.12);
+}
+
+/* Sidebar Call to Action Button */
+.blog-sidebar-cta {
+  background: linear-gradient(135deg, #d8a153 0%, #f59e0b 100%) !important;
+  color: #0b1120 !important;
+  font-weight: 850 !important;
+  font-size: 0.92rem !important;
+  padding: 12px 18px !important;
+  border-radius: 10px !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+  transition: all 0.22s ease !important;
+  border: none !important;
+}
+
+.blog-sidebar-cta:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.48) !important;
+  color: #000000 !important;
 }
 
 .blog-sidebar-search-box {
@@ -1013,24 +1110,36 @@
   gap: 6px;
 }
 
-/* 4. Mentor Spotlight Widget (Exact Match to User Reference Card) */
+/* 4. Mentor Spotlight Widget (Professional Luxury Style) */
 .blog-mentor-card {
   text-align: center;
-  background: #ffffff;
-  border: 1px solid var(--blog-border);
-  border-radius: 24px;
-  padding: 34px 24px 28px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf8 100%);
+  border: 1.5px solid #ebd9be;
+  border-radius: 16px;
+  padding: 26px 20px 22px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-mentor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #d8a153 0%, #f59e0b 100%);
 }
 
 .blog-mentor-photo {
-  width: 98px;
-  height: 98px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
-  margin: 0 auto 18px;
+  margin: 0 auto 14px;
   overflow: hidden;
-  border: 3.5px solid #c99238;
-  box-shadow: 0 6px 20px rgba(201, 146, 56, 0.32);
+  border: 3px solid #d8a153;
+  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.28), 0 0 0 3px #ffffff;
   background: #fdfaf5;
 }
 
@@ -1043,53 +1152,65 @@
 
 .blog-mentor-name {
   font-family: var(--font-heading, "Outfit", sans-serif);
-  font-size: 21px;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--blog-ink);
-  margin: 0 0 6px;
-  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0 0 5px;
+  letter-spacing: -0.015em;
 }
 
 .blog-mentor-role {
-  font-family: inherit;
-  font-size: 12px;
-  color: #c99238;
+  font-size: 0.74rem;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 3px 10px;
+  border-radius: 999px;
+  display: inline-block;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0 0 16px;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px;
 }
 
 .blog-mentor-bio {
-  font-size: 14.5px;
-  color: #555e6d;
-  line-height: 1.65;
-  margin: 0 0 22px;
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 16px;
 }
 
 .blog-mentor-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 15px;
+  gap: 6px;
+  font-size: 0.88rem;
   font-weight: 750;
-  color: #11141a;
+  color: #b88636;
   text-decoration: none;
-  transition: var(--blog-transition);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #fff8ef;
+  border: 1px solid #ebd9be;
+  transition: all 0.2s ease;
 }
 
 .blog-mentor-link:hover {
-  color: #c99238;
-  transform: translateX(3px);
+  background: #d8a153;
+  color: #0b1120;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(216, 161, 83, 0.25);
 }
 
 /* --- Free Creator Kit Card (Harmonized with .blog-ref-card) --- */
 .blog-toolkit-card {
-  border: 1.5px solid rgba(201, 146, 56, 0.35);
-  background: linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);
+  border: 1.5px solid #ebd9be;
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf8 100%);
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
+  padding: 22px 18px;
 }
 
 .blog-toolkit-tag {
@@ -1103,16 +1224,16 @@
   color: var(--blog-gold);
   background: var(--blog-gold-light);
   border: 1px solid var(--blog-gold-border);
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: var(--blog-radius-pill);
   margin-bottom: 8px;
 }
 
 .blog-toolkit-desc {
-  font-size: 13.5px;
-  color: var(--blog-muted);
+  font-size: 0.88rem;
+  color: #475569;
   line-height: 1.6;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
 }
 
 .blog-toolkit-btn {
@@ -1122,26 +1243,29 @@
   gap: 8px;
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 18px;
-  border-radius: var(--blog-radius-pill);
-  background: var(--blog-gold-gradient);
-  color: #11141a;
-  font-size: 13.5px;
-  font-weight: 700;
+  padding: 11px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #f8fafc !important;
+  font-size: 0.88rem;
+  font-weight: 750;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(201, 146, 56, 0.25);
-  transition: var(--blog-transition);
+  border: 1px solid #334155;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  transition: all 0.22s ease;
 }
 
 .blog-toolkit-btn:hover {
-  filter: brightness(1.08);
+  background: linear-gradient(135deg, #d8a153 0%, #f59e0b 100%);
+  color: #0b1120 !important;
+  border-color: #d8a153;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(201, 146, 56, 0.38);
-  color: #11141a;
+  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.35);
 }
 
 /* --- Popular Topics Tags Cloud --- */
-.blog-tags-cloud {
+.blog-tags-cloud,
+.blog-tag-cloud {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1150,23 +1274,23 @@
 .blog-tag-chip {
   display: inline-flex;
   align-items: center;
-  padding: 7px 14px;
-  background: #f4f6f9;
-  border: 1px solid var(--blog-border);
-  border-radius: var(--blog-radius-pill);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--blog-ink-soft);
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
   text-decoration: none;
-  transition: var(--blog-transition);
+  transition: all 0.2s ease;
 }
 
 .blog-tag-chip:hover {
-  background: var(--blog-ink);
-  color: #ffffff;
-  border-color: var(--blog-ink);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(17, 20, 26, 0.15);
+  background: #fff8ef;
+  border-color: #ebd9be;
+  color: #b88636;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(216, 161, 83, 0.12);
 }
 
 /* --- Academy Masterclass CTA Banner --- */
