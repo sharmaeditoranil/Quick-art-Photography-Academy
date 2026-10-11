@@ -1346,7 +1346,7 @@ async function loadLesson(courseId, lessonId) {
       const rawStream = currentLesson.streamUrl || currentLesson.videoUrl || '';
       let bunnyUrl = '';
       if (rawStream && rawStream.includes('iframe.mediadelivery.net')) {
-        bunnyUrl = rawStream;
+        bunnyUrl = rawStream.replace('/play/', '/embed/');
       } else if (bunnyId) {
         bunnyUrl = `https://iframe.mediadelivery.net/embed/755385/${encodeURIComponent(bunnyId)}?autoplay=true&preload=true&responsive=true`;
       } else {

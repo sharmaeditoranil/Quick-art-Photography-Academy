@@ -1110,6 +1110,10 @@ if ($action === 'get-bunny-preview' && ($method === 'GET' || $method === 'POST')
     }
     if (!$videoId) json_err('videoId is required', 400);
 
+    if (preg_match('/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i', $videoId, $m)) {
+        $videoId = $m[0];
+    }
+
     $settings = load_lms_settings();
     $libraryId = $settings['bunnyLibraryId'] ?? '755385';
     $tokenKey  = $settings['bunnyTokenAuthKey'] ?? '';
