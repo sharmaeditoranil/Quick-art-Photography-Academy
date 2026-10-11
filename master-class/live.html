@@ -1497,6 +1497,111 @@
     .ph-tile.t4 { background-position: 66% 40%; filter: none; }
     .ph-tile.t5 { background-position: 25% 55%; }
     .ph-tile.t6 { background-position: 95% 100%; }
+
+    /* ── Reference-style merge: navy hero, 2-column, green two-line CTAs ── */
+    .hero {
+      background:
+        radial-gradient(ellipse 60% 45% at 50% -5%, rgba(216, 161, 83, 0.16), transparent 65%),
+        linear-gradient(180deg, #0d1b33 0%, #0b1428 55%, var(--ink) 100%);
+    }
+    .hero-center { max-width: 960px; }
+    .hero-center .hero-sub { margin-bottom: 30px; }
+
+    .hero-split { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; max-width: 1080px; margin: 0 auto; }
+    .watch-note { text-align: center; font-size: 15px; font-weight: 600; color: #e6e8ee; margin-bottom: 10px; }
+    .hs-left .video-card { max-width: none; margin: 0; padding: 8px; background: #fff; border: 0; border-radius: 12px; }
+    .hs-left .hero-video-frame { border-radius: 8px; }
+
+    .hs-timer { text-align: center; margin-top: 18px; }
+    .hs-timer-lbl { font-size: 15.5px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .hs-timer .timer-wrap { justify-content: center; gap: 28px; }
+    .hs-timer .timer-num { font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 600; color: #fff; }
+    .hs-timer .timer-lbl { text-transform: none; letter-spacing: 0; font-size: 12.5px; color: #c9cdd8; }
+
+    .hs-right { text-align: center; }
+    .feat-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px; }
+    .feat-pill { display: flex; align-items: center; gap: 8px; background: #fff; color: #1f2937; border-radius: 100px; padding: 9px 14px; font-size: 12.5px; font-weight: 700; text-align: left; box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.6); }
+    .feat-pill i { font-style: normal; font-size: 18px; }
+    .hs-lead { font-size: 16.5px; color: #e6e8ee; margin-bottom: 8px; }
+    .hs-course { font-family: 'Outfit', sans-serif; font-size: clamp(24px, 2.4vw, 30px); font-weight: 700; line-height: 1.25; color: #f5c043; margin-bottom: 12px; }
+    .hs-when { font-size: 14.5px; color: #c9cdd8; margin-bottom: 20px; }
+    .hs-when strong { color: #fff; }
+    .hs-note { font-size: 13px; color: #c9cdd8; margin-top: 10px; }
+    .hero-trust { margin-top: 40px; justify-content: center; }
+    .hero-trust .trust-item { align-items: center; }
+
+    /* Green two-line CTA (reference style) */
+    .cta-green {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 12px 30px 11px;
+      background: #30a05c;
+      color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2), 0 12px 26px -12px rgba(48, 160, 92, 0.75);
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.2;
+      transition: background .2s;
+    }
+    .cta-green:hover { background: #2a8f52; }
+    .cta-main { font-size: 23px; font-weight: 700; }
+    .cta-sub { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; font-weight: 500; opacity: 0.95; }
+    .cta-sub b { font-family: 'Outfit', sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff7d1; }
+    .cta-rock { animation: cta-rocking 2s ease-out infinite; }
+    .cta-bounce { animation: cta-bounce 1.5s ease-in infinite; }
+    @keyframes cta-rocking { 0%, 25% { transform: rotate(0); } 50% { transform: rotate(2deg); } 75% { transform: rotate(-2deg); } 100% { transform: rotate(0); } }
+    @keyframes cta-bounce {
+      0%, 15% { transform: translateY(0); }
+      35% { transform: translateY(-14px); }
+      45% { transform: translateY(0); }
+      55% { transform: translateY(-8px); }
+      70% { transform: translateY(0); }
+      80% { transform: translateY(-4px); }
+      90%, 100% { transform: translateY(0); }
+    }
+    .btn-checkout-pay.cta-green { width: 100%; min-height: 58px; font-size: 19px; font-weight: 700; border-radius: 6px; }
+
+    /* Sticky bar = one full-width bouncing button */
+    .mobile-sticky-cta { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(11, 13, 18, 0.92); }
+    .mobile-sticky-cta .sticky-btn { width: 100%; padding: 10px 12px 9px; }
+    .sticky-btn .cta-main { font-size: 20px; }
+    .sticky-btn .cta-sub { font-size: 12.5px; }
+    .mobile-sticky-cta .m-timer, .mobile-cta-info { display: none; }
+
+    @media (max-width: 900px) {
+      .hero-split { grid-template-columns: 1fr; gap: 26px; }
+      .hs-right { max-width: 560px; margin: 0 auto; }
+    }
+    @media (max-width: 760px) {
+      .hero-center .hero-sub { margin-bottom: 22px; }
+      .feat-pills { gap: 8px; }
+      .feat-pill { font-size: 11px; padding: 8px 10px; gap: 6px; }
+      .feat-pill i { font-size: 15px; }
+      .hs-timer .timer-wrap { gap: 18px; }
+      .hs-timer .timer-num { font-size: 28px; }
+      .cta-green { width: 100%; padding: 12px 14px 11px; }
+      .cta-main { font-size: 20px; }
+      .hero-trust { margin-top: 30px; }
+    }
+    @media (max-width: 370px) {
+      .sticky-btn .cta-main, .cta-main { font-size: 18px; }
+    }
+
+    .hs-course { margin-bottom: 14px; }
+    .hs-when { margin-bottom: 22px; }
+    @media (max-width: 760px) {
+      .hero-trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .hero-trust .trust-sep, .hero-trust .stars { display: none; }
+      .hero-trust .trust-item strong { font-size: 15px; }
+      .hero-trust .trust-item span { font-size: 11px; }
+    }
   </style>
 </head>
 
@@ -1525,40 +1630,51 @@
           Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
         </p>
 
-        <div class="video-card glass" id="hero-video-box">
-          <div class="hero-video-frame" id="hero-video-mount">
-            <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </div>
+      </div>
 
-        <div class="book-panel glass" id="countdown-wrap">
-          <div class="bp-info">
-            <div class="bp-item"><span class="sch-label">Live batch</span><strong class="sch-val" id="next-session-date">This Sunday</strong></div>
-            <div class="bp-item"><span class="sch-label">Timing</span><strong class="sch-val">7:00 – 9:30 PM</strong></div>
-            <div class="bp-item"><span class="sch-label">Launch pass</span><strong class="sch-val gold"><span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></strong></div>
-          </div>
-          <div class="bp-timer">
-            <span class="sch-label">Starts in</span>
-            <div class="timer-wrap">
-              <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-lbl">Days</div></div>
-              <div class="timer-colon">:</div>
-              <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">Hrs</div></div>
-              <div class="timer-colon">:</div>
-              <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-lbl">Min</div></div>
-              <div class="timer-colon">:</div>
-              <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-lbl">Sec</div></div>
+      <div class="hero-split">
+        <div class="hs-left">
+          <p class="watch-note">Ye video poora dekhiye 👇</p>
+          <div class="video-card glass" id="hero-video-box">
+            <div class="hero-video-frame" id="hero-video-mount">
+              <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
           </div>
-          <a href="#register" class="btn btn-gold bp-cta">Book My Seat • <span class="dynamic-ticket-price">₹21</span></a>
+          <div class="hs-timer" id="countdown-wrap">
+            <p class="hs-timer-lbl">🔥 Launch offer khatam hone me...</p>
+            <div class="timer-wrap">
+              <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-lbl">days</div></div>
+              <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">hours</div></div>
+              <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-lbl">minutes</div></div>
+              <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-lbl">seconds</div></div>
+            </div>
+          </div>
         </div>
 
-        <div class="trust-row">
-          <div class="trust-item"><strong>4.9 <span class="stars">★★★★★</span></strong><span>257+ Google reviews</span></div>
-          <div class="trust-sep"></div>
-          <div class="trust-item"><strong>1,800+</strong><span>Students trained</span></div>
-          <div class="trust-sep"></div>
-          <div class="trust-item"><strong>ISO 9001:2015</strong><span>Certified academy</span></div>
+        <div class="hs-right">
+          <div class="feat-pills">
+            <span class="feat-pill"><i>🎥</i>Live HD Class + Q&amp;A</span>
+            <span class="feat-pill"><i>🗣️</i>Training Language: Hindi</span>
+            <span class="feat-pill"><i>⏪</i>30-Day Replay Access</span>
+            <span class="feat-pill"><i>🎓</i>Trained 1,800+ Students</span>
+          </div>
+          <p class="hs-lead">Ab AI se wedding editing seekhna pehle se kahin aasaan hai, hamari</p>
+          <h2 class="hs-course">1-Day Wedding Photo Editing<br>AI Live Masterclass</h2>
+          <p class="hs-when">📅 <strong id="next-session-date">This Sunday</strong> • 7:00 – 9:30 PM IST</p>
+          <a href="#register" class="cta-green cta-rock">
+            <span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span>
+            <span class="cta-sub">Limited Launch Offer • Baad me <span class="dynamic-orig-price">₹999</span></span>
+          </a>
+          <p class="hs-note">Replay + bonuses 30 din tak Student Portal me</p>
         </div>
+      </div>
+
+      <div class="trust-row hero-trust">
+        <div class="trust-item"><strong>4.9 <span class="stars">★★★★★</span></strong><span>257+ Google reviews</span></div>
+        <div class="trust-sep"></div>
+        <div class="trust-item"><strong>1,800+</strong><span>Students trained</span></div>
+        <div class="trust-sep"></div>
+        <div class="trust-item"><strong>ISO 9001:2015</strong><span>Certified academy</span></div>
       </div>
     </div>
   </section>
@@ -1651,8 +1767,7 @@
       </div>
 
       <div class="flow-cta reveal">
-        <a href="#register" class="btn btn-gold">Ye Workflow Seekhiye • <span class="dynamic-ticket-price">₹21</span></a>
-        <span>Live class • Hindi me • Sunday 7 PM</span>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Ye Workflow Seekhiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class • Hindi me • Sunday 7 PM</span></a>
       </div>
     </div>
   </section>
@@ -1703,7 +1818,7 @@
         <div><span class="fs-lbl">Aapka invest</span><strong><span class="dynamic-ticket-price">₹21</span> + ek shaam</strong></div>
         <div class="fs-arrow">→</div>
         <div><span class="fs-lbl">Aapko milega</span><strong>Har shaadi par kai din ki bachat</strong></div>
-        <a href="#register" class="btn btn-gold">Fayda Uthaiye • <span class="dynamic-ticket-price">₹21</span></a>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Fayda Uthaiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Seat abhi book kariye</span></a>
       </div>
     </div>
   </section>
@@ -1917,7 +2032,7 @@
               <input type="email" id="cust-email" class="checkout-input" placeholder="name@example.com" autocomplete="email" required />
             </div>
 
-            <button type="submit" class="btn btn-gold btn-checkout-pay" id="btn-pay-now">Book My Seat • ₹21</button>
+            <button type="submit" class="btn cta-green btn-checkout-pay" id="btn-pay-now">Book My Seat • ₹21</button>
             <div class="form-msg" id="form-msg" role="alert"></div>
 
             <div class="security-note">
@@ -2114,7 +2229,7 @@
     <div class="wrap">
       <h2 class="sec-title reveal">Is season, editing me nahi — <span class="gold-gradient">naye clients me time lagaiye</span></h2>
       <p class="sec-sub reveal">Sunday 7 PM, live. Ek shaam ka invest, poore season ka fayda.</p>
-      <a href="#register" class="btn btn-gold reveal">Book My Seat • <span class="dynamic-ticket-price">₹21</span></a>
+      <a href="#register" class="cta-green cta-rock reveal"><span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Limited Launch Offer • Baad me <span class="dynamic-orig-price">₹999</span></span></a>
       <small>Batch ke baad price ₹999 ho jayegi</small>
     </div>
   </section>
@@ -2233,15 +2348,13 @@
 
   <!-- Mobile Sticky Booking Bar -->
   <div class="mobile-sticky-cta" id="mobileStickyCta">
-    <div class="mobile-cta-info">
-      <div class="mobile-cta-price">
-        <span class="m-price" id="m-sticky-price"><span class="dynamic-ticket-price">₹21</span></span>
-        <span class="m-orig" id="m-sticky-orig"><span class="dynamic-orig-price">₹999</span></span>
-      </div>
-      <div class="m-timer" aria-live="off">⏳ Shuru hone me <b id="m-timer">--:--:--</b></div>
-      <div class="mobile-cta-seats" id="m-sticky-seats" hidden>🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></div>
+    <div hidden>
+      <span id="m-sticky-price"></span><span id="m-sticky-orig"></span><span id="m-sticky-seats"></span>
     </div>
-    <button type="button" class="btn btn-gold btn-mobile-book" onclick="scrollToCheckoutForm()">Book Seat<span class="arr">→</span></button>
+    <button type="button" class="cta-green cta-bounce sticky-btn" onclick="scrollToCheckoutForm()">
+      <span class="cta-main">Haan, Mujhe Join Karna Hai <span class="dynamic-ticket-price">₹21</span></span>
+      <span class="cta-sub">⏳ Offer khatam hone me <b id="m-timer">--:--:--</b></span>
+    </button>
   </div>
 
     <script>
