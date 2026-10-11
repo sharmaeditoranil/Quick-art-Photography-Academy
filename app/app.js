@@ -1739,8 +1739,8 @@ function updatePlayerCompleteButton(isDone) {
   completeBtn.classList.toggle('done', isDone);
   const icon = document.getElementById('complete-icon');
   const text = document.getElementById('complete-text');
-  if (icon) icon.textContent = '✓';
-  if (text) text.textContent = isDone ? 'Completed' : 'Complete';
+  if (icon) icon.textContent = isDone ? '✓' : '○';
+  if (text) text.textContent = isDone ? 'Completed' : 'Mark as Complete';
 }
 
 function handleLessonVideoEnded() {

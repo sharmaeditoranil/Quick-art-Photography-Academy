@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Outfit:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@1,500;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="app.css?v=20261011_curtain5s" />
+  <link rel="stylesheet" href="app.css?v=20261011_cleanplayer" />
 
   <!-- Razorpay Official Checkout Gateway -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -957,32 +957,11 @@
         <h3 id="cr-lesson-title" class="lesson-meta-title">Lesson Title</h3>
       </div>
       <div class="lesson-ctrl-buttons">
-        <button type="button" class="btn-player-action" onclick="seekLessonVideo(-10)" title="Rewind 10 Seconds (Pichhe)">
-          ⏪ 10s
-        </button>
-        <button type="button" class="btn-player-action" id="btn-lesson-play-pause" onclick="togglePlayPauseLessonVideo()" title="Play / Pause">
-          ⏯️
-        </button>
-        <button type="button" class="btn-player-action" onclick="seekLessonVideo(10)" title="Forward 10 Seconds (Aage)">
-          ⏩ 10s
-        </button>
-        <div class="dock-speed-pill" style="height:32px;padding:2px 8px;" title="Playback Speed">
-          <span class="dock-speed-icon">⚡</span>
-          <select id="cr-select-speed" onchange="setLessonVideoSpeed(this.value)" class="dock-speed-select" aria-label="Playback Speed">
-            <option value="1">1x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2x</option>
-          </select>
-        </div>
-        <button type="button" id="btn-replay-lesson" class="btn-player-action btn-replay" onclick="replayCurrentLesson()" title="Replay Video">
-          ↺ Replay
-        </button>
         <button type="button" id="btn-toggle-complete" class="btn-player-action btn-complete" onclick="toggleCurrentLessonComplete()">
-          <span id="complete-icon">✓</span> <span id="complete-text">Complete</span>
+          <span id="complete-icon">○</span> <span id="complete-text">Mark as Complete</span>
         </button>
         <button type="button" id="btn-next-lesson" class="btn-player-action btn-next" onclick="goToNextLesson()">
-          Next →
+          Next Lesson →
         </button>
       </div>
     </div>
@@ -2082,6 +2061,6 @@
   <!-- HTML2Canvas & QR Code Libraries for ID Card Generation -->
   <script src="../portal/html2canvas.min.js"></script>
   <script src="../portal/qrcode.min.js"></script>
-  <script src="app.js?v=20261011_curtain5s"></script>
+  <script src="app.js?v=20261011_cleanplayer"></script>
 </body>
 </html>

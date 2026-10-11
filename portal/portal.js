@@ -1477,19 +1477,21 @@ function updateCompleteBtnState(isCompleted) {
   const icon = document.getElementById('complete-btn-icon');
   const text = document.getElementById('complete-btn-text');
   const btn = document.getElementById('btn-toggle-complete');
+  if (!btn) return;
 
+  btn.classList.toggle('done', isCompleted);
   if (isCompleted) {
-    icon.textContent = '✓';
-    text.textContent = 'Completed';
-    btn.style.background = 'var(--emerald-bg)';
-    btn.style.borderColor = 'var(--emerald)';
-    btn.style.color = 'var(--emerald)';
+    if (icon) icon.textContent = '✓';
+    if (text) text.textContent = 'Completed';
+    btn.style.background = 'rgba(16, 185, 129, 0.15)';
+    btn.style.borderColor = '#10b981';
+    btn.style.color = '#34d399';
   } else {
-    icon.textContent = '○';
-    text.textContent = 'Mark as Complete';
-    btn.style.background = 'transparent';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = 'var(--text-main)';
+    if (icon) icon.textContent = '○';
+    if (text) text.textContent = 'Mark as Complete';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
   }
 }
 

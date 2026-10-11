@@ -1041,29 +1041,45 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .lesson-actions .btn-sm {
-  padding: 8px 16px;
+  padding: 9px 18px;
   font-size: 13px;
   font-weight: 700;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 7px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+}
+
+.lesson-actions .btn-sm:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .lesson-actions .btn-gold {
   background: linear-gradient(135deg, #f5c879, #d8a153);
   color: #0c0e12;
-  border: 0;
-  box-shadow: 0 4px 14px rgba(216, 161, 83, 0.35);
+  border: 1px solid transparent;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(216, 161, 83, 0.25);
 }
 
 .lesson-actions .btn-gold:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.5);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.45);
 }
 
 /* Lesson Tabs */
@@ -3380,11 +3396,14 @@ a {
     font-size: 11px;
   }
   .lesson-actions {
-    flex-direction: column;
-    gap: 6px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
   }
   .lesson-actions .btn-sm {
-    width: 100%;
+    flex: 1;
+    width: auto;
     justify-content: center;
     padding: 9px 12px;
   }
@@ -4368,16 +4387,19 @@ a {
   }
   .lesson-actions {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1.2fr 1.3fr;
-    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
   }
   .lesson-actions .btn-sm {
-    padding: 9px 8px;
-    font-size: 12px;
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
     justify-content: center;
     text-align: center;
-    min-height: 40px;
+    min-height: 42px;
+    border-radius: 10px;
   }
 
   /* Lesson tabs — horizontal swipe */
@@ -4461,13 +4483,24 @@ a {
     font-size: 14.5px;
   }
   .lesson-actions {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+  }
+  .lesson-actions .btn-sm {
+    flex: 1;
+    min-height: 42px;
+    font-size: 12.5px;
+    font-weight: 700;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 10px;
   }
   .lesson-actions #btn-next-lesson {
-    grid-column: 1 / -1;
-    min-height: 46px;
-    font-size: 14px;
+    grid-column: auto;
+    min-height: 42px;
+    font-size: 12.5px;
     font-weight: 700;
   }
 
