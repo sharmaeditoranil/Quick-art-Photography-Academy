@@ -931,7 +931,7 @@
     .mobile-cta-seats { font-size: 11px; color: #fca5a5; font-weight: 600; }
     .m-timer { font-size: 12px; color: #e6e8ee; font-weight: 600; margin: 1px 0; white-space: nowrap; }
     .m-timer b { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; color: var(--gold-2); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
-    .btn-mobile-book { animation: book-pulse 2.2s ease-in-out infinite; }
+
     @keyframes book-pulse {
       0%, 100% { box-shadow: 0 10px 30px -8px rgba(216, 161, 83, 0.6); }
       50% { box-shadow: 0 0 0 6px rgba(216, 161, 83, 0.18), 0 10px 30px -8px rgba(216, 161, 83, 0.8); }
@@ -1317,6 +1317,70 @@
       .bp-item .sch-val { font-size: 13px; }
       .bp-item .sch-val del { display: none; }
     }
+
+    /* Fast editing flow */
+    #fast-editing { background: radial-gradient(ellipse 55% 50% at 50% 0%, rgba(216, 161, 83, 0.14), transparent 65%), var(--ink-2); }
+    .flow { display: grid; grid-template-columns: 1fr auto 1.15fr auto 1fr; align-items: stretch; gap: 14px; }
+    .flow-step { border-radius: var(--radius); padding: 26px 24px; text-align: center; }
+    .flow-step h3 { font-size: 19px; font-weight: 700; color: #fff; margin: 10px 0 8px; }
+    .flow-step p { font-size: 14.5px; color: var(--muted-d); }
+    .flow-num { font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 800; color: var(--gold-2); line-height: 1.1; }
+    .flow-main { background: rgba(216, 161, 83, 0.09); border-color: rgba(216, 161, 83, 0.45); box-shadow: 0 0 0 1px rgba(216, 161, 83, 0.15), 0 30px 60px -30px rgba(216, 161, 83, 0.45); }
+    .flow-click { display: inline-flex; align-items: center; gap: 8px; font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: #fff; }
+    .flow-click span { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #f0c27a, #c48a3a); color: #1a1205; animation: click-ping 2s ease-in-out infinite; }
+    @keyframes click-ping {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(216, 161, 83, 0.55); transform: scale(1); }
+      50% { box-shadow: 0 0 0 12px rgba(216, 161, 83, 0); transform: scale(1.06); }
+    }
+    .flow-arrow { display: grid; place-items: center; font-size: 26px; color: var(--gold); }
+    .flow-cta { margin-top: 34px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .flow-cta > span { font-size: 13.5px; color: var(--muted-d); }
+
+    @media (max-width: 860px) {
+      .flow { grid-template-columns: 1fr; gap: 8px; }
+      .flow-arrow { transform: rotate(90deg); font-size: 22px; }
+      .flow-cta .btn { width: 100%; }
+    }
+
+    /* Sticky Book Seat — always-on subtle animation */
+    .btn-mobile-book {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      min-height: 50px;
+      padding: 0 18px;
+      background: linear-gradient(110deg, #f7d79b, #e0a85a 45%, #c48a3a);
+      color: #1a1205;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      animation: book-breathe 2.4s ease-in-out infinite;
+    }
+    .btn-mobile-book::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: -60%;
+      width: 45%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+      transform: skewX(-20deg);
+      animation: book-shine 2.8s ease-in-out infinite;
+    }
+    .btn-mobile-book .arr { display: inline-block; margin-left: 6px; animation: book-nudge 1.4s ease-in-out infinite; }
+    @keyframes book-shine { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+    @keyframes book-breathe {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 24px -8px rgba(216, 161, 83, 0.7); }
+      50% { transform: scale(1.04); box-shadow: 0 0 0 5px rgba(216, 161, 83, 0.18), 0 10px 30px -6px rgba(216, 161, 83, 0.9); }
+    }
+    @keyframes book-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+    .mobile-cta-info { min-width: 0; }
+    .mobile-sticky-cta { gap: 10px; }
+    .btn-mobile-book { padding: 0 16px; font-size: 15px; }
+    @media (max-width: 370px) {
+      .m-timer { font-size: 11px; }
+      .m-timer b { font-size: 13px; }
+      .btn-mobile-book { padding: 0 12px; font-size: 14px; }
+    }
   </style>
 </head>
 
@@ -1383,38 +1447,38 @@
     </div>
   </section>
 
-  <!-- ═══════════ PROBLEM vs SOLUTION ═══════════ -->
-  <section class="section light">
+  <!-- ═══════════ FAST EDITING (1 Click) ═══════════ -->
+  <section class="section" id="fast-editing">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Shaadi season ka sach</span>
-        <h2 class="sec-title">Shoot 1 din ka. <span class="gold-gradient">Editing 3 hafte ki?</span></h2>
-        <p class="sec-sub">Har season wahi kahani — raat bhar jagna, late delivery aur naraz clients. Is workshop ke baad aapka workflow aisa badlega:</p>
+        <span class="eyebrow">AI se fast editing</span>
+        <h2 class="sec-title">Apni Editing Ko Fast Kariye — <span class="gold-gradient">AI Ki Help Se</span></h2>
+        <p class="sec-sub">Seekhiye kaise sirf <strong style="color:#fff">single click</strong> me poori shaadi ki photos edit hoti hain — culling se le kar color aur client selection tak.</p>
       </div>
 
-      <div class="compare">
-        <div class="compare-col old reveal">
-          <span class="compare-tag">Purana tarika</span>
-          <h3>Manual, slow, thakane wala</h3>
-          <ul>
-            <li><span class="mark">✕</span> 2,000+ RAW photos ek-ek khol kar aankhein check karna — 3-4 din waste</li>
-            <li><span class="mark">✕</span> Pen drive / Google Drive bhejna aur selection ke liye hafte bhar wait</li>
-            <li><span class="mark">✕</span> Haldi aur mandap ki yellow light se dulhan ka chehra peela dikhna</li>
-            <li><span class="mark">✕</span> Har event ka color alag — album me consistency nahi</li>
-            <li><span class="mark">✕</span> Delivery late, review kharab, agla booking haath se gaya</li>
-          </ul>
+      <div class="flow">
+        <div class="flow-step glass reveal">
+          <div class="flow-num">2,000+</div>
+          <h3>RAW Photos Import</h3>
+          <p>Haldi, Mehendi, Shaadi, Reception — poori shaadi ke saare RAW photos ek saath daaliye.</p>
         </div>
-        <div class="compare-col new reveal">
-          <span class="compare-tag">Workshop ke baad</span>
-          <h3>AI workflow, 10x fast delivery</h3>
-          <ul>
-            <li><span class="mark">✓</span> <span><strong>1-click culling:</strong> blur, blink, duplicate seconds me filter</span></li>
-            <li><span class="mark">✓</span> <span><strong>Mobile selection:</strong> WhatsApp link bhejo, client 1 ghante me select kare</span></li>
-            <li><span class="mark">✓</span> <span><strong>Natural bridal skin:</strong> yellow cast hata kar real Indian skin tone</span></li>
-            <li><span class="mark">✓</span> <span><strong>Bulk grading:</strong> Haldi se Reception tak ek jaisa cinematic look</span></li>
-            <li><span class="mark">✓</span> <span><strong>Offline speed:</strong> apne laptop/PC par, bina cloud upload</span></li>
-          </ul>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-step glass flow-main reveal">
+          <div class="flow-click"><span>1</span> Click</div>
+          <h3>AI Kaam Karega</h3>
+          <p>Blur aur blink photos hatana, natural skin tone, aur ek jaisa cinematic color — sab automatic.</p>
         </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-step glass reveal">
+          <div class="flow-num">✓ Ready</div>
+          <h3>Poori Shaadi Edit</h3>
+          <p>Export kariye aur client ko WhatsApp link bhejiye — wo mobile par khud photos select karega.</p>
+        </div>
+      </div>
+
+      <div class="flow-cta reveal">
+        <a href="#register" class="btn btn-gold">Ye Workflow Seekhiye • <span class="dynamic-ticket-price">₹21</span></a>
+        <span>Live class • Hindi me • Sunday 7 PM</span>
       </div>
     </div>
   </section>
@@ -2000,10 +2064,10 @@
         <span class="m-price" id="m-sticky-price"><span class="dynamic-ticket-price">₹21</span></span>
         <span class="m-orig" id="m-sticky-orig"><span class="dynamic-orig-price">₹999</span></span>
       </div>
-      <div class="m-timer" aria-live="off">⏳ Batch shuru hone me <b id="m-timer">--:--:--</b></div>
+      <div class="m-timer" aria-live="off">⏳ Shuru hone me <b id="m-timer">--:--:--</b></div>
       <div class="mobile-cta-seats" id="m-sticky-seats">🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></div>
     </div>
-    <button type="button" class="btn btn-gold btn-mobile-book" onclick="scrollToCheckoutForm()">Book Seat →</button>
+    <button type="button" class="btn btn-gold btn-mobile-book" onclick="scrollToCheckoutForm()">Book Seat<span class="arr">→</span></button>
   </div>
 
     <script>
