@@ -1222,6 +1222,35 @@
       .sch-icon { font-size: 18px; }
       .sch-val { font-size: 14px; }
     }
+
+    /* Benefits (Fayda) */
+    #fayda {
+      background:
+        radial-gradient(ellipse 50% 50% at 50% 0%, rgba(216, 161, 83, 0.13), transparent 65%),
+        var(--ink);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .benefit { border-radius: var(--radius); padding: 26px 24px; transition: transform .25s, border-color .25s; }
+    .benefit:hover { transform: translateY(-4px); border-color: rgba(216, 161, 83, 0.4); }
+    .b-ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 24px; background: rgba(216, 161, 83, 0.12); margin-bottom: 16px; }
+    .benefit h3 { font-size: 18.5px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .benefit p { font-size: 14.5px; color: var(--muted-d); }
+
+    .fayda-strip { margin-top: 28px; border-radius: var(--radius); padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: rgba(216, 161, 83, 0.07); border-color: rgba(216, 161, 83, 0.3); }
+    .fayda-strip .fs-lbl { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-d); }
+    .fayda-strip strong { font-family: 'Outfit', sans-serif; font-size: 19px; color: #fff; }
+    .fs-arrow { font-size: 26px; color: var(--gold); }
+
+    @media (max-width: 1000px) { .benefits { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 760px) {
+      .benefits { grid-template-columns: 1fr; gap: 12px; }
+      .benefit { padding: 20px; display: grid; grid-template-columns: 44px 1fr; column-gap: 14px; }
+      .b-ic { width: 44px; height: 44px; font-size: 20px; margin: 0; grid-row: span 2; }
+      .fayda-strip { flex-direction: column; align-items: stretch; text-align: center; padding: 20px; }
+      .fs-arrow { transform: rotate(90deg); }
+      .fayda-strip .btn { width: 100%; }
+    }
   </style>
 </head>
 
@@ -1362,6 +1391,57 @@
             <li><span class="mark">✓</span> <span><strong>Offline speed:</strong> apne laptop/PC par, bina cloud upload</span></li>
           </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ BENEFITS (Fayda) ═══════════ -->
+  <section class="section" id="fayda">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Aapka fayda</span>
+        <h2 class="sec-title">Is workshop ke baad <span class="gold-gradient">aapko kya milega?</span></h2>
+        <p class="sec-sub">Sirf naya software nahi — aapke business me seedha badlav. Ek shaam ki class, poore season ka fayda.</p>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit glass reveal">
+          <div class="b-ic">⏱️</div>
+          <h3>Din ka kaam ghanton me</h3>
+          <p>Jo culling aur editing 3-4 din leti thi, wo AI workflow se kuch ghanton me. Raat bhar jagna band.</p>
+        </div>
+        <div class="benefit glass reveal">
+          <div class="b-ic">📅</div>
+          <h3>Season me zyada shaadiyan</h3>
+          <p>Editing ka time bachega to aap ek season me pehle se zyada bookings le paayenge — bina extra editor rakhe.</p>
+        </div>
+        <div class="benefit glass reveal">
+          <div class="b-ic">🚀</div>
+          <h3>Fast delivery, khush client</h3>
+          <p>Hafton ki jagah dinon me photos deliver kariye. Khush client = achhe Google reviews aur referral bookings.</p>
+        </div>
+        <div class="benefit glass reveal">
+          <div class="b-ic">📱</div>
+          <h3>Professional client experience</h3>
+          <p>Pen drive ki jagah WhatsApp par online gallery link. Client ko lagega aap bade studio jaisa kaam karte hain.</p>
+        </div>
+        <div class="benefit glass reveal">
+          <div class="b-ic">👰</div>
+          <h3>Har photo me consistent quality</h3>
+          <p>Natural bridal skin tone aur Haldi se Reception tak ek jaisa color — album premium dikhega, complaints kam.</p>
+        </div>
+        <div class="benefit glass reveal">
+          <div class="b-ic">💰</div>
+          <h3>Kam kharcha, zyada kamai ka mauka</h3>
+          <p>Outsourcing aur extra staff ka kharcha bachega. Bacha hua time naye clients aur upsell (album, reels) me lagaiye.</p>
+        </div>
+      </div>
+
+      <div class="fayda-strip glass reveal">
+        <div><span class="fs-lbl">Aapka invest</span><strong><span class="dynamic-ticket-price">₹21</span> + ek shaam</strong></div>
+        <div class="fs-arrow">→</div>
+        <div><span class="fs-lbl">Aapko milega</span><strong>Har shaadi par kai din ki bachat</strong></div>
+        <a href="#register" class="btn btn-gold">Fayda Uthaiye • <span class="dynamic-ticket-price">₹21</span></a>
       </div>
     </div>
   </section>
