@@ -139,2060 +139,1247 @@
 
   <style>
     :root {
-      --bg: #07090e;
-      --card-bg: rgba(18, 24, 38, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
+      --ink: #0b0d12;
+      --ink-2: #12151d;
+      --ink-3: #1a1e29;
+      --line-d: rgba(255, 255, 255, 0.09);
+      --paper: #faf8f4;
+      --paper-2: #f3efe7;
+      --line-l: #e7e1d5;
+      --text-d: #f5f3ee;
+      --muted-d: #a3a8b8;
+      --text-l: #17181c;
+      --muted-l: #5d6070;
       --gold: #d8a153;
-      --gold-light: #f59e0b;
-      --gold-glow: rgba(216, 161, 83, 0.25);
-      --text: #f4f4f6;
-      --muted: #9499ad;
+      --gold-2: #f0c27a;
+      --gold-ink: #8a5a14;
+      --green: #16a34a;
       --red: #ef4444;
+      --radius: 18px;
+      --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.45);
     }
 
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+    body.lp {
       margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(216, 161, 83, 0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 30% at 10% 40%, rgba(99, 102, 241, 0.06) 0%, transparent 40%);
-      color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* ── Sticky Top Bar ── */
-    .top-announcement {
-      background: linear-gradient(90deg, #991b1b, #ef4444, #b91c1c);
-      color: #fff;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: 0.02em;
-    }
-
-    .top-announcement span {
-      background: #fff;
-      color: #991b1b;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      margin-right: 6px;
-      text-transform: uppercase;
-    }
-
-    /* ── Nav Header ── */
-    .nav-header {
-      padding: 18px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .brand-logo-wrap img {
-      height: 38px;
-      width: auto;
-    }
-
-    .brand-text-title {
-      font-family: 'Outfit', sans-serif;
+      background: var(--ink);
+      color: var(--text-d);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    .brand-text-sub {
-      font-size: 11px;
-      color: var(--gold);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .nav-portal-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #f1f5f9;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .nav-portal-btn:hover {
-      background: rgba(216, 161, 83, 0.15);
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* ── Hero Section ── */
-    .hero-section {
-      padding: 48px 0 36px;
-      text-align: center;
-    }
-
-    .live-badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.45);
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
-      padding: 6px 16px;
-      border-radius: 100px;
-      font-size: 12.5px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.06em;
-      margin-bottom: 22px;
-      text-transform: uppercase;
-    }
-
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ef4444;
-      box-shadow: 0 0 10px #ef4444;
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(0.9);
-        opacity: 0.8;
-      }
-
-      50% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(0.9);
-        opacity: 0.8;
-      }
-    }
-
-    .hero-title {
+    .lp h1, .lp h2, .lp h3, .lp h4 {
       font-family: 'Outfit', sans-serif;
-      font-size: 42px;
-      font-weight: 900;
-      line-height: 1.18;
+      margin: 0;
+      color: inherit;
       letter-spacing: -0.02em;
-      color: #fff;
-      max-width: 920px;
-      margin: 0 auto 18px;
+      text-wrap: balance;
     }
 
-    .hero-title .gold-gradient {
-      background: linear-gradient(135deg, #f59e0b, #d8a153, #fde68a);
+    .lp p { margin: 0; }
+    .lp img { max-width: 100%; height: auto; display: block; }
+
+    .wrap { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    .gold-gradient {
+      background: linear-gradient(120deg, #f7d79b 0%, #d8a153 55%, #f0c27a 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-sub {
-      font-size: 17px;
-      color: #cbd5e1;
-      max-width: 760px;
-      margin: 0 auto 30px;
-      line-height: 1.6;
-    }
-
-    /* ── Live Schedule Strip ── */
-    .live-schedule-strip {
-      display: flex;
-      flex-wrap: wrap;
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin: 0 auto 26px;
-      max-width: 960px;
-    }
-
-    .schedule-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(18, 24, 38, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 14px;
-      padding: 10px 18px;
-      text-align: left;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .schedule-pill.highlight-gold {
-      background: linear-gradient(135deg, rgba(216, 161, 83, 0.18) 0%, rgba(18, 24, 38, 0.9) 100%);
-      border-color: rgba(216, 161, 83, 0.5);
-      box-shadow: 0 0 24px rgba(216, 161, 83, 0.2);
-    }
-
-    .sch-icon {
-      font-size: 22px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    .sch-label {
-      display: block;
-      font-size: 10.5px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #94a3b8;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 26px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
       font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: 0;
+      transition: transform .2s, box-shadow .2s, background .2s;
     }
 
-    .sch-val {
-      font-family: 'Outfit', sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      color: #ffffff;
+    .btn-gold {
+      background: linear-gradient(135deg, #f0c27a, #d8a153 60%, #c48a3a);
+      color: #1a1205;
+      box-shadow: 0 10px 30px -8px rgba(216, 161, 83, 0.6);
     }
 
-    .schedule-pill.highlight-gold .sch-val {
-      color: #f5c879;
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -8px rgba(216, 161, 83, 0.75); }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-d);
+      border: 1px solid var(--line-d);
     }
 
-    /* ── Countdown Timer Box & Labels ── */
-    .timer-container {
-      margin: 0 auto 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .timer-kicker {
-      font-size: 12.5px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: #f59e0b;
-      margin-bottom: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 5px 14px;
-      border-radius: 50px;
-    }
+    .btn-dark { background: var(--ink); color: #fff; }
+    .btn-dark:hover { transform: translateY(-2px); }
 
-    .timer-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1.5px solid rgba(216, 161, 83, 0.45);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(216, 161, 83, 0.18);
-      padding: 14px 28px;
-      border-radius: 20px;
-    }
-
-    .timer-unit {
-      text-align: center;
-      min-width: 58px;
-    }
-
-    .timer-num {
-      font-family: 'Outfit', sans-serif;
-      font-size: 30px;
-      font-weight: 900;
-      color: #f5c879;
-      line-height: 1;
-      text-shadow: 0 0 14px rgba(216, 161, 83, 0.4);
-    }
-
-    .timer-lbl {
-      font-size: 10.5px;
-      text-transform: uppercase;
-      color: #94a3b8;
-      font-weight: 700;
-      margin-top: 5px;
-      letter-spacing: 0.06em;
-    }
-
-    .timer-colon {
-      font-family: 'Outfit', sans-serif;
-      font-size: 24px;
-      font-weight: 800;
-      color: rgba(216, 161, 83, 0.5);
-      margin-top: -10px;
-    }
-
-    .timer-session-info {
-      font-size: 14px;
-      color: #cbd5e1;
+    /* ── Announcement ── */
+    .top-announcement {
+      background: linear-gradient(90deg, #1b1407, #3a2a10, #1b1407);
+      border-bottom: 1px solid rgba(216, 161, 83, 0.3);
+      color: #f5e2bd;
+      padding: 9px 16px;
+      font-size: 13px;
       font-weight: 600;
-      margin-top: 10px;
       text-align: center;
     }
 
-    .timer-session-info span {
-      color: #f5c879;
+    .top-announcement span:first-child {
+      background: var(--gold);
+      color: #1a1205;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 11px;
       font-weight: 800;
+      margin-right: 6px;
+      letter-spacing: 0.04em;
     }
 
-    /* ── Killer Chai Hook Callout ── */
-    .hook-chai-callout {
-      background: linear-gradient(135deg, rgba(216, 161, 83, 0.18) 0%, rgba(26, 18, 12, 0.9) 100%);
-      border: 1.5px solid rgba(216, 161, 83, 0.5);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(216, 161, 83, 0.15);
-      border-radius: 18px;
-      padding: 18px 24px;
-      margin: 0 auto 34px;
-      max-width: 860px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      text-align: left;
-    }
-
-    .hook-chai-icon {
-      font-size: 38px;
-      flex-shrink: 0;
-      filter: drop-shadow(0 2px 8px rgba(216, 161, 83, 0.4));
-    }
-
-    .hook-chai-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      color: #fce09b;
-      margin-bottom: 3px;
-    }
-
-    .hook-chai-desc {
-      font-size: 13.5px;
-      color: #e2e8f0;
-      line-height: 1.5;
-    }
-
-    /* ── Day-Wise Cards Styling ── */
-    .day-badge-header {
+    /* ── Header ── */
+    .lp-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding-bottom: 16px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 16px;
+      padding: 18px 0;
     }
 
-    .day-pill-tag {
-      font-family: 'Outfit', sans-serif;
-      font-size: 12.5px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 6px 16px;
-      border-radius: 100px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
+    .brand img { width: 40px; height: 40px; border-radius: 10px; }
+    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.2; }
+    .brand-sub { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .header-actions .btn { min-height: 42px; padding: 0 18px; font-size: 14px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      padding: 40px 0 72px;
+      background:
+        radial-gradient(ellipse 70% 60% at 85% 0%, rgba(216, 161, 83, 0.16), transparent 60%),
+        radial-gradient(ellipse 50% 50% at 0% 100%, rgba(99, 102, 241, 0.08), transparent 60%);
     }
 
-    .day-pill-tag.day-1 {
-      background: rgba(216, 161, 83, 0.2);
-      border: 1px solid rgba(216, 161, 83, 0.55);
-      color: #f5c879;
-      box-shadow: 0 0 16px rgba(216, 161, 83, 0.2);
-    }
-
-    .day-pill-tag.day-2 {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid rgba(16, 185, 129, 0.55);
-      color: #34d399;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
-    }
-
-    .day-time-tag {
-      font-size: 13px;
-      font-weight: 700;
-      color: #cbd5e1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .chai-pricing-note {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #fce09b;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 8px;
-      margin-top: 10px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    /* ── Main Two Column Grid (Overview & Ticket Card) ── */
-    .masterclass-grid {
+    .hero-grid {
       display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 32px;
-      align-items: start;
-      margin-bottom: 60px;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
     }
 
-    @media (max-width: 960px) {
-      .masterclass-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-title {
-        font-size: 30px;
-      }
-    }
-
-    /* ── Timeline Curriculum Cards ── */
-    .curriculum-card {
-      background: rgba(18, 24, 38, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      margin-bottom: 24px;
-    }
-
-    .curriculum-card h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 18px;
-      display: flex;
+    .live-badge {
+      display: inline-flex;
       align-items: center;
       gap: 10px;
+      padding: 7px 14px;
+      border-radius: 100px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fecaca;
+      margin-bottom: 22px;
     }
 
-    .curriculum-card h3 span {
-      color: var(--gold);
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: ping 1.6s infinite;
     }
 
-    .module-item {
-      display: flex;
-      gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 9px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
     }
 
-    .module-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .module-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(216, 161, 83, 0.15);
-      border: 1px solid rgba(216, 161, 83, 0.4);
-      color: var(--gold);
-      font-family: 'Outfit', sans-serif;
+    .hero-title {
+      font-size: clamp(34px, 4.6vw, 54px);
       font-weight: 800;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      line-height: 1.08;
+      margin-bottom: 20px;
+    }
+
+    .hero-title .gold-gradient { display: inline; }
+
+    .hero-sub {
+      font-size: 17.5px;
+      color: #c9cdd8;
+      max-width: 560px;
+      margin-bottom: 26px;
+    }
+
+    .hero-sub strong { color: #fff; font-weight: 700; }
+
+    .hero-points { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 10px; }
+
+    .hero-points li { display: flex; gap: 12px; align-items: flex-start; color: #e6e8ee; font-size: 15.5px; }
+
+    .tick {
       flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(216, 161, 83, 0.16);
+      color: var(--gold-2);
+      font-size: 12px;
+      font-weight: 900;
+      margin-top: 2px;
     }
 
-    .module-title {
-      font-size: 15.5px;
-      font-weight: 700;
-      color: #f1f5f9;
-      margin-bottom: 4px;
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
+    .hero-cta .btn-gold { font-size: 17px; padding: 0 30px; min-height: 58px; }
+
+    .price-inline { display: inline-flex; align-items: baseline; gap: 8px; }
+    .price-inline del { font-weight: 500; opacity: 0.55; font-size: 14px; }
+
+    .trust-row { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+    .trust-item { display: flex; flex-direction: column; }
+    .trust-item strong { font-family: 'Outfit', sans-serif; font-size: 20px; color: #fff; line-height: 1.2; }
+    .trust-item span { font-size: 12.5px; color: var(--muted-d); }
+    .trust-sep { width: 1px; height: 34px; background: var(--line-d); }
+    .stars { color: #fbbf24; letter-spacing: 1px; }
+
+    /* Video card */
+    .video-card {
+      background: linear-gradient(180deg, var(--ink-3), var(--ink-2));
+      border: 1px solid var(--line-d);
+      border-radius: 22px;
+      padding: 12px;
+      box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(216, 161, 83, 0.08);
     }
 
-    .module-desc {
-      font-size: 13.5px;
-      color: #94a3b8;
-      line-height: 1.5;
+    .hero-video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
     }
 
-    /* ── Bonuses Box ── */
-    .bonuses-box {
-      background: linear-gradient(135deg, rgba(216, 161, 83, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
-      border: 1px solid rgba(216, 161, 83, 0.35);
-      border-radius: 20px;
-      padding: 26px;
-      margin-bottom: 24px;
-    }
+    .hero-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
-    .bonuses-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--gold);
-      margin-bottom: 16px;
-      display: block;
-      line-height: 1.45;
-    }
-
-    .bonuses-title .bonus-icon {
-      margin-right: 6px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .bonus-pill {
+    .video-meta {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      background: rgba(10, 15, 28, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 14px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      font-size: 13.5px;
-      color: #e2e8f0;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 8px 4px;
+      font-size: 13px;
+      color: var(--muted-d);
     }
 
-    .bonus-pill:last-child {
-      margin-bottom: 0;
-    }
+    .video-meta strong { color: #fff; font-weight: 700; }
 
-    .bonus-val {
-      font-size: 11px;
-      font-weight: 700;
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-
-    /* ── Ticket Checkout Sidebar Card ── */
-    .ticket-card {
-      position: sticky;
-      top: 24px;
-      background: #0d1322;
-      border: 2px solid rgba(216, 161, 83, 0.5);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(216, 161, 83, 0.15);
-      border-radius: 24px;
-      padding: 28px;
+    /* ── Schedule + countdown band ── */
+    .event-band {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) 1.5fr;
+      background: var(--ink-2);
+      border: 1px solid var(--line-d);
+      border-radius: var(--radius);
       overflow: hidden;
     }
 
-    .ticket-badge-row {
+    .event-cell { padding: 20px 22px; border-right: 1px solid var(--line-d); }
+    .event-cell:last-child { border-right: 0; }
+
+    .event-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-d);
+      margin-bottom: 4px;
+    }
+
+    .event-val { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .event-val.gold { color: var(--gold-2); }
+    .event-val del { font-size: 13px; font-weight: 500; opacity: 0.5; margin-left: 4px; }
+
+    .event-cell.countdown { background: rgba(216, 161, 83, 0.06); }
+
+    .timer-wrap { display: flex; gap: 10px; align-items: center; }
+    .timer-unit { text-align: center; min-width: 48px; }
+
+    .timer-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-lbl { font-size: 10.5px; color: var(--muted-d); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .timer-colon { color: var(--gold); font-weight: 800; font-size: 22px; margin-top: -14px; }
+
+    /* ── Sections ── */
+    .section { padding: 96px 0; }
+    .section.light { background: var(--paper); color: var(--text-l); }
+    .section.light-2 { background: var(--paper-2); color: var(--text-l); }
+    .section.dark-2 { background: var(--ink-2); }
+
+    .sec-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .light .eyebrow, .light-2 .eyebrow { color: var(--gold-ink); }
+
+    .sec-title { font-size: clamp(28px, 3.4vw, 42px); font-weight: 800; line-height: 1.15; margin-bottom: 14px; }
+    .sec-sub { font-size: 17px; color: var(--muted-d); }
+    .light .sec-sub, .light-2 .sec-sub { color: var(--muted-l); }
+
+    .light .gold-gradient, .light-2 .gold-gradient {
+      background: linear-gradient(120deg, #b07320, #8a5a14);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    /* Before / after */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    .compare-col { border-radius: var(--radius); padding: 32px; }
+    .compare-col.old { background: #fff; border: 1px solid var(--line-l); }
+    .compare-col.new { background: var(--ink); color: var(--text-d); box-shadow: var(--shadow); }
+
+    .compare-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .old .compare-tag { background: #fee2e2; color: #b91c1c; }
+    .new .compare-tag { background: rgba(216, 161, 83, 0.15); color: var(--gold-2); }
+
+    .compare-col h3 { font-size: 22px; font-weight: 700; margin-bottom: 18px; }
+
+    .compare-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+    .compare-col li { display: flex; gap: 12px; font-size: 15px; line-height: 1.55; }
+    .old li { color: var(--muted-l); }
+    .new li { color: #d9dce4; }
+    .new li strong { color: #fff; }
+
+    .mark { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 900; margin-top: 1px; }
+    .old .mark { background: #fee2e2; color: #dc2626; }
+    .new .mark { background: rgba(22, 163, 74, 0.18); color: #4ade80; }
+
+    /* Outcome stats */
+    .outcomes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+    .outcome {
+      background: #fff;
+      border: 1px solid var(--line-l);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .outcome:hover { transform: translateY(-4px); box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.25); }
+
+    .outcome-num { font-family: 'Outfit', sans-serif; font-size: 38px; font-weight: 800; color: var(--gold-ink); line-height: 1; margin-bottom: 4px; }
+    .outcome-unit { font-size: 13px; font-weight: 700; color: var(--muted-l); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .outcome h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-l); }
+    .outcome p { font-size: 14.5px; color: var(--muted-l); line-height: 1.6; }
+
+    /* Curriculum */
+    .curriculum-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: start; }
+
+    .curr-aside { position: sticky; top: 32px; }
+    .curr-aside .sec-title { text-align: left; }
+    .curr-aside .sec-sub { margin-bottom: 26px; }
+
+    .session-card {
+      background: var(--ink-3);
+      border: 1px solid var(--line-d);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .session-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14.5px; }
+    .session-row span:first-child { color: var(--muted-d); }
+    .session-row span:last-child { color: #fff; font-weight: 600; text-align: right; }
+
+    .modules { display: grid; gap: 14px; counter-reset: mod; }
+
+    .module {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 18px;
+      padding: 24px;
+      background: var(--ink-3);
+      border: 1px solid var(--line-d);
+      border-radius: var(--radius);
+      transition: border-color .25s;
+    }
+
+    .module:hover { border-color: rgba(216, 161, 83, 0.45); }
+
+    .module-num {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      background: rgba(216, 161, 83, 0.12);
+      color: var(--gold-2);
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .module h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+    .module p { font-size: 14.5px; color: var(--muted-d); }
+
+    /* Who is it for */
+    .audience { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+    .aud-card {
+      background: #fff;
+      border: 1px solid var(--line-l);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+    }
+
+    .aud-icon { font-size: 28px; margin-bottom: 14px; }
+    .aud-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text-l); }
+    .aud-card p { font-size: 14.5px; color: var(--muted-l); }
+
+    /* ── Offer / checkout ── */
+    .offer {
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 0%, rgba(216, 161, 83, 0.12), transparent 60%),
+        var(--ink);
+    }
+
+    .offer-grid { display: grid; grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
+
+    .value-stack {
+      background: var(--ink-2);
+      border: 1px solid var(--line-d);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .value-head { padding: 26px 28px 18px; border-bottom: 1px solid var(--line-d); }
+    .value-head h3 { font-size: 22px; font-weight: 700; }
+    .value-head p { color: var(--muted-d); font-size: 14.5px; margin-top: 4px; }
+
+    .value-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
+      gap: 16px;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--line-d);
+      font-size: 15px;
+      color: #dfe2ea;
     }
 
-    .pass-type {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: rgba(216, 161, 83, 0.2);
-      color: var(--gold);
-      border: 1px solid rgba(216, 161, 83, 0.4);
-      padding: 5px 11px;
-      border-radius: 8px;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+    .value-row .bonus-val {
+      flex-shrink: 0;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--gold-2);
     }
+
+    .value-row.core { background: rgba(216, 161, 83, 0.05); }
+    .value-row.core span:first-child { font-weight: 700; color: #fff; }
+
+    .value-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 28px;
+      background: rgba(216, 161, 83, 0.08);
+    }
+
+    .value-total .lbl { font-size: 14px; color: var(--muted-d); }
+    .value-total .lbl strong { display: block; color: #fff; font-size: 17px; font-family: 'Outfit', sans-serif; }
+    .value-total .amt { text-align: right; }
+    .value-total .amt del { color: var(--muted-d); font-size: 15px; display: block; }
+    .value-total .amt strong { font-family: 'Outfit', sans-serif; font-size: 30px; color: var(--gold-2); line-height: 1.1; }
+
+    .ticket-card {
+      background: #fff;
+      color: var(--text-l);
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(216, 161, 83, 0.4);
+      position: sticky;
+      top: 24px;
+    }
+
+    .ticket-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    .pass-type { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-ink); }
 
     .seats-left {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: #f87171;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      padding: 5px 11px;
-      border-radius: 8px;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      color: #b91c1c;
+      background: #fee2e2;
+      padding: 4px 10px;
+      border-radius: 100px;
     }
 
-    .ticket-price-row {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .ticket-price-val {
-      font-family: 'Outfit', sans-serif;
-      font-size: 44px;
-      font-weight: 900;
-      color: #fff;
-    }
-
-    .ticket-price-orig {
-      font-size: 18px;
-      color: #64748b;
-      text-decoration: line-through;
-    }
+    .ticket-price-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+    .ticket-price-val { font-family: 'Outfit', sans-serif; font-size: 56px; font-weight: 800; line-height: 1; color: var(--text-l); }
+    .ticket-price-orig { font-size: 20px; color: #9a9caa; text-decoration: line-through; }
 
     .ticket-price-discount {
       font-size: 12px;
       font-weight: 800;
-      background: #10b981;
-      color: #064e3b;
-      padding: 2px 7px;
-      border-radius: 6px;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 4px 10px;
+      border-radius: 100px;
     }
 
-    .ticket-features-list {
-      list-style: none;
-      margin: 20px 0;
-      padding: 0;
-    }
+    .ticket-note { font-size: 14px; color: var(--muted-l); margin-bottom: 22px; }
 
-    .ticket-features-list li {
-      font-size: 13.5px;
-      color: #cbd5e1;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .ticket-incl { list-style: none; padding: 16px 0; margin: 0 0 20px; border-top: 1px solid #eee8dc; border-bottom: 1px solid #eee8dc; display: grid; gap: 8px; }
+    .ticket-incl li { display: flex; gap: 10px; font-size: 14px; color: #3b3d47; }
+    .ticket-incl li span { color: var(--green); font-weight: 900; }
 
-    .ticket-features-list li span {
-      color: #10b981;
-      font-weight: 900;
-    }
-
-    /* ── Form Inputs ── */
-    .checkout-form-group {
-      margin-bottom: 14px;
-    }
-
-    .checkout-form-group label {
-      display: block;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: #cbd5e1;
-      margin-bottom: 5px;
-    }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 13px; font-weight: 700; color: #3b3d47; margin-bottom: 6px; }
 
     .checkout-input {
       width: 100%;
-      padding: 12px 14px;
-      background: #060a14;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.2s;
+      height: 50px;
+      padding: 0 14px;
+      border: 1.5px solid #e2ddd2;
+      border-radius: 11px;
+      background: #fcfbf8;
+      font: inherit;
+      font-size: 15.5px;
+      color: var(--text-l);
+      transition: border-color .2s, box-shadow .2s;
     }
 
-    .checkout-input:focus {
-      border-color: var(--gold);
-    }
+    .checkout-input:focus { outline: 0; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(216, 161, 83, 0.18); background: #fff; }
 
-    .checkout-form-group .qa-phone-group {
-      display: flex;
-      align-items: stretch;
-      width: 100%;
-    }
-    .checkout-form-group .qa-phone-prefix {
-      display: inline-flex;
-      align-items: center;
+    .phone-group { display: flex; }
+    .phone-prefix {
+      display: grid; place-items: center;
       padding: 0 12px;
-      background: #0d121f;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-right: none;
-      border-radius: 10px 0 0 10px;
-      color: #f1f5f9;
-      font-size: 13.5px;
+      border: 1.5px solid #e2ddd2;
+      border-right: 0;
+      border-radius: 11px 0 0 11px;
+      background: #f3efe7;
+      font-size: 14.5px;
       font-weight: 700;
-      white-space: nowrap;
-      user-select: none;
+      color: #3b3d47;
     }
-    .checkout-form-group .qa-phone-group input {
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
-    }
-    .checkout-form-group .qa-phone-group:focus-within .qa-phone-prefix {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
+    .phone-group .checkout-input { border-radius: 0 11px 11px 0; }
 
-    @keyframes btn-shimmer-sweep {
-      0% {
-        left: -120%;
-      }
-      25%, 100% {
-        left: 140%;
-      }
-    }
+    .btn-checkout-pay { width: 100%; min-height: 58px; font-size: 17px; margin-top: 6px; }
+    .btn-checkout-pay:disabled { opacity: 0.7; cursor: wait; transform: none; }
 
-    @keyframes btn-pulse-aura {
-      0%, 100% {
-        box-shadow: 0 8px 24px rgba(216, 161, 83, 0.42), 0 0 0 0 rgba(245, 158, 11, 0.5);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow: 0 12px 36px rgba(216, 161, 83, 0.7), 0 0 0 8px rgba(245, 158, 11, 0);
-        transform: scale(1.018);
-      }
-    }
+    .form-msg { display: none; margin-top: 12px; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; background: #fee2e2; color: #991b1b; }
+    .form-msg.show { display: block; }
 
-    @keyframes btn-ticket-wiggle {
-      0%, 100% { transform: rotate(0deg); }
-      20% { transform: rotate(-10deg) scale(1.15); }
-      40% { transform: rotate(10deg) scale(1.15); }
-      60% { transform: rotate(-6deg); }
-      80% { transform: rotate(6deg); }
-    }
+    .security-note { text-align: center; font-size: 12.5px; color: var(--muted-l); margin-top: 14px; line-height: 1.6; }
+    .pay-badges { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .pay-badges span { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #f3efe7; color: #5d6070; }
 
-    .btn-checkout-pay {
-      width: 100%;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 35%, #d8a153 100%);
-      color: #080d18;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 14px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 17.5px;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(216, 161, 83, 0.45);
-      animation: btn-pulse-aura 2.4s infinite ease-in-out;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    .wa-help { text-align: center; margin-top: 18px; padding-top: 16px; border-top: 1px solid #eee8dc; font-size: 13px; color: var(--muted-l); }
+    .wa-help a { color: #128c4b; font-weight: 700; text-decoration: none; }
 
-    .btn-checkout-pay::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -120%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
-      transform: skewX(-25deg);
-      animation: btn-shimmer-sweep 3.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-    }
+    /* Testimonials */
+    .reviews-grid { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 20px; align-items: stretch; }
 
-    .btn-checkout-pay:hover {
-      transform: translateY(-2px) scale(1.025);
-      box-shadow: 0 16px 40px rgba(216, 161, 83, 0.75);
-      filter: brightness(1.06);
-    }
-
-    .btn-checkout-pay:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow: 0 4px 14px rgba(216, 161, 83, 0.4);
-    }
-
-    .btn-checkout-pay .btn-anim-icon {
-      display: inline-block;
-      animation: btn-ticket-wiggle 2.4s infinite ease-in-out;
-    }
-
-    .security-note {
-      text-align: center;
-      font-size: 11.5px;
-      color: #94a3b8;
-      margin-top: 14px;
-    }
-
-    /* ── Certificate Showcase Section ── */
-    .cert-showcase-section {
-      background: radial-gradient(circle at 50% 30%, rgba(26, 36, 56, 0.45) 0%, rgba(10, 15, 26, 0.95) 100%);
-      border: 1px solid rgba(216, 161, 83, 0.35);
-      border-radius: 24px;
-      padding: 44px 36px;
-      margin-bottom: 50px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(216, 161, 83, 0.08);
-    }
-
-    .cert-showcase-section::before {
-      content: '';
-      position: absolute;
-      top: -80px;
-      right: -80px;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(216, 161, 83, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .cert-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 36px;
-      align-items: center;
-    }
-
-    @media (max-width: 900px) {
-      .cert-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cert-showcase-section {
-        padding: 28px 20px;
-      }
-    }
-
-    .cert-badge-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(216, 161, 83, 0.12);
-      border: 1px solid rgba(216, 161, 83, 0.4);
-      color: #f5c879;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      border-radius: 50px;
-      margin-bottom: 12px;
-    }
-
-    .cert-heading {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.25;
-      margin-bottom: 14px;
-    }
-
-    .cert-heading span {
-      background: linear-gradient(135deg, #fce09b, #d8a153);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .cert-desc {
-      font-size: 14px;
-      color: #cbd5e1;
-      line-height: 1.6;
-      margin-bottom: 22px;
-    }
-
-    .cert-perks-list {
+    .rating-card {
+      background: var(--ink);
+      color: var(--text-d);
+      border-radius: var(--radius);
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 26px;
-    }
-
-    .cert-perk-item {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .cert-perk-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(216, 161, 83, 0.15);
-      border: 1px solid rgba(216, 161, 83, 0.3);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-      margin-top: 2px;
     }
 
-    .cert-perk-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #f8fafc;
-      margin-bottom: 2px;
-    }
+    .rating-big { font-family: 'Outfit', sans-serif; font-size: 64px; font-weight: 800; line-height: 1; }
+    .rating-card .stars { font-size: 20px; margin: 8px 0; }
+    .rating-card p { color: var(--muted-d); font-size: 14.5px; }
+    .rating-card a { color: var(--gold-2); font-weight: 700; font-size: 14px; text-decoration: none; margin-top: 14px; display: inline-block; }
 
-    .cert-perk-desc {
-      font-size: 12.5px;
-      color: #94a3b8;
-      line-height: 1.45;
-    }
+    .review { background: #fff; border: 1px solid var(--line-l); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; }
+    .review .stars { font-size: 15px; margin-bottom: 14px; }
+    .review blockquote { margin: 0 0 20px; font-size: 16px; line-height: 1.65; color: var(--text-l); flex: 1; }
+    .reviewer { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--paper-2); color: var(--gold-ink); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .reviewer strong { display: block; font-size: 15px; color: var(--text-l); }
+    .reviewer span { font-size: 13px; color: var(--muted-l); }
 
-    /* ── Realistic Certificate Mockup ── */
+    /* Certificate */
+    .cert-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+
     .cert-frame {
       position: relative;
-      background: #090e18;
-      background-image:
-        radial-gradient(ellipse at 50% 50%, rgba(22, 33, 56, 0.8) 0%, rgba(8, 12, 22, 0.98) 100%),
-        repeating-linear-gradient(45deg, rgba(216, 161, 83, 0.02) 0px, rgba(216, 161, 83, 0.02) 2px, transparent 2px, transparent 12px);
-      border: 2px solid #d8a153;
-      border-radius: 16px;
-      padding: 24px 22px;
-      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), inset 0 0 35px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .cert-frame:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.8), 0 0 25px rgba(216, 161, 83, 0.2);
-    }
-
-    .cert-inner-border {
-      border: 1px dashed rgba(216, 161, 83, 0.45);
-      border-radius: 10px;
-      padding: 18px 16px 14px;
-      position: relative;
-      text-align: center;
-    }
-
-    .cert-corner {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border: 2px solid #f59e0b;
-    }
-
-    .cert-corner-tl {
-      top: -2px;
-      left: -2px;
-      border-right: none;
-      border-bottom: none;
-    }
-
-    .cert-corner-tr {
-      top: -2px;
-      right: -2px;
-      border-left: none;
-      border-bottom: none;
-    }
-
-    .cert-corner-bl {
-      bottom: -2px;
-      left: -2px;
-      border-right: none;
-      border-top: none;
-    }
-
-    .cert-corner-br {
-      bottom: -2px;
-      right: -2px;
-      border-left: none;
-      border-top: none;
-    }
-
-    .cert-header-stars {
-      color: #f59e0b;
-      font-size: 11px;
-      letter-spacing: 4px;
-      margin-bottom: 4px;
-    }
-
-    .cert-inst-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(13px, 1.8vw, 17px);
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    .cert-inst-sub {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      color: #f5c879;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .cert-award-ribbon {
-      display: inline-block;
-      padding: 3px 14px;
-      background: linear-gradient(90deg, rgba(216, 161, 83, 0.1), rgba(216, 161, 83, 0.25), rgba(216, 161, 83, 0.1));
-      border-top: 1px solid rgba(216, 161, 83, 0.4);
-      border-bottom: 1px solid rgba(216, 161, 83, 0.4);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .cert-recipient-pre {
-      font-size: 10px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 4px;
-    }
-
-    .cert-recipient-name {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(18px, 2.4vw, 24px);
-      font-weight: 800;
-      color: #f5c879;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(216, 161, 83, 0.4);
-      display: inline-block;
-      padding: 0 16px 4px;
-      margin-bottom: 8px;
-    }
-
-    .cert-recog-text {
-      font-size: 10px;
-      color: #cbd5e1;
-      max-width: 90%;
-      margin: 0 auto 8px;
-      line-height: 1.4;
-    }
-
-    .cert-course-badge {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(216, 161, 83, 0.3);
-      padding: 4px 12px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-bottom: 14px;
-    }
-
-    .cert-footer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 12px;
-      margin-top: 6px;
-      text-align: left;
-    }
-
-    .cert-meta-item {
-      font-size: 9.5px;
-      color: #94a3b8;
-      line-height: 1.4;
-    }
-
-    .cert-meta-val {
-      color: #f1f5f9;
-      font-weight: 700;
-      font-family: monospace;
-      font-size: 10px;
-    }
-
-    .cert-gold-seal {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffe699, #d8a153 60%, #996c21 100%);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 0 6px rgba(255, 255, 255, 0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #3b2302;
-      font-weight: 900;
-      font-size: 7px;
-      text-align: center;
-      line-height: 1.1;
-      border: 2px dashed rgba(255, 255, 255, 0.5);
-      flex-shrink: 0;
-    }
-
-    .cert-sign-wrap {
-      text-align: right;
-    }
-
-    .cert-signature {
-      font-family: 'Brush Script MT', 'Great Vibes', cursive, sans-serif;
-      font-size: 18px;
-      color: #f5c879;
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-
-    .cert-signer-title {
-      font-size: 8.5px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .btn-verify-demo {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(216, 161, 83, 0.12);
-      border: 1px solid rgba(216, 161, 83, 0.5);
-      color: #fce09b;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
+      border-radius: 18px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line-l);
+      box-shadow: 0 40px 70px -35px rgba(0, 0, 0, 0.45);
       cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
+      transition: transform .3s;
     }
 
-    .btn-verify-demo:hover {
-      background: rgba(216, 161, 83, 0.25);
-      border-color: #f59e0b;
-      color: #ffffff;
-      transform: translateY(-1px);
+    .cert-frame:hover { transform: translateY(-4px) rotate(-0.3deg); }
+    .cert-frame img { border-radius: 10px; }
+
+    .cert-chip {
+      position: absolute;
+      left: 22px; bottom: 22px;
+      background: rgba(11, 13, 18, 0.88);
+      color: #fff;
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
     }
 
-    /* ── Verification Modal ── */
+    .cert-chip b { color: #4ade80; }
+
+    .cert-list { list-style: none; padding: 0; margin: 26px 0 30px; display: grid; gap: 18px; }
+    .cert-list li { display: flex; gap: 14px; }
+    .cert-list .ic { flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: #fff; border: 1px solid var(--line-l); font-size: 19px; }
+    .cert-list strong { display: block; font-size: 16px; color: var(--text-l); }
+    .cert-list span { font-size: 14.5px; color: var(--muted-l); }
+
+    .btn-outline-dark { background: transparent; color: var(--text-l); border: 1.5px solid #d5cfc2; }
+    .btn-outline-dark:hover { border-color: var(--text-l); }
+
+    /* Mentor */
+    .mentor-grid { display: grid; grid-template-columns: 380px 1fr; gap: 56px; align-items: center; }
+
+    .mentor-photo { position: relative; }
+    .mentor-photo img { border-radius: 22px; aspect-ratio: 1; object-fit: cover; box-shadow: var(--shadow); }
+
+    .mentor-badge {
+      position: absolute;
+      right: -16px; bottom: 26px;
+      background: #fff;
+      color: var(--text-l);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    .mentor-badge strong { display: block; font-family: 'Outfit', sans-serif; font-size: 22px; line-height: 1.1; }
+    .mentor-badge span { font-size: 12px; color: var(--muted-l); }
+
+    .mentor-role { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .mentor-name { font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; margin-bottom: 16px; }
+    .mentor-bio { font-size: 17px; color: #c9cdd8; margin-bottom: 26px; }
+
+    .mentor-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .mentor-stat { background: var(--ink-3); border: 1px solid var(--line-d); border-radius: 14px; padding: 16px; }
+    .mentor-stat strong { display: block; font-family: 'Outfit', sans-serif; font-size: 24px; color: var(--gold-2); line-height: 1.1; }
+    .mentor-stat span { font-size: 13px; color: var(--muted-d); }
+
+    /* FAQ */
+    .faq { max-width: 820px; margin: 0 auto; display: grid; gap: 12px; }
+
+    .faq details { background: #fff; border: 1px solid var(--line-l); border-radius: 14px; overflow: hidden; }
+    .faq details[open] { border-color: #d9c49d; }
+
+    .faq summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 20px 56px 20px 22px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-l);
+      position: relative;
+    }
+
+    .faq summary::-webkit-details-marker { display: none; }
+
+    .faq summary::after {
+      content: '+';
+      position: absolute;
+      right: 22px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--gold-ink);
+      transition: transform .2s;
+    }
+
+    .faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+    .faq .ans { padding: 0 22px 20px; font-size: 15.5px; color: var(--muted-l); }
+    .faq .ans a { color: var(--gold-ink); font-weight: 700; }
+
+    /* Final CTA */
+    .final-cta { padding: 96px 0; text-align: center; background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(216, 161, 83, 0.18), transparent 70%), var(--ink); }
+    .final-cta .sec-title { max-width: 760px; margin: 0 auto 16px; }
+    .final-cta .sec-sub { max-width: 600px; margin: 0 auto 32px; }
+    .final-cta .btn-gold { min-height: 60px; font-size: 18px; padding: 0 36px; }
+    .final-cta small { display: block; margin-top: 16px; color: var(--muted-d); font-size: 13.5px; }
+
+    /* Certificate modal */
     .cert-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 99999;
+      position: fixed; inset: 0;
+      background: rgba(5, 6, 9, 0.8);
+      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 18px;
+      padding: 20px;
+      z-index: 2000;
     }
 
-    .cert-modal-overlay.active {
-      display: flex;
-    }
+    .cert-modal-overlay.active { display: flex; }
 
     .cert-modal-box {
-      background: #0d1322;
-      border: 1px solid rgba(216, 161, 83, 0.5);
-      border-radius: 20px;
-      max-width: 520px;
-      width: 100%;
-      padding: 28px;
       position: relative;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      color: var(--text-l);
+      border-radius: 20px;
+      padding: 28px;
     }
 
     .cert-modal-close {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-size: 24px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    /* ── Mentor Section ── */
-    .mentor-card {
-      background: rgba(18, 24, 38, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      margin-bottom: 60px;
-    }
-
-    .mentor-img {
-      width: 120px;
-      height: 120px;
+      position: absolute; top: 12px; right: 12px;
+      width: 36px; height: 36px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--gold);
-      box-shadow: 0 0 20px rgba(216, 161, 83, 0.25);
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 640px) {
-      .mentor-card {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
-    /* ── Hero Video Box ── */
-    .hero-video-box {
-      width: 100%;
-      max-width: 820px;
-      margin: 0 auto 30px;
-      background: #000;
-      border: 1.5px solid rgba(216, 161, 83, 0.45);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 45px rgba(216, 161, 83, 0.2);
-      position: relative;
-    }
-    .hero-video-frame {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-      background: #020408;
-    }
-    .hero-video-frame iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .hero-video-info-strip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 11px 16px;
-      background: rgba(10, 14, 24, 0.96);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 12px;
-      flex-wrap: wrap;
-    }
-    .v-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-    .v-pill span {
-      color: var(--gold);
-    }
-
-    /* ── AI Tools Badges Strip ── */
-    .ai-tools-strip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 0 auto 32px;
-      max-width: 900px;
-    }
-    .ai-tool-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 7px 14px;
-      border-radius: 100px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #f1f5f9;
-      transition: all 0.25s ease;
-    }
-    .ai-tool-pill:hover {
-      background: rgba(216, 161, 83, 0.12);
-      border-color: var(--gold);
-      color: var(--gold);
-      transform: translateY(-2px);
-    }
-
-    /* ── Comparison Card (Manual vs AI) ── */
-    .comparison-card {
-      background: rgba(18, 24, 38, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 22px;
-      padding: 28px;
-      margin-bottom: 28px;
-    }
-    .comparison-header h2, .comparison-header h3 {
-      font-family: 'Outfit', sans-serif;
+      border: 0;
+      background: var(--paper-2);
       font-size: 22px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .comparison-header h3 span {
-      color: var(--gold);
-    }
-    .comparison-header p {
-      font-size: 13.5px;
-      color: #94a3b8;
-      margin-bottom: 20px;
-    }
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 768px) {
-      .comparison-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .comp-col {
-      padding: 20px;
-      border-radius: 16px;
-    }
-    .comp-old {
-      background: rgba(239, 68, 68, 0.06);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-    }
-    .comp-new {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1.5px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.1);
-    }
-    .comp-badge {
-      font-size: 12.5px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-bottom: 14px;
-      letter-spacing: 0.03em;
-    }
-    .comp-badge.bad {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-    }
-    .comp-badge.good {
-      background: rgba(16, 185, 129, 0.25);
-      color: #6ee7b7;
-    }
-    .comp-col ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .comp-col ul li {
-      font-size: 13.5px;
-      margin-bottom: 10px;
-      line-height: 1.5;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .comp-old ul li {
-      color: #cbd5e1;
-    }
-    .comp-old ul li span {
-      color: #ef4444;
-      font-weight: 900;
-    }
-    .comp-new ul li {
-      color: #f1f5f9;
-      font-weight: 600;
-    }
-    .comp-new ul li span {
-      color: #10b981;
-      font-weight: 900;
+      cursor: pointer;
+      color: var(--text-l);
     }
 
-    /* ── Mobile-First Sticky Bottom CTA ── */
+    .verified-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 10px; background: #dcfce7; color: #16a34a; font-size: 24px; font-weight: 900; }
+    .modal-kicker { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #16a34a; text-transform: uppercase; }
+    .modal-title { text-align: center; font-size: 20px; font-weight: 800; margin: 4px 0 18px; }
+    .modal-rows { border: 1px solid var(--line-l); border-radius: 12px; padding: 4px 16px; margin-bottom: 18px; }
+    .modal-rows div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0ebe1; font-size: 14px; }
+    .modal-rows div:last-child { border-bottom: 0; }
+    .modal-rows span:first-child { color: var(--muted-l); }
+    .modal-rows span:last-child { font-weight: 700; text-align: right; }
+
+    /* Mobile sticky CTA */
     .mobile-sticky-cta {
       display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 1500;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(11, 13, 18, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(216, 161, 83, 0.3);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transform: translateY(110%);
+      transition: transform .3s;
     }
 
-    /* ── Responsive Polish ── */
-    @media (max-width: 960px) {
-      .masterclass-grid {
-        grid-template-columns: 1fr !important;
-        gap: 28px !important;
-        margin-bottom: 40px !important;
-      }
-      .ticket-card {
-        position: static !important;
-        max-width: 540px;
-        margin: 0 auto;
-      }
+    .mobile-sticky-cta.show { transform: translateY(0); }
+    .mobile-cta-price { display: flex; align-items: baseline; gap: 8px; }
+    .m-price { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+    .m-orig { font-size: 14px; color: var(--muted-d); text-decoration: line-through; }
+    .mobile-cta-seats { font-size: 11.5px; color: #fca5a5; font-weight: 600; }
+    .btn-mobile-book { min-height: 48px; padding: 0 20px; font-size: 15px; }
+
+    /* Reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
     }
 
-    @media (max-width: 768px) {
-      body {
-        padding-bottom: 84px !important; /* clearance for mobile sticky bar */
-      }
-      .container {
-        padding: 0 16px !important;
-      }
-      .top-announcement {
-        padding: 7px 12px !important;
-        font-size: 11.5px !important;
-        line-height: 1.4 !important;
-      }
-      .top-announcement span {
-        font-size: 10px !important;
-        padding: 2px 6px !important;
-        margin-right: 4px !important;
-      }
-      .nav-header {
-        padding: 12px 0 !important;
-      }
-      .brand-logo-wrap {
-        gap: 8px !important;
-      }
-      .brand-logo-wrap img {
-        height: 32px !important;
-        width: 32px !important;
-      }
-      .brand-text-title {
-        font-size: 13.5px !important;
-      }
-      .brand-text-sub {
-        font-size: 9.5px !important;
-      }
-      .nav-portal-btn {
-        padding: 6px 12px !important;
-        font-size: 11.5px !important;
-      }
-      .hero-section {
-        padding: 24px 0 20px !important;
-      }
-      .live-badge-pill {
-        font-size: 11px !important;
-        padding: 5px 12px !important;
-        margin-bottom: 14px !important;
-        white-space: normal !important;
-        text-align: center !important;
-      }
-      .hero-title {
-        font-size: 25px !important;
-        line-height: 1.25 !important;
-        margin-bottom: 12px !important;
-      }
-      .hero-sub {
-        font-size: 13.5px !important;
-        line-height: 1.55 !important;
-        margin-bottom: 20px !important;
-        padding: 0 !important;
-      }
-      .live-schedule-strip {
-        gap: 8px !important;
-        margin-bottom: 20px !important;
-      }
-      .schedule-pill {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 10px 14px !important;
-        border-radius: 12px !important;
-        gap: 10px !important;
-      }
-      .sch-val {
-        font-size: 13.5px !important;
-      }
-      .hero-video-box {
-        border-radius: 14px !important;
-        margin-bottom: 20px !important;
-      }
-      .hero-video-info-strip {
-        padding: 8px 12px !important;
-        gap: 8px !important;
-        font-size: 11px !important;
-      }
-      .timer-container {
-        margin-bottom: 22px !important;
-      }
-      .timer-wrap {
-        padding: 8px 12px !important;
-        gap: 6px !important;
-        border-radius: 14px !important;
-      }
-      .timer-unit {
-        min-width: 40px !important;
-      }
-      .timer-num {
-        font-size: 20px !important;
-      }
-      .timer-lbl {
-        font-size: 9px !important;
-      }
-      .timer-colon {
-        font-size: 18px !important;
-      }
-      .hook-chai-callout {
-        padding: 14px 16px !important;
-        gap: 12px !important;
-        border-radius: 14px !important;
-        margin-bottom: 24px !important;
-      }
-      .hook-chai-icon {
-        font-size: 28px !important;
-      }
-      .hook-chai-title {
-        font-size: 15px !important;
-      }
-      .hook-chai-desc {
-        font-size: 12.5px !important;
-      }
-      .ai-tools-strip {
-        gap: 6px !important;
-        margin-bottom: 24px !important;
-      }
-      .ai-tool-pill {
-        font-size: 11px !important;
-        padding: 5px 9px !important;
-      }
-      .comparison-card {
-        padding: 18px !important;
-        border-radius: 16px !important;
-      }
-      .comparison-grid {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-      }
-      .comp-col {
-        padding: 16px !important;
-        border-radius: 12px !important;
-      }
-      .curriculum-card {
-        padding: 18px !important;
-        border-radius: 16px !important;
-      }
-      .bonuses-box {
-        padding: 18px !important;
-        border-radius: 16px !important;
-      }
-      .bonuses-title {
-        font-size: 17px !important;
-        display: block !important;
-        line-height: 1.45 !important;
-      }
-      .bonus-pill {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 6px !important;
-        padding: 10px 12px !important;
-      }
-      .bonus-val {
-        align-self: flex-start !important;
-      }
-      .ticket-card {
-        padding: 20px 16px !important;
-        border-radius: 18px !important;
-      }
-      .ticket-badge-row {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 8px !important;
-      }
-      .pass-type, .seats-left {
-        justify-content: center !important;
-        text-align: center !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 6px 12px !important;
-      }
-      .ticket-price-val {
-        font-size: 34px !important;
-      }
-      .cert-showcase-section {
-        padding: 40px 12px !important;
-      }
-      .mentor-card {
-        padding: 20px 16px !important;
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 16px !important;
-        margin-bottom: 40px !important;
-      }
-      .mentor-img {
-        width: 100px !important;
-        height: 100px !important;
-      }
-
-      /* Mobile Sticky CTA */
-      .mobile-sticky-cta {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        background: rgba(7, 9, 14, 0.96);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(216, 161, 83, 0.4);
-        padding: 10px 16px;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.85);
-      }
-      .mobile-cta-info {
-        display: flex;
-        flex-direction: column;
-      }
-      .mobile-cta-price {
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-      }
-      .m-price {
-        font-family: 'Outfit', sans-serif;
-        font-size: 20px;
-        font-weight: 900;
-        color: #fff;
-      }
-      .m-orig {
-        font-size: 12px;
-        color: #64748b;
-        text-decoration: line-through;
-      }
-      .mobile-cta-seats {
-        font-size: 10px;
-        color: #f87171;
-        font-weight: 700;
-      }
-      .btn-mobile-book {
-        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 35%, #d8a153 100%);
-        color: #07090e;
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        font-family: 'Outfit', sans-serif;
-        font-size: 13.5px;
-        font-weight: 800;
-        padding: 10px 18px;
-        border-radius: 10px;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(216, 161, 83, 0.5);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        position: relative;
-        overflow: hidden;
-        animation: btn-pulse-aura 2.4s infinite ease-in-out;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .btn-mobile-book::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -120%;
-        width: 60%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
-        transform: skewX(-25deg);
-        animation: btn-shimmer-sweep 3.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-      }
-      .btn-mobile-book:active {
-        transform: scale(0.97);
-      }
-
-      /* Footer Mobile Polish */
-      .qa-footer {
-        padding: 44px 0 110px !important;
-      }
-      .qa-footer-grid {
-        grid-template-columns: 1fr !important;
-        gap: 28px !important;
-      }
-      .qa-footer-brand-col {
-        align-items: center !important;
-        text-align: center !important;
-      }
-      .qa-footer-badges {
-        justify-content: center !important;
-      }
-      .qa-footer-contacts {
-        width: 100% !important;
-        align-items: center !important;
-      }
-      .qa-contact-link {
-        width: 100% !important;
-        max-width: 320px !important;
-        justify-content: center !important;
-      }
-      .qa-footer-address {
-        text-align: center !important;
-      }
-      .qa-footer-heading {
-        justify-content: center !important;
-        text-align: center !important;
-      }
-      .qa-footer-links-list {
-        align-items: center !important;
-        text-align: center !important;
-      }
-      .qa-footer-seo-strip {
-        text-align: center !important;
-        padding: 16px 0 !important;
-      }
-      .qa-footer-base {
-        flex-direction: column !important;
-        gap: 12px !important;
-        text-align: center !important;
-      }
-      .qa-footer-base-links {
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 8px 12px !important;
-      }
+    /* ── Responsive ── */
+    @media (max-width: 1000px) {
+      .hero-grid, .curriculum-grid, .offer-grid, .cert-grid, .mentor-grid { grid-template-columns: 1fr; gap: 40px; }
+      .curr-aside, .ticket-card { position: static; }
+      .outcomes, .audience { grid-template-columns: repeat(2, 1fr); }
+      .reviews-grid { grid-template-columns: 1fr 1fr; }
+      .rating-card { grid-column: 1 / -1; }
+      .event-band { grid-template-columns: repeat(3, 1fr); }
+      .event-cell.countdown { grid-column: 1 / -1; border-top: 1px solid var(--line-d); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .mentor-photo { max-width: 380px; }
+      .offer-grid > .ticket-card { order: -1; }
     }
 
-    /* ── Full Width Desktop & Tablet Footer ── */
-    .qa-footer {
-      width: 100%;
-      background: radial-gradient(ellipse at top center, #181c26 0%, #0c0e14 60%, #06070a 100%) !important;
-      border-top: 1px solid rgba(216, 161, 83, 0.25) !important;
-      color: #cbd5e1 !important;
-      padding: 68px 0 32px !important;
-      position: relative !important;
-      box-sizing: border-box !important;
+    @media (max-width: 760px) {
+      .wrap { padding: 0 16px; }
+      .section, .final-cta { padding: 64px 0; }
+      .sec-head { margin-bottom: 36px; }
+      .hero { padding: 20px 0 52px; }
+      .hero-sub { font-size: 16px; }
+      .hero-cta .btn { width: 100%; }
+      .header-actions .btn-ghost { display: none; }
+      .brand-title { font-size: 14px; }
+      .brand-sub { font-size: 10px; }
+      .event-band { grid-template-columns: 1fr 1fr; margin-top: 36px; }
+      .event-cell { border-bottom: 1px solid var(--line-d); }
+      .event-cell:nth-child(2) { border-right: 0; }
+      .event-cell:nth-child(3) { grid-column: 1 / -1; border-right: 0; }
+      .timer-num { font-size: 24px; }
+      .compare, .outcomes, .audience, .reviews-grid { grid-template-columns: 1fr; }
+      .compare-col { padding: 24px; }
+      .module { grid-template-columns: 1fr; gap: 12px; padding: 20px; }
+      .module-num { width: 44px; height: 44px; font-size: 17px; }
+      .value-row, .value-head, .value-total { padding-left: 18px; padding-right: 18px; }
+      .ticket-card { padding: 22px; }
+      .ticket-price-val { font-size: 46px; }
+      .mentor-stats { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .mentor-stat { padding: 12px; }
+      .mentor-stat strong { font-size: 19px; }
+      .mentor-badge { right: 12px; }
+      .trust-sep { display: none; }
+      .trust-row { gap: 18px 28px; }
+      .mobile-sticky-cta { display: flex; }
+      body.lp { padding-bottom: 76px; }
     }
-    .qa-footer .container {
-      max-width: 1200px !important;
-      width: calc(100% - 48px) !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
+
+    /* Video testimonials */
+    .vt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+
+    .vt-card {
+      position: relative;
+      display: block;
+      aspect-ratio: 3 / 4;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.5);
+    }
+
+    .vt-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+    .vt-card:hover img { transform: scale(1.05); }
+    .vt-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11, 13, 18, 0.9), transparent 55%); }
+
+    .vt-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--ink);
+      z-index: 1;
+      transition: transform .25s;
+    }
+
+    .vt-card:hover .vt-play { transform: translate(-50%, -50%) scale(1.1); }
+    .vt-play svg { margin-left: 3px; }
+
+    .vt-name { position: absolute; left: 18px; bottom: 16px; z-index: 1; color: rgba(255, 255, 255, 0.75); font-size: 13px; }
+    .vt-name strong { display: block; color: #fff; font-family: 'Outfit', sans-serif; font-size: 19px; }
+
+    .reviews-grid { grid-template-columns: 0.8fr 1fr 1fr 1fr; }
+    .review { margin: 0; }
+    img.avatar { padding: 0; }
+
+    .more-reviews { text-align: center; margin-top: 36px; }
+
+    .vt-modal {
+      position: fixed; inset: 0;
+      z-index: 2100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(5, 6, 9, 0.88);
+      backdrop-filter: blur(6px);
+    }
+
+    .vt-modal.active { display: flex; }
+    .vt-modal-box { position: relative; width: 100%; max-width: 900px; }
+    .vt-modal-box .cert-modal-close { top: -46px; right: 0; }
+    .vt-modal-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
+    .vt-modal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    @media (max-width: 1000px) {
+      .vt-grid { grid-template-columns: repeat(2, 1fr); }
+      .reviews-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .vt-grid { gap: 12px; }
+      .vt-play { width: 48px; height: 48px; }
+      .vt-name strong { font-size: 16px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .more-reviews .btn { width: 100%; }
     }
   </style>
 </head>
 
-<body>
+<body class="lp">
 
   <!-- Top Announcement Bar -->
   <div class="top-announcement" id="lp-top-announcement">
-    <span>⚡ LIVE BATCH THIS SUNDAY @ 07:00 PM</span> • ONLY 17 SEATS LEFT AT <span class="dynamic-ticket-price">₹21</span> (PRICE INCREASES TO ₹999)
+    <span>LIVE THIS SUNDAY</span> 7:00 PM • Launch price <span class="dynamic-ticket-price">₹21</span> — batch ke baad ₹999
   </div>
 
-  <div class="container">
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="wrap">
+      <header class="lp-header">
+        <a href="https://quickartphotography.in/" class="brand" aria-label="Quick Art Academy Home">
+          <img src="../home-assets/ec55a6be3747a9.webp" alt="Quick Art Logo" width="40" height="40">
+          <div>
+            <div class="brand-title">Quick Art Photography Academy</div>
+            <div class="brand-sub">Live Masterclass</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <a href="../portal/" class="btn btn-ghost" target="_blank" rel="noopener">Student Login</a>
+          <a href="#register" class="btn btn-gold">Seat Book Karein</a>
+        </div>
+      </header>
 
-    <!-- Header Navigation -->
-    <header class="nav-header">
-      <a href="https://quickartphotography.in/" class="brand-logo-wrap" aria-label="Quick Art Academy Home">
-        <img src="../home-assets/ec55a6be3747a9.webp" alt="Quick Art Logo" width="38" height="38">
+      <div class="hero-grid" style="margin-top:36px">
         <div>
-          <div class="brand-text-title">Quick Art Photography Academy</div>
-          <div class="brand-text-sub">LIVE MASTERCLASS WORKSHOP</div>
-        </div>
-      </a>
-      <a href="../portal/" class="nav-portal-btn" target="_blank" rel="noopener">
-        <span>🎓 Student Login</span>
-      </a>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="live-badge-pill">
-        <span class="live-dot"></span>
-        <span id="hero-badge-tag">🔴 1-DAY PRACTICAL LIVE WORKSHOP • BATCH STARTS THIS SUNDAY 07:00 PM</span>
-      </div>
-
-      <h1 class="hero-title" id="masterclass-title">
-        Wedding Photo Editing Me AI Ka Sahi Use <br>
-        <span class="gold-gradient">1-Click Me 2,000+ RAW Photos Filter, Bulk Edit &amp; Online Client Selection Karein</span>
-      </h1>
-
-      <p class="hero-sub" id="masterclass-sub">
-        Shaadi season me raat-raat bhar jagna band! Special Wedding Photographers ke liye 1 Din Ka Practical Live Masterclass (Only <span class="dynamic-ticket-price">₹21</span> Me). <br>
-        Seekhein <strong>1-Click RAW Photo Culling</strong>, Blinks &amp; Blur Removal, <strong>2,000+ Photos Bulk AI Retouching</strong>, Indian Bridal Skin Tone Protection aur Customer se Direct <strong>Online Mobile Photo Selection</strong> karwana!
-      </p>
-
-      <!-- Live Schedule Info Strip -->
-      <div class="live-schedule-strip">
-        <div class="schedule-pill highlight-gold">
-          <span class="sch-icon">🗓️</span>
-          <div>
-            <span class="sch-label">LIVE BATCH TIMING</span>
-            <strong class="sch-val">This Sunday @ 07:00 PM Sharp (Live)</strong>
-          </div>
-        </div>
-        <div class="schedule-pill">
-          <span class="sch-icon">⏳</span>
-          <div>
-            <span class="sch-label">WORKSHOP DURATION</span>
-            <strong class="sch-val">1-Day Practical Masterclass (Sunday Live)</strong>
-          </div>
-        </div>
-        <div class="schedule-pill highlight-gold">
-          <span class="sch-icon">🎟️</span>
-          <div>
-            <span class="sch-label">SPECIAL LAUNCH PASS</span>
-            <strong class="sch-val">Only <span class="dynamic-ticket-price">₹21</span> <del id="sch-orig-price" style="opacity:0.6;font-weight:400;margin-left:4px;font-size:13px;" class="dynamic-orig-price">₹999</del></strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hero Cinema Video Preview Box -->
-      <div class="hero-video-box" id="hero-video-box">
-        <div class="hero-video-frame" id="hero-video-mount">
-          <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="hero-video-info-strip">
-          <span class="v-pill"><span>🔴</span> 1-Day Live Workshop Demo</span>
-          <span class="v-pill"><span>⚡</span> 1-Click 2,000+ RAW Live Workflow</span>
-          <span class="v-pill"><span>🎙️</span> Hindi (हिंदी) Step-by-Step Hands-On</span>
-        </div>
-      </div>
-
-      <!-- Countdown Timer Container -->
-      <div class="timer-container" id="countdown-wrap">
-        <div class="timer-kicker">
-          <span>⏳</span> NEXT LIVE BATCH STARTS THIS SUNDAY AT 07:00 PM SHARP • LIMITED SEATS!
-        </div>
-        <div class="timer-wrap">
-          <div class="timer-unit">
-            <div class="timer-num" id="t-days">00</div>
-            <div class="timer-lbl">Days</div>
-          </div>
-          <div class="timer-colon">:</div>
-          <div class="timer-unit">
-            <div class="timer-num" id="t-hours">00</div>
-            <div class="timer-lbl">Hours</div>
-          </div>
-          <div class="timer-colon">:</div>
-          <div class="timer-unit">
-            <div class="timer-num" id="t-mins">00</div>
-            <div class="timer-lbl">Minutes</div>
-          </div>
-          <div class="timer-colon">:</div>
-          <div class="timer-unit">
-            <div class="timer-num" id="t-secs">00</div>
-            <div class="timer-lbl">Seconds</div>
-          </div>
-        </div>
-        <div class="timer-session-info">
-          📅 Next Live Session: <span id="next-session-date">This Sunday Shaam 07:00 PM (IST)</span> • Live on Zoom / Private HD Studio Stream
-        </div>
-      </div>
-
-      <!-- Killer Chai Hook Callout Box -->
-      <div class="hook-chai-callout">
-        <div class="hook-chai-icon">☕</div>
-        <div>
-          <div class="hook-chai-title">Sirf Ek Cup Chai Ki Keemat (<span class="dynamic-ticket-price">₹21</span>) Me 1 Din Ka Complete Live Workshop!</div>
-          <div class="hook-chai-desc">
-            Agle Sunday shaam 7 baje mere saath live baithiye aur seekhein wo <strong>Secret AI Workflow</strong> jo aapki poori wedding photo editing ko 10x fast bana dega: <strong>1-Click me 2,000+ RAW photos culling &amp; bulk color grading</strong>, Haldi/Mandap yellow color balance, natural bridal skin retouching aur client ko instant mobile gallery link dekar <strong>online photo selection</strong> karwana. Batch shuru hone ke baad price badh kar ₹999 ho jayegi!
-          </div>
-        </div>
-      </div>
-
-      <!-- AI Tools Strip -->
-      <div class="ai-tools-strip">
-        <div class="ai-tool-pill highlight-gold-pill"><span>⚡</span> 1-Click 2,000+ RAW Culling</div>
-        <div class="ai-tool-pill"><span>👰</span> Indian Bridal Skin Tone Protect</div>
-        <div class="ai-tool-pill"><span>📱</span> Client Online Photo Selection</div>
-        <div class="ai-tool-pill"><span>✨</span> 15-Min Bulk Color Grading</div>
-        <div class="ai-tool-pill"><span>📸</span> Auto Blur &amp; Blink Filter</div>
-        <div class="ai-tool-pill"><span>💻</span> 100% Offline GPU Speed</div>
-        <div class="ai-tool-pill"><span>🎨</span> 300 DPI Print Color Profiles</div>
-      </div>
-    </section>
-
-    <!-- Two-Column Content Grid -->
-    <div class="masterclass-grid">
-
-      <!-- LEFT: What You Learn (Day 1 & Day 2) + Bonuses -->
-      <div>
-
-        <!-- What You Learn Spotlight Banner -->
-        <div class="comparison-card" style="border: 2px solid rgba(216, 161, 83, 0.45); background: linear-gradient(135deg, rgba(216, 161, 83, 0.08) 0%, rgba(13, 20, 36, 0.95) 100%); margin-bottom: 24px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(216, 161, 83, 0.15);border:1px solid #d8a153;padding:5px 14px;border-radius:50px;color:#fce09b;font-size:12px;font-weight:800;letter-spacing:0.06em;">
-              <span>🚀</span> 1-DAY PRACTICAL WORKSHOP • 10X FASTER WEDDING WORKFLOW
-            </div>
-            <span style="display:inline-flex;align-items:center;gap:6px;color:#10b981;font-size:13px;font-weight:700;">
-              ⚡ Live Step-by-Step Hands-On
-            </span>
-          </div>
-          <h2 style="font-size: clamp(22px, 2.5vw, 28px); margin-bottom: 10px; line-height: 1.3; color: #fff;">
-            Shaadi Season Me 10x Fast Delivery: <span class="gold-gradient">Kya-Kya Seekhenge Aap?</span>
-          </h2>
-          <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
-            Is <strong>1-Day Live Masterclass (Only <span class="dynamic-ticket-price">₹21</span>)</strong> me hum aapko actual wedding projects ke RAW photos par complete ground-level practical system sikhayenge. Dekhiye kaise ghanto ka kaam minutes me finish hoga:
-          </p>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
-            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(216,161,83,0.2); border-radius: 12px; padding: 14px;">
-              <div style="font-size: 20px; margin-bottom: 6px;">⚡</div>
-              <strong style="color: #fce09b; font-size: 14px; display: block; margin-bottom: 4px;">1-Click AI Photo Culling</strong>
-              <span style="font-size: 12.5px; color: #94a3b8; line-height: 1.45; display: block;">2,000+ photos me se blurry shots, closed eyes (blinks) aur unwanted duplicates ko AI seconds me filter kar deta hai.</span>
-            </div>
-            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(216,161,83,0.2); border-radius: 12px; padding: 14px;">
-              <div style="font-size: 20px; margin-bottom: 6px;">👰</div>
-              <strong style="color: #fce09b; font-size: 14px; display: block; margin-bottom: 4px;">Indian Bridal Skin Protect</strong>
-              <span style="font-size: 12.5px; color: #94a3b8; line-height: 1.45; display: block;">Haldi ke peele rang aur stage lights ko balance karke natural glowing creamy Indian bridal skin tone retain karna.</span>
-            </div>
-            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(216,161,83,0.2); border-radius: 12px; padding: 14px;">
-              <div style="font-size: 20px; margin-bottom: 6px;">💻</div>
-              <strong style="color: #fce09b; font-size: 14px; display: block; margin-bottom: 4px;">100% Offline GPU Speed</strong>
-              <span style="font-size: 12.5px; color: #94a3b8; line-height: 1.45; display: block;">Bina cloud upload ya internet ke direct apne laptop/PC ke hardware par superfast bulk speed se kaam karna.</span>
-            </div>
-            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(216,161,83,0.2); border-radius: 12px; padding: 14px;">
-              <div style="font-size: 20px; margin-bottom: 6px;">📱</div>
-              <strong style="color: #fce09b; font-size: 14px; display: block; margin-bottom: 4px;">Client Online Selection</strong>
-              <span style="font-size: 12.5px; color: #94a3b8; line-height: 1.45; display: block;">Client ko WhatsApp par interactive mobile gallery link bhejiye, client phone se photos select karega aur aapko instant list milegi.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Comparison Card: Old Manual vs New AI Wedding Editing -->
-        <div class="comparison-card">
-          <div class="comparison-header">
-            <h2><span>⚡</span> Why Every Wedding Photographer Needs This AI Workflow in 2026</h2>
-            <p>Shaadi season me 3-4 hafte tak RAW photos select aur edit karne me raat-raat bhar jagna band karein. Is AI workflow se 1 ghante me delivery ready karein aur clients ko impress karein.</p>
-          </div>
-          <div class="comparison-grid">
-            <div class="comp-col comp-old">
-              <div class="comp-badge bad">❌ Purana Manual Tarika (Hafte Bhar Ka Sir-Dard)</div>
-              <ul>
-                <li><span>✖</span> 2,000+ RAW photos ek-ek karke open karke aankhein check karna (3-4 din waste)</li>
-                <li><span>✖</span> Client ko pen drive ya Google Drive me photos bhejna aur selection ke liye hafte wait karna</li>
-                <li><span>✖</span> Haldi/mandap yellow cast me face par peela rang aur artificial skin tone aana</li>
-                <li><span>✖</span> Cloud upload karne me heavy internet data aur ghanto ka upload time lagna</li>
-                <li><span>✖</span> Wedding season me deliveries late hona aur clients se narazgi jhelna</li>
-              </ul>
-            </div>
-            <div class="comp-col comp-new">
-              <div class="comp-badge good">✅ Naya 1-Day AI Masterclass Tarika (Only <span class="dynamic-ticket-price">₹21</span>)</div>
-              <ul>
-                <li><span>✔</span> <strong>1-Click AI Culling:</strong> Blurry, closed eyes aur unwanted shots seconds me auto-detect</li>
-                <li><span>✔</span> <strong>Client Mobile Selection:</strong> WhatsApp par direct interactive gallery link bhejkar 1 ghante me selection</li>
-                <li><span>✔</span> <strong>Bridal Skin Tone Engine:</strong> Haldi &amp; flash ke yellow tint ko balance karke natural creamy glow</li>
-                <li><span>✔</span> <strong>100% Offline GPU Speed:</strong> Bina cloud upload ke aapke apne laptop/PC par 15ms per frame speed</li>
-                <li><span>✔</span> <strong>Batch AI Grading:</strong> 2,000+ RAW photos 15 minute me ready to export</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- 1-DAY MASTERCLASS CURRICULUM CARD -->
-        <div class="curriculum-card">
-          <div class="day-badge-header">
-            <span class="day-pill-tag day-1">
-              <span>📸</span> 1-DAY LIVE INTENSIVE MASTERCLASS
-            </span>
-            <span class="day-time-tag">
-              <span>⏰</span> Sunday Shaam 07:00 PM to 09:30 PM Live
-            </span>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            <span id="hero-badge-tag">1-DAY LIVE WORKSHOP • THIS SUNDAY 7:00 PM</span>
           </div>
 
-          <h3 style="font-size:20px;margin-bottom:14px;">
-            <span>✨</span> Masterclass Curriculum: 1-Click Culling, 2,000+ RAW Bulk Edit &amp; Client Selection
-          </h3>
-          <p style="font-size:13.5px;color:#94a3b8;margin-bottom:20px;line-height:1.5;">
-            Special Wedding Photographers ke liye: Live shaadi ke actual RAW photos par step-by-step complete hands-on practical implementation.
+          <h1 class="hero-title" id="masterclass-title">
+            Wedding Photo Editing Me AI Ka Sahi Use <br>
+            <span class="gold-gradient">2,000+ RAW Photos — 1 Din Ka Kaam, 1 Ghante Me</span>
+          </h1>
+
+          <p class="hero-sub" id="masterclass-sub">
+            Wedding photographers ke liye 1-day practical live masterclass. Seekhein <strong>1-click RAW culling</strong>, <strong>bulk AI editing</strong>, Indian bridal skin tone ko natural rakhna aur client se <strong>mobile par online photo selection</strong> karwana — sab Hindi me, live.
           </p>
 
-          <div class="module-item">
-            <div class="module-num">1</div>
-            <div>
-              <div class="module-title">1-Click AI RAW Photo Culling &amp; Quality Filter</div>
-              <div class="module-desc">2,000+ RAW wedding photos ko 2 minute me scan karna. Blurry frames, closed eyes (blinks), duplicate shots aur bad expressions ko AI se automatically tag aur filter karna seekhein.</div>
-            </div>
+          <ul class="hero-points">
+            <li><span class="tick">✓</span> Blurry, blink aur duplicate photos seconds me auto-filter</li>
+            <li><span class="tick">✓</span> Poori shaadi ki gallery 15 minute me consistent color grade</li>
+            <li><span class="tick">✓</span> Client WhatsApp link se photo select kare — no pen drive, no wait</li>
+          </ul>
+
+          <div class="hero-cta">
+            <a href="#register" class="btn btn-gold">
+              <span class="price-inline">Book My Seat • <span class="dynamic-ticket-price">₹21</span> <del class="dynamic-orig-price">₹999</del></span>
+            </a>
+            <a href="#curriculum" class="btn btn-ghost">Kya Seekhenge? ↓</a>
           </div>
 
-          <div class="module-item">
-            <div class="module-num">2</div>
-            <div>
-              <div class="module-title">Indian Bridal Skin Tone Protection &amp; Haldi Lighting Auto-Correction</div>
-              <div class="module-desc">Indian weddings me Haldi ke harsh yellow light, dark indoor banquet halls aur mixed LED stage lights ko auto-correct karke natural, smooth aur radiant bridal skin tone restore karna.</div>
+          <div class="trust-row">
+            <div class="trust-item">
+              <strong>4.9 <span class="stars">★★★★★</span></strong>
+              <span>257+ Google reviews</span>
             </div>
-          </div>
-
-          <div class="module-item">
-            <div class="module-num">3</div>
-            <div>
-              <div class="module-title">2,000+ RAW Photos Bulk AI Batch Color Grading in 15 Minutes</div>
-              <div class="module-desc">Haldi, Mehendi, Jaimala, Barat aur Reception events ke liye consistent cinematic color grading presets create karna aur single-click me poori shaadi ki gallery ko lightning-fast bulk export karna.</div>
+            <div class="trust-sep"></div>
+            <div class="trust-item">
+              <strong>1,800+</strong>
+              <span>Students trained</span>
             </div>
-          </div>
-
-          <div class="module-item">
-            <div class="module-num">4</div>
-            <div>
-              <div class="module-title">Client Online Photo Selection System (Mobile Web Gallery via WhatsApp)</div>
-              <div class="module-desc">Customer ko direct WhatsApp par interactive photo selection web gallery link bhejna. Client apne mobile par tap karke photos select karega aur aapko 1 second me selected filenames ki ready list mil jayegi — no Google Drive, no pen drive delays!</div>
-            </div>
-          </div>
-
-          <div class="module-item">
-            <div class="module-num">5</div>
-            <div>
-              <div class="module-title">Photoshop Generative AI, Wires/Crowd Removal &amp; 300 DPI Album Export</div>
-              <div class="module-desc">Mandap aur stage ke piche se unwanted log aur electric wires hatana, aur high-resolution album printing ke liye 300 DPI studio color profiles ke saath final album layout export karna.</div>
+            <div class="trust-sep"></div>
+            <div class="trust-item">
+              <strong>ISO 9001:2015</strong>
+              <span>Certified academy</span>
             </div>
           </div>
         </div>
 
-        <!-- Exclusive Free Bonuses Included with Ticket -->
-        <div class="bonuses-box">
-          <div class="bonuses-title">
-            <span class="bonus-icon">🎁</span> Free Bonuses Included With Your <span class="dynamic-ticket-price">₹21</span> Ticket (<span id="lp-bonus-val">Worth ₹4,999</span>)
+        <div class="video-card" id="hero-video-box">
+          <div class="hero-video-frame" id="hero-video-mount">
+            <iframe id="hero-video-iframe" src="https://www.youtube-nocookie.com/embed/g5pUTfBxfVQ?rel=0&modestbranding=1" title="Masterclass Video Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
+          <div class="video-meta">
+            <span>▶ <strong>Workshop preview</strong> dekhiye</span>
+            <span>Hindi • Live hands-on</span>
+          </div>
+        </div>
+      </div>
 
+      <!-- Schedule + Countdown -->
+      <div class="event-band" id="countdown-wrap">
+        <div class="event-cell">
+          <span class="event-label">Date</span>
+          <div class="event-val" id="next-session-date">This Sunday</div>
+        </div>
+        <div class="event-cell">
+          <span class="event-label">Time</span>
+          <div class="event-val">7:00 – 9:30 PM IST</div>
+        </div>
+        <div class="event-cell">
+          <span class="event-label">Launch Price</span>
+          <div class="event-val gold"><span class="dynamic-ticket-price">₹21</span><del class="dynamic-orig-price">₹999</del></div>
+        </div>
+        <div class="event-cell countdown">
+          <span class="event-label">Live starts in</span>
+          <div class="timer-wrap">
+            <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-lbl">Days</div></div>
+            <div class="timer-colon">:</div>
+            <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-lbl">Hrs</div></div>
+            <div class="timer-colon">:</div>
+            <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-lbl">Min</div></div>
+            <div class="timer-colon">:</div>
+            <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-lbl">Sec</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PROBLEM vs SOLUTION ═══════════ -->
+  <section class="section light">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Shaadi season ka sach</span>
+        <h2 class="sec-title">Shoot 1 din ka. <span class="gold-gradient">Editing 3 hafte ki?</span></h2>
+        <p class="sec-sub">Har season wahi kahani — raat bhar jagna, late delivery aur naraz clients. Is workshop ke baad aapka workflow aisa badlega:</p>
+      </div>
+
+      <div class="compare">
+        <div class="compare-col old reveal">
+          <span class="compare-tag">Purana tarika</span>
+          <h3>Manual, slow, thakane wala</h3>
+          <ul>
+            <li><span class="mark">✕</span> 2,000+ RAW photos ek-ek khol kar aankhein check karna — 3-4 din waste</li>
+            <li><span class="mark">✕</span> Pen drive / Google Drive bhejna aur selection ke liye hafte bhar wait</li>
+            <li><span class="mark">✕</span> Haldi aur mandap ki yellow light se dulhan ka chehra peela dikhna</li>
+            <li><span class="mark">✕</span> Har event ka color alag — album me consistency nahi</li>
+            <li><span class="mark">✕</span> Delivery late, review kharab, agla booking haath se gaya</li>
+          </ul>
+        </div>
+        <div class="compare-col new reveal">
+          <span class="compare-tag">Workshop ke baad</span>
+          <h3>AI workflow, 10x fast delivery</h3>
+          <ul>
+            <li><span class="mark">✓</span> <span><strong>1-click culling:</strong> blur, blink, duplicate seconds me filter</span></li>
+            <li><span class="mark">✓</span> <span><strong>Mobile selection:</strong> WhatsApp link bhejo, client 1 ghante me select kare</span></li>
+            <li><span class="mark">✓</span> <span><strong>Natural bridal skin:</strong> yellow cast hata kar real Indian skin tone</span></li>
+            <li><span class="mark">✓</span> <span><strong>Bulk grading:</strong> Haldi se Reception tak ek jaisa cinematic look</span></li>
+            <li><span class="mark">✓</span> <span><strong>Offline speed:</strong> apne laptop/PC par, bina cloud upload</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ OUTCOMES ═══════════ -->
+  <section class="section light-2">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Results jo aap le kar jayenge</span>
+        <h2 class="sec-title">Ek shaam, chaar skills — <span class="gold-gradient">poora season aasaan</span></h2>
+      </div>
+
+      <div class="outcomes">
+        <div class="outcome reveal">
+          <div class="outcome-num">2,000+</div>
+          <div class="outcome-unit">RAW photos</div>
+          <h3>1-Click AI Culling</h3>
+          <p>Blurry shots, band aankhein aur duplicates AI khud tag aur filter karega.</p>
+        </div>
+        <div class="outcome reveal">
+          <div class="outcome-num">15</div>
+          <div class="outcome-unit">Minute</div>
+          <h3>Bulk Color Grading</h3>
+          <p>Har event ke liye preset banao aur poori gallery ek click me export karo.</p>
+        </div>
+        <div class="outcome reveal">
+          <div class="outcome-num">100%</div>
+          <div class="outcome-unit">Natural skin</div>
+          <h3>Bridal Skin Protect</h3>
+          <p>Haldi, LED aur stage light me bhi glowing, real Indian skin tone.</p>
+        </div>
+        <div class="outcome reveal">
+          <div class="outcome-num">1</div>
+          <div class="outcome-unit">WhatsApp link</div>
+          <h3>Online Client Selection</h3>
+          <p>Client phone par tap karke select kare, aapko instant filename list mile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CURRICULUM ═══════════ -->
+  <section class="section" id="curriculum">
+    <div class="wrap curriculum-grid">
+      <aside class="curr-aside reveal">
+        <span class="eyebrow">Live curriculum</span>
+        <h2 class="sec-title">Actual shaadi ke RAW photos par, step-by-step</h2>
+        <p class="sec-sub">Theory nahi — aap screen par poora workflow live dekhenge aur saath-saath practice karenge.</p>
+        <div class="session-card">
+          <div class="session-row"><span>Format</span><span>Live online (HD stream)</span></div>
+          <div class="session-row"><span>Duration</span><span>Sunday, 7:00 – 9:30 PM</span></div>
+          <div class="session-row"><span>Language</span><span>Hindi</span></div>
+          <div class="session-row"><span>Replay</span><span>30 din tak portal me</span></div>
+          <div class="session-row"><span>Live Q&amp;A</span><span>Haan, session ke end me</span></div>
+        </div>
+      </aside>
+
+      <div class="modules">
+        <div class="module reveal">
+          <div class="module-num">01</div>
+          <div>
+            <h3>1-Click AI RAW Culling &amp; Quality Filter</h3>
+            <p>2,000+ RAW wedding photos 2 minute me scan karna — blurry frames, blinks, duplicates aur bad expressions auto-tag aur filter.</p>
+          </div>
+        </div>
+        <div class="module reveal">
+          <div class="module-num">02</div>
+          <div>
+            <h3>Indian Bridal Skin Tone &amp; Haldi Light Correction</h3>
+            <p>Haldi ki harsh yellow light, dark banquet hall aur mixed LED stage light ko correct karke natural, radiant skin tone.</p>
+          </div>
+        </div>
+        <div class="module reveal">
+          <div class="module-num">03</div>
+          <div>
+            <h3>Bulk AI Color Grading in 15 Minutes</h3>
+            <p>Haldi, Mehendi, Jaimala, Baraat aur Reception ke liye consistent cinematic presets aur single-click bulk export.</p>
+          </div>
+        </div>
+        <div class="module reveal">
+          <div class="module-num">04</div>
+          <div>
+            <h3>Client Online Photo Selection via WhatsApp</h3>
+            <p>Interactive mobile gallery link bhejna — client tap karke select kare, aapko ready filename list mile. No Drive, no pen drive.</p>
+          </div>
+        </div>
+        <div class="module reveal">
+          <div class="module-num">05</div>
+          <div>
+            <h3>Generative Cleanup &amp; 300 DPI Album Export</h3>
+            <p>Mandap ke peeche ke log aur wires hatana, aur album printing ke liye 300 DPI color profile ke saath final export.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ WHO IS IT FOR ═══════════ -->
+  <section class="section light">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Ye workshop kiske liye hai</span>
+        <h2 class="sec-title">Agar aap shaadi ki photos deliver karte hain, <span class="gold-gradient">ye aapke liye hai</span></h2>
+      </div>
+      <div class="audience">
+        <div class="aud-card reveal">
+          <div class="aud-icon">📸</div>
+          <h3>Wedding Photographers</h3>
+          <p>Jo season me 4-5 shaadiyan ek saath handle karte hain aur delivery time kam karna chahte hain.</p>
+        </div>
+        <div class="aud-card reveal">
+          <div class="aud-icon">🏢</div>
+          <h3>Studio Owners</h3>
+          <p>Jo team ka kaam fast karna aur zyada projects lena chahte hain bina staff badhaye.</p>
+        </div>
+        <div class="aud-card reveal">
+          <div class="aud-icon">🖥️</div>
+          <h3>Photo Editors</h3>
+          <p>Jo freelance editing karte hain aur per-project kamai badhana chahte hain.</p>
+        </div>
+        <div class="aud-card reveal">
+          <div class="aud-icon">🎓</div>
+          <h3>Beginners &amp; Students</h3>
+          <p>Jo wedding industry me professional workflow ke saath shuruaat karna chahte hain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ OFFER + CHECKOUT ═══════════ -->
+  <section class="section offer" id="register">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Aapka live pass</span>
+        <h2 class="sec-title">Ek cup chai ki keemat me <span class="gold-gradient">poora live workshop</span></h2>
+        <p class="sec-sub">Sab kuch jo aapko chahiye — live class, replay, presets aur certificate — ek hi pass me.</p>
+      </div>
+
+      <div class="offer-grid">
+        <div class="value-stack reveal">
+          <div class="value-head">
+            <h3>Pass ke saath kya milega</h3>
+            <p>Free bonuses <span id="lp-bonus-val">Worth ₹4,999</span></p>
+          </div>
+          <div class="value-row core">
+            <span>1-Day Live HD Masterclass + Live Q&amp;A</span>
+            <span class="bonus-val dynamic-orig-price">₹999</span>
+          </div>
           <div id="lp-bonuses-container">
-            <div class="bonus-pill">
-              <span>⭐ 50+ Signature AI Wedding Cinematic LUTs &amp; Color Grading Presets</span>
-              <span class="bonus-val">₹1,999 FREE</span>
+            <div class="value-row">
+              <span>50+ Signature Wedding Cinematic LUTs &amp; Color Presets</span>
+              <span class="bonus-val">₹1,999</span>
             </div>
-            <div class="bonus-pill">
-              <span>📁 Photoshop &amp; Lightroom AI Wedding Retouching Actions &amp; Presets Pack</span>
-              <span class="bonus-val">₹1,499 FREE</span>
+            <div class="value-row">
+              <span>Photoshop &amp; Lightroom Wedding Retouching Actions Pack</span>
+              <span class="bonus-val">₹1,499</span>
             </div>
-            <div class="bonus-pill">
-              <span>⌨️ Wedding Editor 10x AI Prompts &amp; Timeline Workflow Cheat Sheet</span>
-              <span class="bonus-val">₹999 FREE</span>
+            <div class="value-row">
+              <span>Wedding Editor AI Prompts &amp; Workflow Cheat Sheet</span>
+              <span class="bonus-val">₹999</span>
             </div>
-            <div class="bonus-pill">
-              <span>🎥 30-Day Full HD Replay Access in Student Portal + 4K Practice RAW Files</span>
-              <span class="bonus-val">₹1,000 FREE</span>
+            <div class="value-row">
+              <span>30-Day HD Replay + 4K Practice RAW Files</span>
+              <span class="bonus-val">₹1,000</span>
             </div>
-            <div class="bonus-pill">
-              <span>🏆 Official ISO 9001:2015 Verified Academy Workshop Certificate</span>
-              <span class="bonus-val">PRICELESS</span>
+            <div class="value-row">
+              <span>ISO 9001:2015 Verified Workshop Certificate</span>
+              <span class="bonus-val">Included</span>
             </div>
           </div>
+          <div class="value-total">
+            <div class="lbl">Launch offer<strong>Aaj aapka price</strong></div>
+            <div class="amt"><strong class="dynamic-ticket-price">₹21</strong></div>
+          </div>
         </div>
-      </div>
 
-      <!-- RIGHT: Ticket Booking Card with Instant Razorpay Checkout -->
-      <div>
-        <div class="ticket-card">
-          <div class="ticket-badge-row">
-            <span class="pass-type">🔴 1-DAY LIVE WORKSHOP PASS</span>
+        <div class="ticket-card reveal">
+          <div class="ticket-top">
+            <span class="pass-type">1-Day Live Pass</span>
             <span class="seats-left" id="lp-seats-badge">🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></span>
           </div>
 
@@ -2201,236 +1388,233 @@
             <div class="ticket-price-orig" id="price-orig">₹999</div>
             <span class="ticket-price-discount" id="price-discount">SAVE 98%</span>
           </div>
+          <p class="ticket-note" id="lp-plan-summary">Includes 1-Day Live HD Classroom + 30-Day Replays + ₹4,999 Bonuses</p>
 
-          <div class="chai-pricing-note">
-            ☕ Sirf Ek Chai Ke Kharch Me 1 Din Ka Complete Live Workshop!
-          </div>
-
-          <div class="muted" id="lp-plan-summary" style="font-size:12px">
-            Includes 1-Day Live HD Classroom + 30-Day Replays + ₹4,999 Bonuses
-          </div>
-
-          <ul class="ticket-features-list">
-            <li><span>✓</span> <strong>1-Click AI RAW Culling:</strong> Blinks &amp; Blur Auto-Filter System</li>
-            <li><span>✓</span> <strong>2,000+ RAW Bulk Batch Edit:</strong> 15 Minute Me Poori Shaadi Ready</li>
-            <li><span>✓</span> <strong>Client Mobile Selection:</strong> WhatsApp Link Web Gallery System</li>
-            <li><span>✓</span> <strong>Bridal Skin Tone Engine:</strong> Haldi &amp; Stage Light Auto-Fix</li>
-            <li><span>✓</span> 1080p 60fps HD Private Live Broadcast + Live Q&amp;A Chat</li>
-            <li><span>✓</span> 30-Day Full HD Replay Access in Student Portal</li>
-            <li><span>✓</span> 50+ Wedding LUTs + Photoshop AI Actions Included</li>
-            <li><span>✓</span> 4K RAW Practice Wedding Photos Pack Included</li>
-            <li><span>✓</span> Official ISO 9001:2015 Verified Academy Certificate</li>
+          <ul class="ticket-incl">
+            <li><span>✓</span> Live class + Q&amp;A (Sunday 7 PM)</li>
+            <li><span>✓</span> 30-day replay in Student Portal</li>
+            <li><span>✓</span> LUTs, presets &amp; practice RAW files</li>
+            <li><span>✓</span> Verified certificate</li>
           </ul>
 
-          <!-- Ticket Registration Form -->
-          <form id="workshop-checkout-form" onsubmit="handleWorkshopTicketBooking(event)">
-            <div class="checkout-form-group">
-              <label>Aapka Pura Naam (Full Name) *</label>
-              <input type="text" id="cust-name" class="checkout-input" placeholder="e.g. Rahul Sharma" required />
+          <form id="workshop-checkout-form" onsubmit="handleWorkshopTicketBooking(event)" novalidate>
+            <div class="field">
+              <label for="cust-name">Pura naam</label>
+              <input type="text" id="cust-name" class="checkout-input" placeholder="e.g. Rahul Sharma" autocomplete="name" required />
             </div>
-
-            <div class="checkout-form-group">
-              <label>WhatsApp / Mobile Number *</label>
-              <div class="qa-phone-group">
-                <span class="qa-phone-prefix">🇮🇳 +91</span>
-                <input type="tel" id="cust-phone" class="checkout-input" placeholder="10-digit mobile number"
-                  maxlength="10" required />
+            <div class="field">
+              <label for="cust-phone">WhatsApp number</label>
+              <div class="phone-group">
+                <span class="phone-prefix">+91</span>
+                <input type="tel" id="cust-phone" class="checkout-input" placeholder="10-digit mobile number" inputmode="numeric" autocomplete="tel-national" maxlength="10" required />
               </div>
             </div>
-
-            <div class="checkout-form-group">
-              <label>Email Address (Ticket link &amp; login ke liye) *</label>
-              <input type="email" id="cust-email" class="checkout-input" placeholder="name@example.com" required />
+            <div class="field">
+              <label for="cust-email">Email (login details yahan aayenge)</label>
+              <input type="email" id="cust-email" class="checkout-input" placeholder="name@example.com" autocomplete="email" required />
             </div>
 
-            <button type="submit" class="btn-checkout-pay" id="btn-pay-now">
-              <span>🎟️ Book 1-Day Live Pass Now</span> • <span class="dynamic-ticket-price">₹21</span>
-            </button>
+            <button type="submit" class="btn btn-gold btn-checkout-pay" id="btn-pay-now">Book My Seat • ₹21</button>
+            <div class="form-msg" id="form-msg" role="alert"></div>
 
             <div class="security-note">
-              🔒 100% Secure Razorpay Checkout (UPI, Google Pay, PhonePe, Cards) <br>
-              <span style="color:#f5c879;margin-top:4px;display:inline-block;">⚡ Instant Student Portal Access &amp; WhatsApp Confirmation</span>
+              🔒 100% secure Razorpay checkout • Instant portal access
+              <div class="pay-badges"><span>UPI</span><span>Google Pay</span><span>PhonePe</span><span>Cards</span></div>
             </div>
           </form>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
-            <div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">Booking me koi dikkat aa rahi hai?</div>
-            <a id="wa-help-btn" href="https://wa.me/919939800780?text=Hello%20Anil%20Sir%2C%20mujhe%201-Day%20Live%20AI%20Workshop%20(₹21)%20me%20seat%20book%20karni%20hai" target="_blank" style="display:inline-flex;align-items:center;gap:6px;color:#25d366;font-size:13px;font-weight:700;text-decoration:none;">
-              💬 Direct WhatsApp Help: +91 9939800780
-            </a>
+          <div class="wa-help">
+            Booking me dikkat? <a id="wa-help-btn" href="https://wa.me/919939800780?text=Hello%20Anil%20Sir%2C%20mujhe%201-Day%20Live%20AI%20Workshop%20(₹21)%20me%20seat%20book%20karni%20hai" target="_blank" rel="noopener">WhatsApp karein: +91 99398 00780</a>
           </div>
         </div>
       </div>
-    </div> <!-- /.masterclass-grid -->
+    </div>
+  </section>
 
-
-      <!-- Official Certificate of Completion Showcase -->
-      <section class="cert-showcase-section" id="certificate-showcase" style="padding: 70px 20px;">
-        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
-
-          <!-- Top Header -->
-          <div class="cert-badge-kicker" style="margin-bottom: 16px;">
-            <span>🏆</span> Official Verifiable Credential
-          </div>
-          <h2 class="cert-heading" style="font-size: clamp(26px, 3.6vw, 42px); line-height: 1.25; margin-bottom: 16px;">
-            Boost Your Career With An <span>ISO 9001:2015</span> Certified Credential
-          </h2>
-          <p class="cert-desc" style="max-width: 820px; margin: 0 auto 36px; font-size: 16px; line-height: 1.75;">
-            Ye sirf ek paper certificate nahi hai — ye aapke professional skills ka <strong>authentic digital proof</strong> hai, jise aapke clients aur wedding studios ek click me verify kar sakte hain.
-          </p>
-
-          <!-- Full Size Certificate Photo Display -->
-          <div class="cert-frame" style="padding: 12px; cursor: pointer; max-width: 1040px; margin: 0 auto 36px; background: #080c16; border: 2.5px solid #d8a153; border-radius: 22px; box-shadow: 0 25px 65px rgba(0,0,0,0.85), 0 0 45px rgba(216,161,83,0.2);"
-            onclick="openCertVerifyModal('QAA-2026-PR-7431')">
-            <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(216, 161, 83, 0.6); box-shadow: 0 14px 35px rgba(0,0,0,0.7); background:#fff;">
-              <picture>
-                <source srcset="../assets/sample-certificate-demo.webp?v=2" type="image/webp">
-                <img src="../assets/sample-certificate-demo.png?v=2"
-                  alt="Official Certificate of Completion - Quick Art Photography Academy"
-                  style="width: 100%; height: auto; display: block; transition: transform 0.35s ease;"
-                  class="cert-img-hover" loading="lazy" />
-              </picture>
-              <div
-                style="position: absolute; top: 12px; right: 12px; background: rgba(9, 14, 24, 0.9); backdrop-filter: blur(8px); border: 1px solid #d8a153; color: #fce09b; padding: 5px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(0,0,0,0.5);">
-                <span style="color:#10b981;font-size:12px;">●</span> ISO 9001:2015 ACCREDITED
-              </div>
-              <div
-                style="position: absolute; bottom: 10px; left: 10px; right: 10px; background: rgba(7, 10, 18, 0.9); backdrop-filter: blur(6px); border: 1px solid rgba(216, 161, 83, 0.4); color: #cbd5e1; padding: 8px 16px; border-radius: 10px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="color:#f5c879;font-weight:700;">Credential ID: QAA-2026-PR-7431</span>
-                <span style="color:#10b981;font-weight:700;">🔍 Click to Verify Live</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Feature Cards Row Below Certificate -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; text-align: left; max-width: 1040px; margin: 0 auto 36px;">
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(216, 161, 83, 0.25); border-radius: 14px; padding: 18px; display: flex; gap: 12px; align-items: flex-start;">
-              <div style="font-size: 22px; flex-shrink: 0;">🛡️</div>
-              <div>
-                <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">Unique QR Code &amp; Online Verification</div>
-                <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Har certificate me unique ID hoti hai jise koi bhi client online scan karke verify kar sakta hai.</div>
-              </div>
-            </div>
-
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(216, 161, 83, 0.25); border-radius: 14px; padding: 18px; display: flex; gap: 12px; align-items: flex-start;">
-              <div style="font-size: 22px; flex-shrink: 0;">🏛️</div>
-              <div>
-                <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">Govt. MSME &amp; ISO 9001:2015 Accredited</div>
-                <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Quick Art Academy national standards ke tahat accredited hai, jo aapko market me high credibility deta hai.</div>
-              </div>
-            </div>
-
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(216, 161, 83, 0.25); border-radius: 14px; padding: 18px; display: flex; gap: 12px; align-items: flex-start;">
-              <div style="font-size: 22px; flex-shrink: 0;">🖨️</div>
-              <div>
-                <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">300 DPI Studio-Print Ready PDF</div>
-                <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Apne studio me frame karne ke liye ultra high-definition print file LMS dashboard se turant download karein.</div>
-              </div>
-            </div>
-
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(216, 161, 83, 0.25); border-radius: 14px; padding: 18px; display: flex; gap: 12px; align-items: flex-start;">
-              <div style="font-size: 22px; flex-shrink: 0;">⚡</div>
-              <div>
-                <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">Automatic LMS Delivery</div>
-                <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Masterclass aur project review complete hote hi student portal me automatically unlock ho jata hai.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- CTAs -->
-          <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap; align-items:center;">
-            <button type="button" class="btn-verify-demo" onclick="openCertVerifyModal('QAA-2026-PR-7431')" style="padding: 13px 26px; font-size: 14px;">
-              <span>🔍 Test Live Verification Demo (Sample ID: QAA-2026-PR-7431)</span>
-            </button>
-            <a href="#register" class="lp-btn-primary" style="padding: 13px 28px; font-size: 14px; text-decoration: none;">
-              ⚡ Enroll &amp; Claim Seat
-            </a>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Certificate Verification Interactive Modal -->
-      <div class="cert-modal-overlay" id="certVerifyModal">
-        <div class="cert-modal-box">
-          <button type="button" class="cert-modal-close" onclick="closeCertVerifyModal()">&times;</button>
-          <div style="text-align:center;margin-bottom:14px;">
-            <div
-              style="width:48px;height:48px;border-radius:50%;background:rgba(16,185,129,0.15);border:2px solid #10b981;color:#10b981;font-size:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
-              ✓
-            </div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#10b981;">
-              OFFICIAL CREDENTIAL VERIFIED</div>
-            <h3 style="font-family:'Outfit',sans-serif;font-size:19px;font-weight:800;color:#fff;margin:4px 0;"
-              id="modalCertTitle">Adobe Premiere Pro Masterclass</h3>
-            <div style="font-size:12px;color:#cbd5e1;">Quick Art Photography Academy • Verification System</div>
-          </div>
-
-          <div
-            style="margin-bottom: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(216, 161, 83, 0.45); max-height: 150px; background:#fff;">
-            <picture>
-              <source srcset="../assets/sample-certificate-demo.webp?v=2" type="image/webp">
-              <img src="../assets/sample-certificate-demo.png?v=2" alt="Certificate Preview"
-                style="width: 100%; height: auto; display: block;" />
-            </picture>
-          </div>
-
-          <div
-            style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:13px;margin-bottom:18px;"
-            id="modalCertDetails">
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:6px;">
-              <span style="color:#94a3b8;">Student Name:</span>
-              <span style="color:#f5c879;font-weight:700;" id="modalCertStudent">Anil Ku Sharma (Verified Sample)</span>
-            </div>
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:6px;">
-              <span style="color:#94a3b8;">Certificate ID:</span>
-              <span style="color:#fff;font-family:monospace;font-weight:700;" id="modalCertId">QAA-2026-PR-7431</span>
-            </div>
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:6px;">
-              <span style="color:#94a3b8;">Accreditation:</span>
-              <span style="color:#fff;text-align:right;font-size:11.5px;max-width:240px;">ISO 9001:2015 &amp; Govt.
-                MSME</span>
-            </div>
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:6px;">
-              <span style="color:#94a3b8;">Grade / Award:</span>
-              <span style="color:#10b981;font-weight:700;">Distinction (Grade A+)</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="color:#94a3b8;">Authorized Signatory:</span>
-              <span style="color:#fff;">Anil Sharma (Founder &amp; Director)</span>
-            </div>
-          </div>
-
-          <div style="text-align:center;">
-            <a href="../portal/" class="btn-verify-demo"
-              style="width:100%;justify-content:center;box-sizing:border-box;">
-              <span>🎓 Open Student Portal &amp; Verification Hub</span>
-            </a>
-          </div>
-        </div>
+  <!-- ═══════════ REVIEWS ═══════════ -->
+  <section class="section light-2" id="reviews">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Success stories</span>
+        <h2 class="sec-title">1,800+ students ka <span class="gold-gradient">bharosa</span></h2>
+        <p class="sec-sub">Sunein hamare students se — unhi ki zubani.</p>
       </div>
 
-      <!-- Lead Mentor Profile Card -->
-      <div class="mentor-card">
-        <img src="../home-assets/ec55a6be3747a9.webp" alt="Mentor Anil Sharma" class="mentor-img" id="lp-mentor-img" />
-        <div>
-          <div style="font-size:12px;color:var(--gold);font-weight:800;letter-spacing:0.06em;text-transform:uppercase">
-            LEAD MENTOR &amp; COLORIST</div>
-          <h3 style="font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:#fff;margin:4px 0 8px"
-            id="lp-mentor-name">Anil Sharma</h3>
-          <p style="font-size:14px;color:#cbd5e1;line-height:1.6" id="lp-mentor-bio">
-            Founder of Quick Art Photography Academy. Over 10+ years of professional video editing and cinematic color
-            grading experience. Trained more than 1,800+ editors, photographers, and studio owners across India.
-            Personally guiding you on timeline workflows.
-          </p>
-        </div>
+      <div class="vt-grid">
+          <a class="vt-card reveal" href="https://www.youtube.com/watch?v=FKtK5dPFilg" data-yt="FKtK5dPFilg" target="_blank" rel="noopener">
+            <img src="../home-assets/6afdafd6fcee09.jpg" alt="Suraj from Raxaul testimonial" width="480" height="360" loading="lazy" decoding="async">
+            <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span>
+            <span class="vt-name"><strong>Suraj</strong>from Raxaul</span>
+          </a>
+          <a class="vt-card reveal" href="https://www.youtube.com/watch?v=MrZycOa2ltU" data-yt="MrZycOa2ltU" target="_blank" rel="noopener">
+            <img src="../home-assets/0c3a2dde79f830.jpg" alt="Ravi from Gaya testimonial" width="480" height="360" loading="lazy" decoding="async">
+            <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span>
+            <span class="vt-name"><strong>Ravi</strong>from Gaya</span>
+          </a>
+          <a class="vt-card reveal" href="https://www.youtube.com/watch?v=FCjaO7LmM6o" data-yt="FCjaO7LmM6o" target="_blank" rel="noopener">
+            <img src="../home-assets/42bc8405f4fae8.jpg" alt="Ashish from Chapra testimonial" width="480" height="360" loading="lazy" decoding="async">
+            <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span>
+            <span class="vt-name"><strong>Ashish</strong>from Chapra</span>
+          </a>
+          <a class="vt-card reveal" href="https://www.youtube.com/watch?v=CqMTAN3crS4" data-yt="CqMTAN3crS4" target="_blank" rel="noopener">
+            <img src="../home-assets/3f3523fbb97fb5.jpg" alt="Vikash from Baliya, UP testimonial" width="480" height="360" loading="lazy" decoding="async">
+            <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></span>
+            <span class="vt-name"><strong>Vikash</strong>from Baliya, UP</span>
+          </a>
       </div>
 
-    </div> <!-- /.container -->
+      <div class="reviews-grid">
+        <div class="rating-card reveal">
+          <div class="rating-big">4.9</div>
+          <div class="stars">★★★★★</div>
+          <p>257+ Google reviews • 1,800+ students trained across India</p>
+          <a href="https://maps.app.goo.gl/eRkAc7kia1D1s1zQ7" target="_blank" rel="noopener">Google par reviews dekhein →</a>
+        </div>
+        <figure class="review reveal">
+          <div class="stars">★★★★★</div>
+          <blockquote>"AI se wedding photos aur videos edit karne ka practical workflow itne kam price me sikhna kamaal ka experience raha."</blockquote>
+          <figcaption class="reviewer">
+            <div class="avatar">KV</div>
+            <div><strong>Karan Verma</strong><span>Workshop student</span></div>
+          </figcaption>
+        </figure>
+        <figure class="review reveal">
+          <div class="stars">★★★★★</div>
+          <blockquote>"1-click me RAW photos retouching aur AI audio enhance ka live practical dekh kar maza aa gaya. 100% value for money!"</blockquote>
+          <figcaption class="reviewer">
+            <div class="avatar">SK</div>
+            <div><strong>Sunil Kumar</strong><span>Workshop student</span></div>
+          </figcaption>
+        </figure>
+        <figure class="review reveal">
+          <div class="stars">★★★★★</div>
+          <blockquote>"Quick Art Photography Academy completely changed my approach to lighting and post-processing. My portfolio has never looked better and I have started booking paid clients!"</blockquote>
+          <figcaption class="reviewer">
+            <img class="avatar" src="../home-assets/6a62e4eb3643ad.jpeg" alt="Raju Gupta" width="42" height="42" loading="lazy" style="object-fit:cover">
+            <div><strong>Raju Gupta</strong><span>Portrait &amp; Lifestyle Photographer</span></div>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="more-reviews reveal">
+        <a href="../alumni/" class="btn btn-dark">Aur reviews &amp; student stories dekhein →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video testimonial player -->
+  <div class="vt-modal" id="vtModal" role="dialog" aria-modal="true" aria-label="Student testimonial video">
+    <div class="vt-modal-box">
+      <button type="button" class="cert-modal-close" id="vtClose" aria-label="Close">&times;</button>
+      <div class="vt-modal-frame" id="vtFrame"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CERTIFICATE ═══════════ -->
+  <section class="section light" id="certificate-showcase">
+    <div class="wrap cert-grid">
+      <div class="cert-frame reveal" onclick="openCertVerifyModal('QAA-2026-PR-7431')" role="button" tabindex="0" aria-label="Sample certificate verify karein">
+        <picture>
+          <source srcset="../assets/sample-certificate-demo.webp?v=2" type="image/webp">
+          <img src="../assets/sample-certificate-demo.png?v=2" alt="Official Certificate of Completion - Quick Art Photography Academy" width="1024" height="770" loading="lazy" />
+        </picture>
+        <div class="cert-chip">ID: QAA-2026-PR-7431 • <b>Click to verify</b></div>
+      </div>
+
+      <div class="reveal">
+        <span class="eyebrow">Verified certificate</span>
+        <h2 class="sec-title" style="text-align:left">Skills ka proof jo clients <span class="gold-gradient">online verify</span> kar sakein</h2>
+        <ul class="cert-list">
+          <li><span class="ic">🛡️</span><div><strong>Unique ID &amp; online verification</strong><span>Koi bhi client ek click me certificate check kar sakta hai.</span></div></li>
+          <li><span class="ic">🏛️</span><div><strong>ISO 9001:2015 &amp; MSME registered academy</strong><span>Market me aapki credibility badhata hai.</span></div></li>
+          <li><span class="ic">🖨️</span><div><strong>300 DPI print-ready PDF</strong><span>Studio me frame karne ke liye portal se download karein.</span></div></li>
+        </ul>
+        <button type="button" class="btn btn-outline-dark" onclick="openCertVerifyModal('QAA-2026-PR-7431')">Live verification demo dekhein</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certificate Verification Modal -->
+  <div class="cert-modal-overlay" id="certVerifyModal">
+    <div class="cert-modal-box" role="dialog" aria-modal="true" aria-labelledby="modalCertTitle">
+      <button type="button" class="cert-modal-close" onclick="closeCertVerifyModal()" aria-label="Close">&times;</button>
+      <div class="verified-ic">✓</div>
+      <div class="modal-kicker">Official credential verified</div>
+      <h3 class="modal-title" id="modalCertTitle">Adobe Premiere Pro Masterclass</h3>
+      <div class="modal-rows" id="modalCertDetails">
+        <div><span>Student</span><span id="modalCertStudent">Anil Ku Sharma (Verified Sample)</span></div>
+        <div><span>Certificate ID</span><span id="modalCertId" style="font-family:monospace">QAA-2026-PR-7431</span></div>
+        <div><span>Accreditation</span><span>ISO 9001:2015 &amp; Govt. MSME</span></div>
+        <div><span>Grade</span><span style="color:#16a34a">Distinction (A+)</span></div>
+        <div><span>Signatory</span><span>Anil Sharma (Founder)</span></div>
+      </div>
+      <a href="../portal/" class="btn btn-dark" style="width:100%">Student Portal &amp; Verification Hub</a>
+    </div>
+  </div>
+
+  <!-- ═══════════ MENTOR ═══════════ -->
+  <section class="section dark-2">
+    <div class="wrap mentor-grid">
+      <div class="mentor-photo reveal">
+        <img src="../assets/anil-sharma-mentor.webp" alt="Mentor Anil Sharma" id="lp-mentor-img" width="1024" height="1024" loading="lazy" />
+        <div class="mentor-badge"><strong>10+ yrs</strong><span>Wedding editing experience</span></div>
+      </div>
+      <div class="reveal">
+        <div class="mentor-role">Aapke mentor</div>
+        <h2 class="mentor-name" id="lp-mentor-name">Anil Sharma</h2>
+        <p class="mentor-bio" id="lp-mentor-bio">
+          Founder, Quick Art Photography Academy. 10+ saal ka professional wedding editing aur cinematic color grading experience. India bhar me 1,800+ editors, photographers aur studio owners ko train kar chuke hain — aur is workshop me aapko personally guide karenge.
+        </p>
+        <div class="mentor-stats">
+          <div class="mentor-stat"><strong>1,800+</strong><span>Students</span></div>
+          <div class="mentor-stat"><strong>4.9★</strong><span>257+ reviews</span></div>
+          <div class="mentor-stat"><strong>10+</strong><span>Years</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FAQ ═══════════ -->
+  <section class="section light">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="sec-title">Aapke sawal, seedhe jawab</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>Class kaise join karunga?</summary>
+          <div class="ans">Payment ke turant baad aapka Student Portal unlock ho jata hai aur WhatsApp par confirmation aata hai. Sunday 7 PM ko portal se hi live class join karein.</div>
+        </details>
+        <details>
+          <summary>Agar live miss ho gaya to?</summary>
+          <div class="ans">Koi tension nahi — poori class ki HD replay 30 din tak aapke Student Portal me available rahegi.</div>
+        </details>
+        <details>
+          <summary>Kya mobile se dekh sakta hoon?</summary>
+          <div class="ans">Haan, class mobile par dekh sakte hain. Lekin saath-saath practice ke liye laptop ya PC behtar rahega.</div>
+        </details>
+        <details>
+          <summary>Main beginner hoon, kya samajh aayega?</summary>
+          <div class="ans">Haan. Sab kuch Hindi me, step-by-step screen par dikhaya jayega. Basic computer chalana aata ho to kaafi hai.</div>
+        </details>
+        <details>
+          <summary>Payment safe hai?</summary>
+          <div class="ans">Payment Razorpay ke through hota hai — UPI, Google Pay, PhonePe aur cards sab chalte hain. Refund details ke liye hamari <a href="../refund-policy/index.html">refund policy</a> dekhein.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FINAL CTA ═══════════ -->
+  <section class="final-cta">
+    <div class="wrap">
+      <h2 class="sec-title reveal">Is season, editing me nahi — <span class="gold-gradient">naye clients me time lagaiye</span></h2>
+      <p class="sec-sub reveal">Sunday 7 PM, live. Ek shaam ka invest, poore season ka fayda.</p>
+      <a href="#register" class="btn btn-gold reveal">Book My Seat • <span class="dynamic-ticket-price">₹21</span></a>
+      <small>Batch ke baad price ₹999 ho jayegi</small>
+    </div>
+  </section>
 
     <!-- Footer -->
         <footer role="contentinfo" class="qa-footer">
@@ -2544,23 +1728,32 @@
         </div>
     </footer>
 
-    <!-- Mobile-First Sticky Bottom Booking Bar -->
-    <div class="mobile-sticky-cta" id="mobileStickyCta">
-      <div class="mobile-cta-info">
-        <div class="mobile-cta-price">
-          <span class="m-price" id="m-sticky-price"><span class="dynamic-ticket-price">₹21</span></span>
-          <span class="m-orig" id="m-sticky-orig"><span class="dynamic-orig-price">₹999</span></span>
-        </div>
-        <div class="mobile-cta-seats" id="m-sticky-seats">🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></div>
+  <!-- Mobile Sticky Booking Bar -->
+  <div class="mobile-sticky-cta" id="mobileStickyCta">
+    <div class="mobile-cta-info">
+      <div class="mobile-cta-price">
+        <span class="m-price" id="m-sticky-price"><span class="dynamic-ticket-price">₹21</span></span>
+        <span class="m-orig" id="m-sticky-orig"><span class="dynamic-orig-price">₹999</span></span>
       </div>
-      <button type="button" class="btn-mobile-book" onclick="scrollToCheckoutForm()">
-        Join 1-Day Pass ➔
-      </button>
+      <div class="mobile-cta-seats" id="m-sticky-seats">🔥 ONLY 17 SEATS AT <span class="dynamic-ticket-price">₹21</span></div>
     </div>
+    <button type="button" class="btn btn-gold btn-mobile-book" onclick="scrollToCheckoutForm()">Book Seat →</button>
+  </div>
 
     <script>
       let activeWorkshopId = 'live_demo_01';
       let activeTicketPrice = 21;
+
+      function payBtnLabel() {
+        return `Book My Seat • ₹${activeTicketPrice}`;
+      }
+
+      function showFormMsg(msg) {
+        const el = document.getElementById('form-msg');
+        if (!el) { alert(msg); return; }
+        el.textContent = msg;
+        el.classList.toggle('show', !!msg);
+      }
 
       // Centralized price synchronizer - updates EVERY price reference across the entire page
       function syncAllPricesOnLandingPage(price, orig, landing) {
@@ -2589,7 +1782,7 @@
         // 3. Checkout Pay button
         const btnPay = document.getElementById('btn-pay-now');
         if (btnPay && !btnPay.disabled) {
-          btnPay.innerHTML = `<span>🎟️ Book 1-Day Live Pass Now</span> • <span>₹${activeTicketPrice}</span>`;
+          btnPay.textContent = payBtnLabel();
         }
 
         // 4. Mobile Sticky bottom bar
@@ -2643,7 +1836,7 @@
           const dateStr = d.toLocaleDateString('en-IN', options);
           const nextSessionEl = document.getElementById('next-session-date');
           if (nextSessionEl) {
-            nextSessionEl.textContent = `${dateStr} Shaam 07:00 PM (IST)`;
+            nextSessionEl.textContent = dateStr;
           }
         } catch (e) {
           console.warn('Date formatting error:', e);
@@ -2797,8 +1990,8 @@
               }
               const bContainer = document.getElementById('lp-bonuses-container');
               bContainer.innerHTML = landing.bonuses.map(b => `
-              <div class="bonus-pill">
-                <span>⭐ ${b.title || ''}</span>
+              <div class="value-row">
+                <span>${b.title || ''}</span>
                 <span class="bonus-val">${b.worth || 'FREE'}</span>
               </div>
             `).join('');
@@ -2869,8 +2062,17 @@
         const email = document.getElementById('cust-email').value.trim();
         const btn = document.getElementById('btn-pay-now');
 
+        showFormMsg('');
+        if (!name) {
+          showFormMsg('Kripya apna naam likhein.');
+          return;
+        }
         if (phone.length !== 10) {
-          alert('Please enter a valid 10-digit mobile number');
+          showFormMsg('Kripya sahi 10-digit mobile number likhein.');
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          showFormMsg('Kripya sahi email address likhein.');
           return;
         }
 
@@ -2944,7 +2146,7 @@
             modal: {
               ondismiss: function () {
                 btn.disabled = false;
-                btn.innerHTML = `<span>🎟️ Book 1-Day Live Pass Now</span> • <span>₹${activeTicketPrice}</span>`;
+                btn.textContent = payBtnLabel();
               }
             }
           };
@@ -2953,9 +2155,9 @@
           rzp.open();
 
         } catch (err) {
-          alert('Booking error: ' + err.message);
+          showFormMsg('Booking error: ' + err.message);
           btn.disabled = false;
-          btn.innerHTML = `<span>🎟️ Book 1-Day Live Pass Now</span> • <span>₹${activeTicketPrice}</span>`;
+          btn.textContent = payBtnLabel();
         }
       }
 
@@ -2979,7 +2181,9 @@
             throw new Error(verifyData.error || 'Payment verification failed');
           }
         } catch (err) {
-          alert('Verification error: ' + err.message);
+          showFormMsg('Verification error: ' + err.message + ' — WhatsApp helpline par sampark karein.');
+          const btn = document.getElementById('btn-pay-now');
+          if (btn) { btn.disabled = false; btn.textContent = payBtnLabel(); }
         }
       }
 
@@ -3015,6 +2219,54 @@
           closeCertVerifyModal();
         }
       });
+
+      // Keyboard access for certificate preview
+      document.querySelectorAll('.cert-frame').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCertVerifyModal('QAA-2026-PR-7431'); }
+        });
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCertVerifyModal(); });
+
+      // Scroll reveal
+      (function () {
+        const items = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) { items.forEach(el => el.classList.add('in')); return; }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        items.forEach(el => io.observe(el));
+      })();
+
+      // Mobile sticky CTA: show after hero, hide while checkout is on screen
+      (function () {
+        const bar = document.getElementById('mobileStickyCta');
+        const hero = document.querySelector('.hero');
+        const offer = document.getElementById('register');
+        if (!bar || !hero || !('IntersectionObserver' in window)) { if (bar) bar.classList.add('show'); return; }
+        let heroVisible = true, offerVisible = false;
+        const sync = () => bar.classList.toggle('show', !heroVisible && !offerVisible);
+        new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; sync(); }).observe(hero);
+        if (offer) new IntersectionObserver(([en]) => { offerVisible = en.isIntersecting; sync(); }, { threshold: 0.15 }).observe(offer);
+      })();
+
+      // Video testimonial player (stays on page)
+      (function () {
+        const modal = document.getElementById('vtModal');
+        const frame = document.getElementById('vtFrame');
+        if (!modal || !frame) return;
+        const close = () => { modal.classList.remove('active'); frame.innerHTML = ''; };
+        document.querySelectorAll('.vt-card[data-yt]').forEach(card => {
+          card.addEventListener('click', (e) => {
+            e.preventDefault();
+            frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(card.dataset.yt)}?autoplay=1&rel=0&modestbranding=1" title="Student testimonial" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+            modal.classList.add('active');
+          });
+        });
+        document.getElementById('vtClose').addEventListener('click', close);
+        modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+      })();
 
       initWorkshopDetails();
     </script>
