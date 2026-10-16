@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap');
-
+/* Google Fonts are loaded non-blocking from each page's <head> (was a render-blocking @import) */
 /* ==========================================================================
    Quick Art Photography Academy — On-Campus Luxury Programs Theme
    Matching 100% with the Online Programs Obsidian Dark Luxury Aesthetic
