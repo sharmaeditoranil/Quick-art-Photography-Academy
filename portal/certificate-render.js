@@ -393,7 +393,23 @@
 
       ctx.fillStyle = INK_SOFT;
       ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('Awarded on ' + issued + '  •  Siwan, Bihar, India', cx, lines.length > 1 ? 564 : 538);
+      // One refined line: date · place · validity (validity in gold)
+      var awardY = lines.length > 1 ? 564 : 538;
+      var partA = 'Awarded on ' + issued + '   \u00B7   Siwan, Bihar, India   \u00B7   ';
+      var partB = 'Valid All Over India';
+      ctx.font = 'italic 500 13.5px "Playfair Display", serif';
+      var aW = ctx.measureText(partA).width;
+      ctx.font = 'italic 600 13.5px "Playfair Display", serif';
+      var bW = ctx.measureText(partB).width;
+      var ax = cx - (aW + bW) / 2;
+      ctx.textAlign = 'left';
+      ctx.font = 'italic 500 13.5px "Playfair Display", serif';
+      ctx.fillStyle = INK_SOFT;
+      ctx.fillText(partA, ax, awardY);
+      ctx.font = 'italic 600 13.5px "Playfair Display", serif';
+      ctx.fillStyle = GOLD_DEEP;
+      ctx.fillText(partB, ax + aW, awardY);
+      ctx.textAlign = 'center';
 
       // Footer: QR + ID (left), seal (center), signature (right)
       var fy = 625;
@@ -441,23 +457,9 @@
       ctx.fillText('Founder & Director, Quick Art Photography Academy', sx, fy + 52);
 
       // Bottom line
-      // "Valid all over India" (gold, bold) followed by the address, centred as one line
-      var validTxt = '★ VALID ALL OVER INDIA ★';
-      var restTxt = '   •   QUICKARTPHOTOGRAPHY.IN  •  AYODHYA PURI, SIWAN, BIHAR 841226';
-      var measure = function (t, sp) {
-        return t.split('').reduce(function (w, c) { return w + ctx.measureText(c).width; }, 0) + sp * (t.length - 1);
-      };
-      ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
-      var vW = measure(validTxt, 1.4);
+      ctx.fillStyle = 'rgba(91,79,62,0.7)';
       ctx.font = '600 8.5px "Plus Jakarta Sans", sans-serif';
-      var rW = measure(restTxt, 1.2);
-      var startX = cx - (vW + rW) / 2;
-      ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = GOLD_DEEP;
-      spacedText(ctx, validTxt, startX + vW / 2, H - 58, 1.4);
-      ctx.font = '600 8.5px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = 'rgba(91,79,62,0.75)';
-      spacedText(ctx, restTxt, startX + vW + rW / 2, H - 58, 1.2);
+      spacedText(ctx, 'QUICKARTPHOTOGRAPHY.IN  \u00B7  AYODHYA PURI, SIWAN, BIHAR 841226', cx, H - 58, 1.4);
 
       return canvas;
     });
