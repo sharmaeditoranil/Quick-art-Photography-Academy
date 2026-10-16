@@ -393,23 +393,10 @@
 
       ctx.fillStyle = INK_SOFT;
       ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
-      // One refined line: date · place · validity (validity in gold)
-      var awardY = lines.length > 1 ? 564 : 538;
-      var partA = 'Awarded on ' + issued + '   \u00B7   Siwan, Bihar, India   \u00B7   ';
-      var partB = 'Valid All Over India';
-      ctx.font = 'italic 500 13.5px "Playfair Display", serif';
-      var aW = ctx.measureText(partA).width;
-      ctx.font = 'italic 600 13.5px "Playfair Display", serif';
-      var bW = ctx.measureText(partB).width;
-      var ax = cx - (aW + bW) / 2;
-      ctx.textAlign = 'left';
+      // Award line: date · place
       ctx.font = 'italic 500 13.5px "Playfair Display", serif';
       ctx.fillStyle = INK_SOFT;
-      ctx.fillText(partA, ax, awardY);
-      ctx.font = 'italic 600 13.5px "Playfair Display", serif';
-      ctx.fillStyle = GOLD_DEEP;
-      ctx.fillText(partB, ax + aW, awardY);
-      ctx.textAlign = 'center';
+      ctx.fillText('Awarded on ' + issued + '   \u00B7   Siwan, Bihar, India', cx, lines.length > 1 ? 564 : 538);
 
       // Footer: QR + ID (left), seal (center), signature (right)
       var fy = 625;
