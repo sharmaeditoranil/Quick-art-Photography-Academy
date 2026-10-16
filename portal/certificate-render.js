@@ -348,52 +348,52 @@
       spacedText(ctx, 'AN ISO 9001:2015 CERTIFIED INSTITUTION  •  GOVT. OF INDIA MSME REGISTERED (UDYAM-BR-35-0027860)', cx, 199, 0.8);
 
       // Title
-      ctx.fillStyle = goldGradient(ctx, cx - 300, 220, cx + 300, 280);
-      ctx.font = '800 56px "Cinzel", serif';
-      spacedText(ctx, 'CERTIFICATE', cx, 270, 6);
+      ctx.fillStyle = goldGradient(ctx, cx - 360, 225, cx + 360, 290);
+      ctx.font = '800 74px "Cinzel", serif';
+      spacedText(ctx, 'CERTIFICATE', cx, 286, 8);
 
       ctx.fillStyle = GOLD_DEEP;
       ctx.font = '600 15px "Cinzel", serif';
-      var ofW = spacedText(ctx, 'OF COMPLETION', cx, 298, 7);
+      var ofW = spacedText(ctx, 'OF COMPLETION', cx, 316, 7);
       ctx.strokeStyle = GOLD;
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(cx - ofW / 2 - 120, 293); ctx.lineTo(cx - ofW / 2 - 18, 293);
-      ctx.moveTo(cx + ofW / 2 + 18, 293); ctx.lineTo(cx + ofW / 2 + 120, 293);
+      ctx.moveTo(cx - ofW / 2 - 140, 311); ctx.lineTo(cx - ofW / 2 - 18, 311);
+      ctx.moveTo(cx + ofW / 2 + 18, 311); ctx.lineTo(cx + ofW / 2 + 140, 311);
       ctx.stroke();
 
       // Presented to
       ctx.fillStyle = INK_SOFT;
       ctx.font = 'italic 500 17px "Playfair Display", serif';
-      ctx.fillText('This is proudly presented to', cx, 340);
+      ctx.fillText('This is proudly presented to', cx, 354);
 
       // Student name
       ctx.fillStyle = INK;
       fitFont(ctx, name, '{s}px "Great Vibes", cursive', 66, 720, 34);
-      ctx.fillText(name, cx, 410);
+      ctx.fillText(name, cx, 420);
       var nameLine = ctx.createLinearGradient(cx - 300, 0, cx + 300, 0);
       nameLine.addColorStop(0, 'rgba(184,134,47,0)');
       nameLine.addColorStop(0.5, 'rgba(184,134,47,1)');
       nameLine.addColorStop(1, 'rgba(184,134,47,0)');
       ctx.strokeStyle = nameLine;
       ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.moveTo(cx - 300, 426); ctx.lineTo(cx + 300, 426); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - 300, 436); ctx.lineTo(cx + 300, 436); ctx.stroke();
 
       // Citation
       ctx.fillStyle = INK_SOFT;
       ctx.font = 'italic 500 15.5px "Playfair Display", serif';
-      ctx.fillText('for successfully completing every lesson and the final assessment of', cx, 458);
+      ctx.fillText('for successfully completing every lesson and the final assessment of', cx, 466);
 
       // Course title (wraps to two lines if long)
       ctx.fillStyle = GOLD_DEEP;
       var cSize = fitFont(ctx, course, '700 {s}px "Cinzel", serif', 27, 820, 20);
       var lines = wrapLines(ctx, course, 820).slice(0, 2);
-      var ly = lines.length > 1 ? 494 : 500;
+      var ly = lines.length > 1 ? 500 : 506;
       lines.forEach(function (l, i) { ctx.fillText(l, cx, ly + i * (cSize + 6)); });
 
       ctx.fillStyle = INK_SOFT;
       ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('Awarded on ' + issued + '  •  Siwan, Bihar, India', cx, lines.length > 1 ? 560 : 532);
+      ctx.fillText('Awarded on ' + issued + '  •  Siwan, Bihar, India', cx, lines.length > 1 ? 564 : 538);
 
       // Footer: QR + ID (left), seal (center), signature (right)
       var fy = 625;
@@ -443,7 +443,7 @@
       // Bottom line
       ctx.fillStyle = 'rgba(91,79,62,0.75)';
       ctx.font = '600 8.5px "Plus Jakarta Sans", sans-serif';
-      spacedText(ctx, 'QUICKARTPHOTOGRAPHY.IN  •  AYODHYA PURI, SIWAN, BIHAR 841226  •  +91 99398 00780', cx, H - 58, 1.2);
+      spacedText(ctx, 'QUICKARTPHOTOGRAPHY.IN  •  AYODHYA PURI, SIWAN, BIHAR 841226', cx, H - 58, 1.2);
 
       return canvas;
     });
