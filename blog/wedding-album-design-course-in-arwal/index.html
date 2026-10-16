@@ -415,6 +415,7 @@
             margin: 28px 0;
         }
 
+        .prn-callout-notice h3,
         .prn-callout-notice .prn-callout-title {
             font-weight: 750;
             margin: 0 0 8px 0;
@@ -583,12 +584,17 @@
             padding: 0 !important;
         }
 
+        .blog-article-body .prn-cta-banner h3::after,
+        .prn-cta-banner h3::after {
+            display: none !important;
+        }
+
         .blog-article-body .prn-cta-banner p,
         .prn-cta-banner p {
             color: #e2e8f0 !important;
-            font-size: 0.95rem !important;
+            font-size: 0.96rem !important;
             line-height: 1.6 !important;
-            max-width: 600px !important;
+            max-width: 620px !important;
             margin: 0 auto 24px auto !important;
         }
 
@@ -623,37 +629,38 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff !important;
             font-weight: 650;
             font-size: 0.95rem;
             padding: 13px 24px;
             border-radius: 10px;
             text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .prn-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.18);
         }
 
-        .prn-faq-accordion {
-            margin: 24px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        /* FAQ Accordion */
         .prn-faq-item {
             border: 1px solid var(--border-light);
-            border-radius: 10px;
-            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 12px;
             background: #ffffff;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .prn-faq-item[open] {
+            border-color: var(--brand-gold);
+            box-shadow: 0 2px 10px rgba(216, 161, 83, 0.1);
         }
 
         .prn-faq-item summary {
-            padding: 14px 18px;
+            padding: 16px 20px;
             font-weight: 700;
             color: var(--text-heading);
             cursor: pointer;
@@ -661,9 +668,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.96rem;
-            user-select: none;
-            background: #fcfdfe;
+            font-size: 1.02rem;
+            background: #fafafa;
         }
 
         .prn-faq-item summary::-webkit-details-marker {
@@ -671,326 +677,27 @@
         }
 
         .prn-faq-item summary::after {
-            content: "+";
-            font-size: 1.2rem;
-            font-weight: 700;
+            content: '+';
+            font-size: 1.3rem;
+            font-weight: 400;
             color: var(--brand-gold-dark);
+            transition: transform 0.2s;
         }
 
         .prn-faq-item[open] summary::after {
-            content: "−";
+            content: '−';
         }
 
         .prn-faq-item p {
-            padding: 14px 18px 18px;
+            padding: 16px 20px 20px;
             margin: 0;
             color: var(--text-body);
-            line-height: 1.6;
-            font-size: 0.91rem;
+            line-height: 1.65;
+            font-size: 0.94rem;
             background: #ffffff;
             border-top: 1px solid #f1f5f9;
         }
-
-        /* Two-Column Editorial Layout */
-        .blog-article-page-wrap {
-            padding: 32px 0 80px 0;
-        }
-
-        .blog-layout-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 36px;
-        }
-
-        @media (min-width: 1024px) {
-            .blog-layout-grid {
-                grid-template-columns: minmax(0, 1fr) 340px;
-                gap: 40px;
-                align-items: start;
-            }
-        }
-
-        .blog-article-card {
-            background: #ffffff;
-            border: 1px solid var(--border-light);
-            border-radius: 20px;
-            padding: 32px 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-
-        @media (min-width: 768px) {
-            .blog-article-card {
-                padding: 44px 40px;
-            }
-        }
-
-        .blog-article-title {
-            font-size: clamp(1.85rem, 3.8vw, 2.45rem);
-            font-weight: 850;
-            color: var(--text-heading);
-            line-height: 1.25;
-            letter-spacing: -0.02em;
-            margin: 12px 0 20px 0;
-        }
-
-        .blog-article-meta-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding-bottom: 22px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .blog-article-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .blog-article-author-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--brand-gold);
-        }
-
-        .blog-article-author-name {
-            font-weight: 700;
-            color: var(--text-heading);
-            font-size: 0.95rem;
-            display: block;
-        }
-
-        .blog-article-date {
-            font-size: 0.84rem;
-            color: var(--text-muted);
-        }
-
-        .blog-article-hero-wrap {
-            margin: 28px 0 36px 0;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-            background: #000;
-        }
-
-        .blog-article-hero-img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-
-        .blog-article-lead {
-            font-size: 1.12rem;
-            line-height: 1.75;
-            color: var(--text-body);
-            font-weight: 450;
-            margin-bottom: 28px;
-            padding-left: 18px;
-            border-left: 4px solid var(--brand-gold);
-        }
-
-        .blog-article-body h2 {
-            font-size: clamp(1.35rem, 2.4vw, 1.7rem);
-            font-weight: 800;
-            color: var(--text-heading);
-            margin: 40px 0 16px 0;
-            line-height: 1.3;
-            letter-spacing: -0.015em;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        .blog-article-body h3 {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            font-weight: 750;
-            color: #1e293b;
-            margin: 26px 0 12px 0;
-            line-height: 1.4;
-        }
-
-        .blog-article-body p {
-            font-size: 1.01rem;
-            line-height: 1.8;
-            color: var(--text-body);
-            margin: 0 0 20px 0;
-        }
-
-        /* Sidebar Styles */
-        .blog-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .prn-sidebar-widget {
-            background: #ffffff;
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .prn-widget-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--text-heading);
-            margin: 0 0 16px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        .prn-widget-cta {
-            background: linear-gradient(145deg, #0e1526 0%, #15223e 100%);
-            border: 1px solid rgba(216, 161, 83, 0.35);
-            color: #ffffff;
-        }
-
-        .prn-widget-cta .prn-widget-title {
-            color: #f5c879;
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .prn-widget-cta p {
-            color: #cbd5e1;
-            font-size: 0.88rem;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
-
-        .prn-widget-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 18px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.92rem;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
-
-        .prn-btn-gold {
-            background: linear-gradient(135deg, #e4b35f 0%, #c99238 100%);
-            color: #0b1120 !important;
-            margin-bottom: 10px;
-        }
-
-        .prn-btn-gold:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        .prn-btn-outline {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .prn-btn-outline:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .prn-quick-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .prn-quick-links li {
-            margin-bottom: 10px;
-        }
-
-        .prn-quick-links a {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .prn-quick-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Advanced Mobile & Desktop Responsive Rules */
-        @media (max-width: 640px) {
-            .blog-article-card {
-                padding: 20px 14px !important;
-                border-radius: 14px !important;
-            }
-            .blog-article-title {
-                font-size: 1.45rem !important;
-                line-height: 1.25 !important;
-                margin: 10px 0 16px 0 !important;
-            }
-            .blog-article-lead {
-                font-size: 0.96rem !important;
-                line-height: 1.65 !important;
-                padding-left: 12px !important;
-                margin-bottom: 20px !important;
-            }
-            .prn-stat-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-            .prn-stat-card {
-                padding: 10px 8px !important;
-            }
-            .prn-stat-val {
-                font-size: 1.25rem !important;
-            }
-            .prn-options {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
-            }
-            .prn-option {
-                padding: 18px 16px !important;
-                border-radius: 14px !important;
-            }
-            .blog-article-body .prn-cta-banner,
-            .prn-cta-banner {
-                padding: 24px 16px !important;
-                margin: 28px 0 !important;
-                border-radius: 14px !important;
-            }
-            .blog-article-body .prn-cta-banner h3,
-            .prn-cta-banner h3 {
-                font-size: 1.25rem !important;
-            }
-            .prn-btn-primary,
-            .prn-btn-secondary {
-                width: 100% !important;
-                justify-content: center !important;
-                padding: 12px 16px !important;
-                font-size: 0.9rem !important;
-                box-sizing: border-box !important;
-            }
-            .prn-syllabus-table-wrap {
-                margin: 18px 0 24px !important;
-                -webkit-overflow-scrolling: touch;
-            }
-            .prn-syllabus-table {
-                min-width: 500px;
-                font-size: 0.84rem !important;
-            }
-            .prn-syllabus-table th,
-            .prn-syllabus-table td {
-                padding: 10px 12px !important;
-            }
-            .prn-toc {
-                padding: 16px 18px !important;
-            }
-        }
-
+    
     </style>
 </head>
 
@@ -1188,51 +895,70 @@
         </nav>
     </header>
 
-    <!-- ═══ MAIN CONTENT ═══ -->
-    <main id="main-content" class="blog-article-page-wrap">
-        <div class="container">
-            <!-- Breadcrumbs -->
-            <nav aria-label="Breadcrumb" style="margin-bottom: 24px;">
-                <ol style="display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0;font-size:0.88rem;color:var(--text-muted);">
-                    <li><a href="../../" style="color:var(--text-muted);text-decoration:none;">Home</a> &nbsp;/</li>
-                    <li><a href="../" style="color:var(--text-muted);text-decoration:none;">Blog</a> &nbsp;/</li>
-                    <li style="color:var(--brand-gold-dark);font-weight:600;" aria-current="page">Wedding Album Design Course in Arwal</li>
-                </ol>
-            </nav>
+    <!-- ═══ MAIN WRAPPER ═══ -->
+    <main id="main-content" class="blog-wrapper">
 
+        <!-- Breadcrumb Bar -->
+        <div class="blog-breadcrumb-wrap">
+            <div class="blog-container">
+                <nav class="blog-breadcrumb" aria-label="Breadcrumb">
+                    <a href="../../">Home</a>
+                    <span>/</span>
+                    <a href="../">Blog</a>
+                    <span>/</span>
+                    <span class="current" aria-current="page">Wedding Album Design Course in Arwal</span>
+                </nav>
+            </div>
+        </div>
+
+        <div class="blog-container blog-article-page-wrap">
             <div class="blog-layout-grid">
-                <!-- Main Article Column -->
+
+                <!-- Main Content Column -->
                 <article class="blog-article-card" itemscope itemtype="https://schema.org/BlogPosting">
+                    
                     <header class="blog-article-header">
-                        <div style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;font-size:0.8rem;font-weight:700;padding:4px 12px;border-radius:9999px;margin-bottom:14px;border:1px solid #fde68a;">
-                            <span>📖 Photoshop Album Specialization</span>
+                        <div class="blog-tags-row" style="margin-bottom:12px;">
+                            <span class="blog-badge">Adobe Photoshop</span>
+                            <span class="blog-badge">Arwal Bihar</span>
+                            <span class="blog-badge">Wedding Album Design</span>
                         </div>
-                        <h1 class="blog-article-title">Wedding Album Design Course in Arwal: Photoshop Training for Arwal Students</h1>
+                        <h1 class="blog-article-title" itemprop="headline">
+                            Wedding Album Design Course in Arwal: Photoshop Training for Arwal Students
+                        </h1>
+
                         <div class="blog-article-meta-row">
                             <div class="blog-article-author">
-                                <img src="../../assets/anil-sharma.webp" alt="Anil Sharma — Founder &amp; Mentor Quick Art Photography Academy" class="blog-article-author-img" width="48" height="48" loading="lazy">
-                                <div>
-                                    <span class="blog-article-author-name">Anil Sharma</span>
-                                    <span class="blog-article-date">Master Album Designer · Updated October 2026</span>
+                                <img src="../../assets/anil-sharma.webp" alt="Anil Sharma - Album Design Mentor" width="46" height="46" class="blog-article-author-img" loading="lazy">
+                                <div class="blog-article-author-info">
+                                    <span class="blog-article-author-name" itemprop="author">Anil Sharma</span>
+                                    <span class="blog-article-date">
+                                        <time datetime="2026-10-17" itemprop="datePublished">October 17, 2026</time> · 8 min read
+                                    </span>
                                 </div>
                             </div>
-                            <div style="font-size:0.85rem;color:var(--text-muted);background:#f1f5f9;padding:6px 14px;border-radius:20px;">
-                                ⏱️ 8 Min Read · Complete Guide
+                            <div class="blog-share-row">
+                                <a href="https://wa.me/?text=Check%20out%20Wedding%20Album%20Design%20Course%20in%20Arwal%20https%3A%2F%2Fquickartphotography.in%2Fblog%2Fwedding-album-design-course-in-arwal%2F" target="_blank" rel="noopener" class="blog-badge" style="background:#25D366;color:#fff;border:none;">Share on WhatsApp</a>
                             </div>
                         </div>
                     </header>
 
-                    <!-- Hero Visual -->
+                    <!-- Featured Hero Image -->
                     <div class="blog-article-hero-wrap">
                         <picture>
-                            <source srcset="../../assets/wedding-album-design-course-in-arwal.webp" type="image/webp" media="(min-width: 768px)">
-                            <source srcset="../../assets/wedding-album-design-course-in-arwal-mobile.webp" type="image/webp" media="(max-width: 767px)">
-                            <img src="../../assets/wedding-album-design-course-in-arwal.jpg" alt="Wedding Album Design Course in Arwal - Master Modern Album Layouts with Quick Art Photography Academy" class="blog-article-hero-img" width="1024" height="576" fetchpriority="high">
+                            <source srcset="../../assets/wedding-album-design-course-in-arwal.webp" type="image/webp">
+                            <img src="../../assets/wedding-album-design-course-in-arwal.jpg"
+                                alt="Wedding Album Design Course in Arwal - Quick Art Photography Academy Practical Training"
+                                class="blog-article-hero-img" width="1024" height="576" loading="eager" decoding="async" itemprop="image">
                         </picture>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;text-align:center;">
+                            Arwal ke students ke liye professional Photoshop wedding album layout training: Offline Siwan Studio (Free Hostel) ya Daily Live Online 7:30 PM.
+                        </p>
                     </div>
 
-                    <!-- Article Lead -->
-                    <p class="blog-article-lead">
+                    <!-- Article Body -->
+                    <div class="blog-article-body" itemprop="articleBody">
+                        <p class="blog-article-lead">
                         Wedding album sirf photographs ka collection nahi hota, balki shaadi ke khoobsurat moments ko ek memorable story me badalne ka artistic tareeqa hai. Har album ko attractive banane ke liye sahi photo selection, creative layouts aur professional editing skills ki zaroorat hoti hai. Agar aap designing me apna career shuru karna chahte hain, to <strong>Wedding Album Design Course in Arwal</strong> aapke liye ek useful learning option ho sakta hai jahan <strong>Quick Art Photography Academy</strong> ke sath learners apni creativity ko nayi direction de sakte hain.
                     </p>
 
@@ -1455,86 +1181,115 @@
                             </details>
                         </div>
                     </div>
+                    </div>
+
                 </article>
 
-                <!-- Sidebar Column -->
+                <!-- Sticky Sidebar Column -->
                 <aside class="blog-sidebar">
-                    <!-- CTA Widget -->
-                    <div class="prn-sidebar-widget prn-widget-cta">
-                        <div class="prn-widget-title">Join Album Masterclass</div>
-                        <p>Learn 12x36 Master Layouts, Frequency Separation &amp; Color Grading with mentor Anil Sharma.</p>
-                        <a href="../../admission/" class="prn-widget-btn prn-btn-gold">Apply Admission Form</a>
-                        <a href="https://wa.me/919939800780" target="_blank" rel="noopener noreferrer" class="prn-widget-btn prn-btn-outline">Chat on WhatsApp</a>
-                    </div>
-
-                    <!-- Fee Structure Widget -->
-                    <div class="prn-sidebar-widget">
-                        <div class="prn-widget-title">Fee Quick Summary</div>
-                        <ul style="list-style:none;padding:0;margin:0;font-size:0.92rem;color:var(--text-body);line-height:1.7;">
-                            <li style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;">
-                                <strong>Offline 14-Week Master Class:</strong><br>
-                                <span style="color:#059669;font-weight:700;">₹31,500</span> <span style="font-size:12px;color:var(--text-muted);">(Reg. ₹35,000)</span><br>
-                                <small style="color:#b88232;font-weight:600;">✨ 100% Free Room / Hostel Stay</small>
-                            </li>
-                            <li style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;">
-                                <strong>Seat Token Booking:</strong><br>
-                                <span style="font-weight:700;color:#0f172a;">₹500 Only</span> (Lock your batch)
-                            </li>
-                            <li style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;">
-                                <strong>Online Daily Live Class:</strong><br>
-                                <span style="color:#059669;font-weight:700;">₹4,999</span> (07:30–09:00 PM IST)
-                            </li>
-                            <li>
-                                <strong>Monthly EMI:</strong><br>
-                                <span style="font-weight:700;color:#0f172a;">From ₹2,500/month</span>
-                            </li>
-                        </ul>
-                        <div style="margin-top:16px;">
-                            <a href="../../courses/album-design/" style="color:#2563eb;text-decoration:none;font-size:0.88rem;font-weight:600;">View Album Design Syllabus &rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Campus Location Widget -->
-                    <div class="prn-sidebar-widget">
-                        <div class="prn-widget-title">Studio &amp; Location</div>
-                        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:12px;">
-                            <strong>Quick Art Photography Academy</strong><br>
-                            Ayodhya Puri, Near Lalit Bus Stand, Siwan, Bihar - 841226<br>
-                            📞 +91 99398 00780
+                    
+                    <!-- Quick Admission Help Card -->
+                    <div class="blog-ref-card" style="background:linear-gradient(135deg, #131b2e 0%, #0b1120 100%); color:#ffffff; border-color:var(--border-gold);">
+                        <h3 class="blog-ref-title" style="color:#ffffff;">Arwal Admission Desk</h3>
+                        <div class="blog-ref-underline" style="background:var(--brand-gold);"></div>
+                        <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:16px;">
+                            Arwal ke learners ke liye batch booking open hai. Offline Siwan Studio (Free Hostel) ya Daily Live Online 7:30 PM.
                         </p>
-                        <a href="https://maps.app.goo.gl/vobbRQLnP6vQp8FA7" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:#2563eb;text-decoration:none;font-size:0.88rem;font-weight:600;">
-                            <span>📍 Open in Google Maps</span>
+                        <a href="https://wa.me/919939800780?text=Hello%20Quick%20Art%20Academy,%20I%20am%20from%20Arwal%20and%20need%20details%20for%20Wedding Album Design Course." class="prn-btn-primary" style="justify-content:center; width:100%; font-size:13px; padding:10px 14px;">
+                            💬 WhatsApp: 9939800780
+                        </a>
+                        <a href="tel:+919939800780" class="prn-btn-secondary" style="justify-content:center; width:100%; font-size:13px; padding:10px 14px; margin-top:8px;">
+                            📞 Call: +91 9939800780
                         </a>
                     </div>
 
-                    <!-- Social Channels Widget -->
-                    <div class="prn-sidebar-widget">
-                        <div class="prn-widget-title">Connect With Us</div>
-                        <ul class="prn-quick-links">
-                            <li><a href="https://www.youtube.com/@QuickartPhotographyAcademy/videos" target="_blank" rel="noopener noreferrer">▶️ YouTube Channel</a></li>
-                            <li><a href="https://www.instagram.com/quick.art.photography.academy/" target="_blank" rel="noopener noreferrer">📸 Instagram Profile</a></li>
-                            <li><a href="https://www.facebook.com/Quick.art.Photography.Academy" target="_blank" rel="noopener noreferrer">👍 Facebook Page</a></li>
-                            <li><a href="https://wa.me/919939800780" target="_blank" rel="noopener noreferrer">💬 WhatsApp Helpdesk</a></li>
+                    <!-- Popular Courses -->
+                    <div class="blog-ref-card">
+                        <h3 class="blog-ref-title">Popular Courses</h3>
+                        <div class="blog-ref-underline"></div>
+                        <ul class="blog-ref-list">
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../video-editing-tips/" class="blog-ref-link">15 Video Editing Pro Tips</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../how-to-edit-video-on-iphone/" class="blog-ref-link">iPhone Video Editing Guide</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../../courses/album-design/" class="blog-ref-link">Wedding Album Design Course</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../../courses/video-editing/" class="blog-ref-link">Master Video Editing Course</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../ai-photoflow-launch-wedding-photo-editing-software/" class="blog-ref-link">AI PhotoFlow (New Tool)</a>
+                            </li>
                         </ul>
                     </div>
 
-                    <!-- Related Guides Widget -->
-                    <div class="prn-sidebar-widget">
-                        <div class="prn-widget-title">Related Tutorials</div>
-                        <ul class="prn-quick-links">
-                            <li><a href="../video-editing-course-in-arwal/">📍 Video Editing Course in Arwal</a></li>
-                            <li><a href="../ai-editing-future-and-video-editing-course-fees/">⚡ AI Editing ka Future &amp; Course Fees 2026</a></li>
-                            <li><a href="../wedding-album-design-course-in-araria/">📍 Wedding Album Design Course in Araria</a></li>
-                            <li><a href="../wedding-album-design-course-in-india/">🏆 Wedding Album Design Course in India</a></li>
-                            <li><a href="../video-editing-tips/">⚡ 15 Video Editing Tips by Anil Sharma</a></li>
+                    <!-- Nearby Student Guides -->
+                    <div class="blog-ref-card">
+                        <h3 class="blog-ref-title">Nearby Student Guides</h3>
+                        <div class="blog-ref-underline"></div>
+                        <ul class="blog-ref-list">
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../video-editing-course-in-arwal/" class="blog-ref-link">Video Editing in Arwal</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../video-editing-course-in-gaya/" class="blog-ref-link">Video Editing in Gaya</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../wedding-album-design-course-in-patna/" class="blog-ref-link">Album Design in Patna</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="../wedding-album-design-course-in-araria/" class="blog-ref-link">Album Design in Araria</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Verified Campus Studio Card -->
+                    <div class="blog-ref-card">
+                        <h3 class="blog-ref-title">Siwan Studio Campus</h3>
+                        <div class="blog-ref-underline"></div>
+                        <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:12px;">
+                            📍 <strong>Ayodhya Puri, Near Lalit Bus Stand</strong>, Siwan, Bihar - 841226<br>
+                            📞 <strong>Call / WhatsApp:</strong> <a href="tel:+919939800780" style="color:var(--brand-gold-dark); font-weight:700;">+91 9939800780</a>
+                        </p>
+                        <a href="https://maps.app.goo.gl/avp33qPyUnAKZuJa7" target="_blank" rel="noopener" class="prn-btn-secondary" style="color:#0b1120 !important; background:#f1f5f9; border-color:var(--border-light); justify-content:center; width:100%; font-size:13px; padding:10px 14px;">
+                            📍 Direction
+                        </a>
+                    </div>
+
+                    <!-- Social Channels Card -->
+                    <div class="blog-ref-card">
+                        <h3 class="blog-ref-title">Connect With Us</h3>
+                        <div class="blog-ref-underline"></div>
+                        <ul class="blog-ref-list">
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="https://www.youtube.com/@QuickartPhotographyAcademy/videos" target="_blank" rel="noopener" class="blog-ref-link">YouTube Tutorials (@Quickart)</a>
+                            </li>
+                            <li class="blog-ref-item">
+                                <span class="blog-ref-arrow">›</span>
+                                <a href="https://www.instagram.com/quick.art.photography.academy/" target="_blank" rel="noopener" class="blog-ref-link">Instagram (@quick.art.academy)</a>
+                            </li>
                         </ul>
                     </div>
                 </aside>
+
             </div>
         </div>
+
     </main>
 
-    <!-- ═══ EXACT SYNCHRONIZED FOOTER ═══ -->
     <footer role="contentinfo" class="qa-footer">
         <div class="container qa-footer-grid">
             <div class="qa-footer-brand-col">
