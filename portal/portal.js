@@ -421,6 +421,7 @@ async function loadDashboard() {
 
     currentStudent = meRes.student;
     window._currentStudent = currentStudent;
+    syncIdCardMenu();
 
     // ── Header / Nav Dropdown & Dashboard Hero User Details ──
     const shortName = currentStudent.name.split(' ')[0];
@@ -4152,7 +4153,23 @@ function escHtml(str) {
 // ==========================================================================
 
 /** Toggle dropdown open/close */
+// Student ID Card is only for admission-form students (offline / online batch).
+// Online course buyers get instant course access + certificate, but no ID card.
+function isAdmissionStudent(stu) {
+  return !!(stu && (stu.offlineAdmissionId || stu.isOfflineStudent || stu.isOnlineBatch));
+}
+
+function isApprovedStudent(stu) {
+  return !!(stu && stu.isApproved && ['active', 'approved'].includes(stu.status));
+}
+
+function syncIdCardMenu() {
+  const btn = document.getElementById('menu-idcard-btn');
+  if (btn) btn.style.display = isAdmissionStudent(window._currentStudent) ? '' : 'none';
+}
+
 function toggleUserMenu() {
+  syncIdCardMenu();
   const dropdown = document.getElementById('user-dropdown');
   const trigger  = document.getElementById('user-menu-trigger');
   if (!dropdown) return;
@@ -4247,8 +4264,8 @@ function openMyProfile() {
         </div>
       </div>
 
-      <!-- ID Card Access Card inside My Profile -->
-      <div class="profile-idcard-promo-card" style="margin:16px 0; background:linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(15,20,32,0.85) 100%); border:1.5px solid rgba(245,158,11,0.35); border-radius:14px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <!-- ID Card Access Card inside My Profile (admission students only) -->
+      ${isAdmissionStudent(stu) ? `<div class="profile-idcard-promo-card" style="margin:16px 0; background:linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(15,20,32,0.85) 100%); border:1.5px solid rgba(245,158,11,0.35); border-radius:14px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.15); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">🪪</div>
           <div style="text-align:left;">
@@ -4259,7 +4276,7 @@ function openMyProfile() {
         <button type="button" class="btn btn-outline-gold" style="font-size:12px; padding:7px 14px; white-space:nowrap; flex-shrink:0;" onclick="closeProfileModal(); openMyIdCardModal();">
           View &amp; Download 🪪
         </button>
-      </div>
+      </div>` : ''}
 
       <button class="btn btn-gold btn-block profile-save-btn" onclick="saveProfileChanges()">
         💾 Save Changes
@@ -4289,6 +4306,11 @@ function openMyIdCardModal() {
   if (existing) existing.remove();
 
   const stu = window._currentStudent || {};
+  if (!isAdmissionStudent(stu)) {
+    toast('Student ID Card sirf Admission Form wale students ke liye hai.', false);
+    return;
+  }
+  const approved = isApprovedStudent(stu);
   const stuId = stu.offlineAdmissionId || stu.id || ('QAA-2026-' + (stu.phone ? String(stu.phone).slice(-4) : 'ADM'));
   const stuName = stu.name || 'Verified Student';
   const stuPhone = stu.phone ? ('+91 ' + stu.phone) : '+91 99398 00780';
@@ -4327,7 +4349,7 @@ function openMyIdCardModal() {
 
           <div class="adm-card-photo-wrapper">
             <img src="${stuAvatar}" alt="${escapeHtml(stuName)}" onerror="this.src='../assets/default-student-avatar.svg'" />
-            <div class="adm-card-photo-ribbon">VERIFIED STUDENT</div>
+            <div class="adm-card-photo-ribbon"${approved ? '' : ' style="background:#d97706;"'}>${approved ? 'VERIFIED STUDENT' : 'PROVISIONAL'}</div>
           </div>
 
           <div class="adm-card-student-name">${escapeHtml(stuName)}</div>
@@ -4401,7 +4423,7 @@ function openMyIdCardModal() {
                 <span>Student Terms &amp; Identification Rules</span>
               </div>
             </div>
-            <span class="adm-card-active-pill">ACTIVE</span>
+            <span class="adm-card-active-pill"${approved ? '' : ' style="background:rgba(245,158,11,0.2); color:#fbbf24; border-color:rgba(245,158,11,0.6);"'}>${approved ? 'ACTIVE' : 'PENDING APPROVAL'}</span>
           </div>
 
           <div class="adm-card-rules-box">

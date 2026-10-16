@@ -4557,8 +4557,16 @@ async function openLiveRecording(classId) {
 // ==========================================================================
 // 9. TAB 4: MY PROFILE ENGINE
 // ==========================================================================
+// Student ID Card is only for admission-form students (offline / online batch).
+// Online course buyers get instant course access + certificate, but no ID card.
+function isAdmissionStudent(stu) {
+  return !!(stu && (stu.offlineAdmissionId || stu.isOfflineStudent || stu.isOnlineBatch));
+}
+
 function loadProfileData() {
   if (!currentStudent) return;
+  const idTile = document.getElementById('prof-id-tile');
+  if (idTile) idTile.style.display = isAdmissionStudent(currentStudent) ? '' : 'none';
   const nameEl = document.getElementById('prof-name');
   if (nameEl) nameEl.textContent = currentStudent.name || 'Student Name';
 
@@ -4700,6 +4708,21 @@ function openStudentIdCardModal() {
   if (!stu || (!stu.phone && !stu.name)) {
     toast('Please log in to view your official Student ID Card', false);
     return;
+  }
+  if (!isAdmissionStudent(stu)) {
+    toast('Student ID Card sirf Admission Form wale students ke liye hai.', false);
+    return;
+  }
+  const approved = !!stu.isApproved && ['active', 'approved'].includes(stu.status);
+  const ribbonEl = document.getElementById('app-idcard-ribbon');
+  if (ribbonEl) {
+    ribbonEl.textContent = approved ? 'VERIFIED STUDENT' : 'PROVISIONAL';
+    ribbonEl.style.background = approved ? '' : '#d97706';
+  }
+  const pillEl = document.getElementById('app-idcard-pill');
+  if (pillEl) {
+    pillEl.textContent = approved ? 'ACTIVE' : 'PENDING APPROVAL';
+    pillEl.style.cssText = approved ? '' : 'background:rgba(245,158,11,0.2); color:#fbbf24; border-color:rgba(245,158,11,0.6);';
   }
 
   const stuId = stu.offlineAdmissionId || stu.enrollmentNo || stu.id || ('QAA-2026-' + (stu.phone ? String(stu.phone).slice(-4) : 'ADM'));

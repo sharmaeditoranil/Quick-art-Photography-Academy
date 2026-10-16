@@ -455,7 +455,7 @@
       </div>
 
       <!-- Quick Action: Official PVC Student ID Card -->
-      <div class="prof-id-tile" onclick="openStudentIdCardModal()">
+      <div class="prof-id-tile" id="prof-id-tile" style="display:none;" onclick="openStudentIdCardModal()">
         <div class="prof-id-tile-left">
           <div class="prof-id-tile-icon">🪪</div>
           <div>
@@ -1222,7 +1222,7 @@
 
             <div class="adm-card-photo-wrapper">
               <img id="app-idcard-photo" src="../assets/default-student-avatar.svg" alt="Student Photo" onerror="this.src='../assets/default-student-avatar.svg'" />
-              <div class="adm-card-photo-ribbon">VERIFIED STUDENT</div>
+              <div class="adm-card-photo-ribbon" id="app-idcard-ribbon">VERIFIED STUDENT</div>
             </div>
 
             <div class="adm-card-student-name" id="app-idcard-name">Student Name</div>
@@ -1296,7 +1296,7 @@
                   <span>Student Terms &amp; Identification Rules</span>
                 </div>
               </div>
-              <span class="adm-card-active-pill">ACTIVE</span>
+              <span class="adm-card-active-pill" id="app-idcard-pill">ACTIVE</span>
             </div>
 
             <div class="adm-card-rules-box">
@@ -2066,6 +2066,6 @@
   <script src="../portal/html2canvas.min.js"></script>
   <script src="../portal/qrcode.min.js"></script>
   <script src="../portal/certificate-render.js?v=5"></script>
-  <script src="app.js?v=20261016_cert"></script>
+  <script src="app.js?v=20261017_idcard"></script>
 </body>
 </html>
