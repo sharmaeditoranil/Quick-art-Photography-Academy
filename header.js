@@ -835,7 +835,7 @@
       const drawerHead = document.createElement('div');
       drawerHead.className = 'ref-drawer-head';
       const brandImg = header.querySelector('.ref-brand img');
-      const imgSrc = brandImg ? brandImg.getAttribute('src') : 'home-assets/ec55a6be3747a9.webp';
+      const imgSrc = brandImg ? brandImg.getAttribute('src') : 'home-assets/qa-logo-96.webp';
       drawerHead.innerHTML = `<div class="ref-drawer-title"><img src="${imgSrc}" width="30" height="30" alt="Quick Art" style="object-fit:contain;border-radius:6px;"><span>Quick <b>Art</b> <small>ACADEMY</small></span></div><button type="button" class="ref-drawer-close" aria-label="Close navigation"><span aria-hidden="true">✕</span></button>`;
       
       let studentCard = null;

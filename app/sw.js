@@ -6,7 +6,7 @@ const STATIC_ASSETS = [
   '/app/app.css',
   '/app/app.js',
   '/app/manifest.json',
-  '/home-assets/ec55a6be3747a9.webp'
+  '/home-assets/qa-logo-96.webp'
 ];
 
 self.addEventListener('install', (event) => {
