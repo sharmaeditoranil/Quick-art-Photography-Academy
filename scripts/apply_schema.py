@@ -93,7 +93,7 @@ def get_base_org(include_aggregate_rating=False):
                     "Friday",
                     "Saturday"
                 ],
-                "opens": "09:00",
+                "opens": "10:00",
                 "closes": "19:00"
             }
         ],
