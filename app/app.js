@@ -1799,11 +1799,13 @@ async function toggleCurrentLessonComplete() {
   if (!activeCourse || !activeLesson) return;
   const courseId = activeCourse.id;
   const lessonId = activeLesson.id;
+  const alreadyDone = Boolean(currentStudent && currentStudent.completedLessons &&
+    (currentStudent.completedLessons[courseId] || []).includes(lessonId));
 
   try {
     await apiFetch('update-progress', {
       method: 'POST',
-      body: { courseId, lessonId }
+      body: { courseId, lessonId, isCompleted: !alreadyDone }
     });
 
     if (!currentStudent.completedLessons) currentStudent.completedLessons = {};
@@ -2171,6 +2173,8 @@ function submitAppQuiz() {
     try {
       localStorage.setItem('qaa_student_info', JSON.stringify(currentStudent));
     } catch (_) {}
+    apiFetch('record-quiz-pass', { method: 'POST', body: { courseId: activeCourse.id, scorePct } })
+      .catch(err => console.warn('Quiz result sync failed:', err));
 
     const stats = getAppCourseLessonStats(activeCourse);
     if (stats.pct >= 100) {
@@ -4598,7 +4602,7 @@ function loadProfileData() {
   const certCountEl = document.getElementById('prof-cert-count');
   if (certCountEl) {
     const certCount = Array.isArray(enrolledCourses)
-      ? enrolledCourses.filter(c => (Number(c.progress) || 0) >= 100 || c.certificateIssued).length
+      ? enrolledCourses.filter(c => c.certificateEligible || c.certificate).length
       : 0;
     certCountEl.textContent = certCount;
   }
@@ -4929,7 +4933,7 @@ function generateAppCertificateId(courseId, phone) {
   return `QAA-2026-${code}-${suffix}`;
 }
 
-function openCertificatesModal(courseId) {
+async function openCertificatesModal(courseId) {
   const stu = currentStudent || JSON.parse(localStorage.getItem('qaa_student_info') || '{}');
   if (!stu || (!stu.phone && !stu.name)) {
     toast('Please log in to view your Certificates', false);
@@ -4952,10 +4956,8 @@ function openCertificatesModal(courseId) {
     selectedCourse = enrolledList[0];
   }
   if (!selectedCourse) {
-    selectedCourse = {
-      id: 'master-class',
-      title: stu.appliedCourse || 'Master Video Editing & Filmmaking Diploma'
-    };
+    toast('🎓 Abhi koi course enroll nahi hai. Course poora karne ke baad certificate milega.', false);
+    return;
   }
 
   // Render course picker pills if multiple enrolled courses
@@ -4976,35 +4978,41 @@ function openCertificatesModal(courseId) {
     }
   }
 
-  // Verify course completion and quiz eligibility
-  if (selectedCourse && selectedCourse.modules && selectedCourse.modules.length > 0) {
-    const stats = getAppCourseLessonStats(selectedCourse);
-    const isQuizDone = isAppCourseQuizPassed(selectedCourse.id);
-    if (stats.total > 0 && stats.pct < 100) {
-      toast(`⚠️ Certificate locked: Aapne ${stats.done}/${stats.total} lessons (${stats.pct}%) dekhe hain. 100% lessons poore karein!`, false);
-      return;
+  // Server is the source of truth: all lessons done + quiz passed
+  let status;
+  try {
+    status = await apiFetch(`certificate-status&courseId=${encodeURIComponent(selectedCourse.id)}`);
+  } catch (err) {
+    toast('Certificate status check nahi ho paya. Internet check karke dobara try karein.', false);
+    return;
+  }
+  if (!status.eligible) {
+    if (status.reason === 'lessons') {
+      toast(`🔒 Certificate locked: ${status.done}/${status.total} lessons (${status.pct}%) poore hue hain. Saare lessons poore karein.`, false);
+    } else if (status.reason === 'quiz') {
+      toast('🔒 Certificate locked: Saare lessons ho gaye! Ab Quiz tab me test paas karein (min 70%).', false);
+    } else {
+      toast('🔒 Is course ka certificate poora course aur test complete hone ke baad hi milega.', false);
     }
-    if (stats.total > 0 && !isQuizDone) {
-      toast('⚠️ Certificate locked: Kripya pehle Module Quiz / Test paas karein (Min 70%)!', false);
-      return;
-    }
+    return;
   }
 
-  populateAppCertificateUI(stu, selectedCourse);
+  populateAppCertificateUI(stu, selectedCourse, status.certificate);
 
   const modal = document.getElementById('modal-certificate');
   if (modal) modal.classList.add('active');
   pushNavState({ screen: 'modal', modal: 'certificate' });
 }
 
-function populateAppCertificateUI(stu, course) {
+function populateAppCertificateUI(stu, course, issued) {
   const name = stu.name || 'Verified Student';
   const cTitle = (course && course.title) || stu.appliedCourse || 'Master Video Editing & Filmmaking Diploma';
   const cId = (course && course.id) || 'master-class';
-  const certId = generateAppCertificateId(cId, stu.phone);
+  const certId = (issued && issued.id) || generateAppCertificateId(cId, stu.phone);
   const enrollNo = stu.offlineAdmissionId || stu.enrollmentNo || ('QAA-2026-' + (stu.phone ? String(stu.phone).slice(-4) : '8842'));
 
-  const today = new Date().toLocaleDateString('en-GB', {
+  const issuedOn = issued && issued.issuedDate ? new Date(issued.issuedDate) : new Date();
+  const today = issuedOn.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -5037,9 +5045,10 @@ function populateAppCertificateUI(stu, course) {
     courseTitle: cTitle,
     courseId: cId,
     certificateId: certId,
-    issuedDate: today,
+    issuedDate: (issued && issued.issuedDate) || new Date().toISOString(),
     verifyUrl: verifyUrl
   };
+  renderAppCertificatePreview();
 }
 
 function closeCertificateModal(fromPopstate = false) {
@@ -5050,128 +5059,70 @@ function closeCertificateModal(fromPopstate = false) {
   }
 }
 
+// Certificate image is drawn by /portal/certificate-render.js (A4 landscape, 300 DPI)
+let activeAppCertCanvas = null;
+
+function renderAppCertificatePreview() {
+  const img = document.getElementById('qa-cert-preview');
+  const loading = document.getElementById('qa-cert-loading');
+  activeAppCertCanvas = null;
+  if (!activeAppCertData || typeof QACertificate === 'undefined') return Promise.resolve(null);
+  if (img) img.style.opacity = '0';
+  if (loading) loading.style.display = 'block';
+  return QACertificate.render(activeAppCertData).then(canvas => {
+    activeAppCertCanvas = canvas;
+    if (img) {
+      img.src = canvas.toDataURL('image/jpeg', 0.9);
+      img.style.opacity = '1';
+    }
+    if (loading) loading.style.display = 'none';
+    return canvas;
+  });
+}
+
+async function getAppCertCanvas() {
+  return activeAppCertCanvas || await renderAppCertificatePreview();
+}
+
 async function downloadAppCertificatePNG() {
   if (!activeAppCertData) {
     toast('Certificate not ready', false);
     return;
   }
-  toast('Preparing HD Certificate Download (300 DPI)…');
-
-  if (document.fonts && document.fonts.ready) {
-    try { await document.fonts.ready; } catch (e) {}
-  }
-
-  const certElement = document.getElementById('certificate-print-area');
-  if (typeof html2canvas !== 'undefined' && certElement) {
-    try {
-      const offscreenWrap = document.createElement('div');
-      offscreenWrap.style.position = 'fixed';
-      offscreenWrap.style.left = '-9999px';
-      offscreenWrap.style.top = '0';
-      offscreenWrap.style.width = '1020px';
-      offscreenWrap.style.zIndex = '-9999';
-      offscreenWrap.style.background = '#ffffff';
-
-      const clone = certElement.cloneNode(true);
-      clone.style.width = '1020px';
-      clone.style.maxWidth = '1020px';
-      clone.style.minWidth = '1020px';
-      clone.style.boxSizing = 'border-box';
-      clone.style.margin = '0';
-      offscreenWrap.appendChild(clone);
-      document.body.appendChild(offscreenWrap);
-
-      await new Promise(r => setTimeout(r, 120));
-
-      const h2cCanvas = await html2canvas(clone, {
-        scale: 3, // 300 DPI Ultra-HD
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#fbf6ec',
-        logging: false,
-        imageTimeout: 6000
-      });
-
-      if (offscreenWrap.parentNode) {
-        document.body.removeChild(offscreenWrap);
-      }
-
-      if (h2cCanvas && h2cCanvas.width > 800) {
-        const cleanName = (activeAppCertData.studentName || 'Student').replace(/[^a-zA-Z0-9]/g, '_');
-        const filename = `QuickArt_Certificate_${cleanName}.png`;
-        const dataUrl = h2cCanvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        toast('🎓 Certificate downloaded in Ultra HD (300 DPI)!');
-        return;
-      }
-    } catch (h2cErr) {
-      console.warn('html2canvas download error:', h2cErr);
-      toast('Download error. Please take a screenshot.', false);
-    }
-  } else {
-    toast('Library loading. Please try again in a moment.', false);
-  }
-}
-
-function printAppCertificate() {
-  const cert = document.getElementById('certificate-print-area');
-  if (!cert) return;
-
-  const printWin = window.open('', '_blank', 'width=1100,height=800');
-  if (!printWin) {
-    toast('Please allow popups to print certificate', false);
+  toast('HD certificate taiyaar ho raha hai…');
+  const canvas = await getAppCertCanvas();
+  if (!canvas) {
+    toast('Certificate ban nahi paya. Dobara try karein.', false);
     return;
   }
+  const cleanName = (activeAppCertData.studentName || 'Student').replace(/[^a-zA-Z0-9]+/g, '_');
+  const filename = `QuickArt_Certificate_${cleanName}.png`;
 
-  printWin.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Quick Art Photography Academy - Official Certificate</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="app.css">
-        <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700&family=Outfit:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-        <style>
-          @page { size: A4 landscape; margin: 0; }
-          html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .certificate-frame {
-            width: 100vw !important;
-            max-width: 297mm !important;
-            height: 100vh !important;
-            max-height: 210mm !important;
-            box-sizing: border-box !important;
-            margin: 0 !important;
-            box-shadow: none !important;
-            page-break-inside: avoid;
-          }
-        </style>
-      </head>
-      <body>
-        ${cert.outerHTML}
-        <script>
-          setTimeout(() => {
-            window.print();
-            window.close();
-          }, 600);
-        <\/script>
-      </body>
-    </html>
-  `);
-  printWin.document.close();
+  // Android app: save straight to the Gallery through the native bridge
+  if (window.QAAndroid && typeof window.QAAndroid.saveImage === 'function') {
+    const result = window.QAAndroid.saveImage(canvas.toDataURL('image/png'), filename);
+    if (result === 'permission') {
+      toast('Storage permission dijiye, phir Download dobara dabaiye.', false);
+    } else if (result !== 'ok') {
+      toast('Save nahi ho paya. Dobara try karein.', false);
+    }
+    return;
+  }
+  if (/QuickArtAcademyApp/.test(navigator.userAgent)) {
+    toast('Download ke liye app update kariye, ya website ke Student Portal se download kariye.', false);
+    return;
+  }
+  await QACertificate.download(canvas, activeAppCertData.studentName);
+  toast('🎓 Certificate download ho gaya (A4, 300 DPI)!');
+}
+
+async function printAppCertificate() {
+  if (!activeAppCertData) return;
+  const canvas = await getAppCertCanvas();
+  if (!canvas) return;
+  if (!QACertificate.print(canvas)) {
+    toast('Print ke liye popup allow kariye, ya Download karke print kariye.', false);
+  }
 }
 
 function shareAppCertificateWhatsApp() {

@@ -1808,12 +1808,16 @@
         </div>
 
         <div style="font-size:10.5px; color:#94a3b8; margin:6px 0 10px; text-align:center;">
-          ↔ Pinch or scroll horizontally to inspect certificate • Downloads in full 4K HD resolution
+          A4 size • 300 DPI print quality • Download karke frame karwa sakte hain
         </div>
 
         <!-- Scrollable Certificate Frame Wrap -->
-        <div class="cert-frame-scroll-wrap" style="overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:10px;">
-          <div id="certificate-print-area" class="certificate-frame">
+        <div class="cert-frame-scroll-wrap" style="padding-bottom:10px;">
+          <div class="qa-cert-preview-wrap" style="position:relative; border-radius:10px; overflow:hidden; background:#1b1916; box-shadow:0 18px 40px -18px rgba(0,0,0,0.8); aspect-ratio:3508/2480;">
+            <img id="qa-cert-preview" alt="Your certificate" style="display:block; width:100%; height:auto; transition:opacity .3s; opacity:0;" />
+            <div id="qa-cert-loading" style="position:absolute; inset:0; display:grid; place-items:center; color:#d8a153; font-size:13px; font-weight:600;">Certificate taiyaar ho raha hai…</div>
+          </div>
+          <div id="certificate-print-area" class="certificate-frame" style="display:none;">
             <!-- Background Security Watermark -->
             <div class="cert-watermark" aria-hidden="true">
               <svg viewBox="0 0 400 400" width="360" height="360">
@@ -2044,10 +2048,10 @@
         <div class="cert-modal-actions" style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
             <button type="button" class="btn btn-gold" onclick="downloadAppCertificatePNG()" style="padding:12px 10px; font-weight:700; border-radius:12px; font-size:12.5px;">
-              📥 Download HD (PNG)
+              📥 Download (A4 HD)
             </button>
             <button type="button" class="btn btn-emerald" onclick="printAppCertificate()" style="padding:12px 10px; font-weight:700; border-radius:12px; font-size:12.5px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; border:none;">
-              🖨️ Print / PDF (A4)
+              🖨️ Print / Save PDF
             </button>
           </div>
           <button type="button" class="btn btn-outline" onclick="shareAppCertificateWhatsApp()" style="padding:12px 14px; font-weight:700; border-radius:12px; font-size:13px; background:rgba(255,255,255,0.06); color:#34d399; border:1px solid rgba(16,185,129,0.35);">
@@ -2061,6 +2065,7 @@
   <!-- HTML2Canvas & QR Code Libraries for ID Card Generation -->
   <script src="../portal/html2canvas.min.js"></script>
   <script src="../portal/qrcode.min.js"></script>
-  <script src="app.js?v=20261011_liveprotect"></script>
+  <script src="../portal/certificate-render.js?v=1"></script>
+  <script src="app.js?v=20261016_cert"></script>
 </body>
 </html>

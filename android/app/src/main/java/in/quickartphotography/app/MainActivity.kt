@@ -3,6 +3,7 @@ package `in`.quickartphotography.app
 import `in`.quickartphotography.app.R
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -13,6 +14,12 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.media.MediaScannerConnection
+import android.util.Base64
+import android.webkit.JavascriptInterface
+import java.io.File
+import java.io.FileOutputStream
 import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
@@ -182,6 +189,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Lets the web app save generated images (e.g. course certificates) to the Gallery.
+        webView.addJavascriptInterface(ImageSaveBridge(), "QAAndroid")
+
         webView.webChromeClient = object : WebChromeClient() {
             override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
                 if (customVideoView != null) {
@@ -329,5 +339,43 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         webView.destroy()
         super.onDestroy()
+    }
+
+    inner class ImageSaveBridge {
+        @JavascriptInterface
+        fun saveImage(dataUrl: String, fileName: String): String {
+            return try {
+                val base64 = dataUrl.substringAfter("base64,", dataUrl)
+                val bytes = Base64.decode(base64, Base64.DEFAULT)
+                val safeName = fileName.replace(Regex("[^A-Za-z0-9._-]"), "_").ifBlank { "QuickArt_Certificate.png" }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val values = ContentValues().apply {
+                        put(MediaStore.Images.Media.DISPLAY_NAME, safeName)
+                        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/QuickArt")
+                    }
+                    val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                        ?: return "error"
+                    contentResolver.openOutputStream(uri)?.use { it.write(bytes) } ?: return "error"
+                } else {
+                    if (ContextCompat.checkSelfPermission(this@MainActivity, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        runOnUiThread { permissionLauncher.launch(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) }
+                        return "permission"
+                    }
+                    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QuickArt")
+                    if (!dir.exists()) dir.mkdirs()
+                    val file = File(dir, safeName)
+                    FileOutputStream(file).use { it.write(bytes) }
+                    MediaScannerConnection.scanFile(this@MainActivity, arrayOf(file.absolutePath), arrayOf("image/png"), null)
+                }
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "Certificate Gallery me save ho gaya (Pictures/QuickArt)", Toast.LENGTH_LONG).show()
+                }
+                "ok"
+            } catch (e: Exception) {
+                "error"
+            }
+        }
     }
 }

@@ -1421,7 +1421,11 @@
               </div>
             </div>
 
-            <div id="certificate-print-area" class="certificate-frame">
+            <div class="qa-cert-preview-wrap" style="position:relative; margin:14px 0; border-radius:10px; overflow:hidden; background:#1b1916; box-shadow:0 18px 40px -18px rgba(0,0,0,0.8); aspect-ratio:3508/2480;">
+              <img id="qa-cert-preview" alt="Your certificate" style="display:block; width:100%; height:auto; transition:opacity .3s; opacity:0;" />
+              <div id="qa-cert-loading" style="position:absolute; inset:0; display:grid; place-items:center; color:#d8a153; font-size:14px; font-weight:600;">Certificate taiyaar ho raha hai…</div>
+            </div>
+            <div id="certificate-print-area" class="certificate-frame" style="display:none;">
               <!-- Background Security Watermark -->
               <div class="cert-watermark" aria-hidden="true">
                 <svg viewBox="0 0 400 400" width="360" height="360">
@@ -1715,11 +1719,11 @@
 
             <!-- Action Toolbar -->
             <div class="cert-modal-actions">
-              <button type="button" class="btn btn-gold" onclick="window.print()">
-                🖨️ Print / Save as PDF (A4)
+              <button type="button" class="btn btn-gold" onclick="downloadCertificatePNG()">
+                📥 Download (A4, 300 DPI)
               </button>
-              <button type="button" class="btn btn-emerald" onclick="downloadCertificatePNG()">
-                📥 Download HD Image (PNG)
+              <button type="button" class="btn btn-emerald" onclick="printPortalCertificate()">
+                🖨️ Print / Save as PDF
               </button>
               <button type="button" class="btn btn-outline" onclick="shareCertificateWhatsApp()">
                 📲 Share on WhatsApp
@@ -1944,8 +1948,9 @@
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       <script src="qrcode.min.js"></script>
       <script src="html2canvas.min.js"></script>
+      <script src="certificate-render.js?v=1"></script>
       <script src="/qa-purchase-tracking.js"></script>
-      <script src="portal.js?v=20261011_liveprotect"></script>
+      <script src="portal.js?v=20261016_cert"></script>
       <script src="/meta-events.js?v=5" defer></script>
 </body>
 

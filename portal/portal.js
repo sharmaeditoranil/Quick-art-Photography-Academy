@@ -2026,7 +2026,7 @@ function triggerConfettiCelebration() {
   animate();
 }
 
-function populateCertificateUI(studentName, courseTitle, courseId, duration, certId) {
+function populateCertificateUI(studentName, courseTitle, courseId, duration, certId, issuedDate) {
   const nameElem = document.getElementById('cert-student-name');
   const courseElem = document.getElementById('cert-course-name');
   const dateElem = document.getElementById('cert-date-val');
@@ -2038,7 +2038,7 @@ function populateCertificateUI(studentName, courseTitle, courseId, duration, cer
   const cTitle = courseTitle || (currentCourse ? currentCourse.title : 'Adobe Premiere Pro Masterclass');
   const cId = certId || generateCertificateId(courseId, currentStudent ? currentStudent.phone : '0780');
 
-  const today = new Date().toLocaleDateString('en-GB', {
+  const today = (issuedDate ? new Date(issuedDate) : new Date()).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -2094,45 +2094,61 @@ function populateCertificateUI(studentName, courseTitle, courseId, duration, cer
     courseId: courseId,
     duration: duration || '18 Credit Hours',
     certificateId: cId,
-    issuedDate: today,
+    issuedDate: issuedDate || new Date().toISOString(),
     verifyUrl: verifyUrl
   };
+  renderPortalCertificatePreview();
 }
 
-function openCertificateModal(courseId) {
+// Server decides certificate eligibility (all lessons done + quiz passed).
+async function fetchCertificateStatus(courseId) {
+  if (!courseId) return { eligible: false, reason: 'no-course' };
+  try {
+    return await lmsApi(`certificate-status&courseId=${encodeURIComponent(courseId)}`);
+  } catch (err) {
+    return { eligible: false, reason: 'error', error: err.message };
+  }
+}
+
+function toastCertificateLocked(status) {
+  if (status.reason === 'lessons') {
+    toast(`🔒 Certificate locked: ${status.done}/${status.total} lessons (${status.pct}%) poore hue hain. Saare lessons poore karein.`, false);
+  } else if (status.reason === 'quiz') {
+    toast('🔒 Certificate locked: Saare lessons ho gaye! Ab Certification Quiz paas karein (min 70%).', false);
+    if (typeof switchLessonTab === 'function') switchLessonTab('quiz');
+  } else if (status.reason === 'error') {
+    toast('Certificate status check nahi ho paya. Dobara try karein.', false);
+  } else {
+    toast('🔒 Certificate poora course aur test complete hone ke baad hi milega.', false);
+  }
+}
+
+async function openCertificateModal(courseId) {
   const cid = courseId || (currentCourse ? currentCourse.id : '');
-  const course = (currentCourse && currentCourse.id === cid) ? currentCourse : (Array.isArray(enrolledCourses) ? enrolledCourses.find(c => c.id === cid) : null);
-  
-  if (course && !isCourseEligibleForCertificate(course)) {
-    const stats = getCourseLessonStats(course);
-    if (stats.pct < 100) {
-      toast(`⚠️ Certificate locked: Aapne ${stats.done}/${stats.total} lessons (${stats.pct}%) dekhe hain. 100% lessons poore karein!`, false);
-    } else {
-      toast('⚠️ Certificate locked: Kripya pehle Certification Quiz / Test paas karein (Min 70% passing score)!', false);
-      switchLessonTab('quiz');
-    }
+  if (!cid) {
+    toast('Pehle course kholiye. Certificate course poora hone ke baad milega.', false);
     return;
   }
-
-  const cTitle = currentCourse ? currentCourse.title : 'Adobe Premiere Pro Masterclass';
-  const dur = currentCourse ? currentCourse.duration : '18 Credit Hours';
-  populateCertificateUI(currentStudent ? currentStudent.name : 'Student', cTitle, cid, dur);
+  const status = await fetchCertificateStatus(cid);
+  if (!status.eligible) {
+    toastCertificateLocked(status);
+    return;
+  }
+  const course = (currentCourse && currentCourse.id === cid) ? currentCourse : (Array.isArray(enrolledCourses) ? enrolledCourses.find(c => c.id === cid) : null);
+  const cTitle = (course && course.title) || (status.certificate && status.certificate.courseTitle) || 'Course';
+  const dur = (course && course.duration) || '';
+  populateCertificateUI(currentStudent ? currentStudent.name : 'Student', cTitle, cid, dur, status.certificate.id, status.certificate.issuedDate);
   document.getElementById('modal-certificate').classList.add('show');
 }
 
-function openCertificateModalFromCard(courseId, courseTitle) {
-  const course = (Array.isArray(enrolledCourses) ? enrolledCourses.find(c => c.id === courseId) : null) || (currentCourse && currentCourse.id === courseId ? currentCourse : { id: courseId, title: courseTitle });
-  if (course && !isCourseEligibleForCertificate(course)) {
-    const stats = getCourseLessonStats(course);
-    if (stats.total > 0 && stats.pct < 100) {
-      toast(`⚠️ Certificate locked: Course ${stats.pct}% complete hai. 100% lessons dekhne ke baad hi certificate generate hoga.`, false);
-    } else {
-      toast('⚠️ Certificate locked: Pehle lessons 100% karein aur Certification Quiz pass karein!', false);
-    }
+async function openCertificateModalFromCard(courseId, courseTitle) {
+  const status = await fetchCertificateStatus(courseId);
+  if (!status.eligible) {
+    toastCertificateLocked(status);
     return;
   }
   const studentName = currentStudent ? currentStudent.name : 'Student';
-  populateCertificateUI(studentName, courseTitle, courseId, '18 Credit Hours');
+  populateCertificateUI(studentName, courseTitle, courseId, '', status.certificate.id, status.certificate.issuedDate);
   document.getElementById('modal-certificate').classList.add('show');
 }
 
@@ -2190,529 +2206,48 @@ function drawCornerArabesque(ctx, x, y, scaleX, scaleY) {
 }
 
 // 1-Click HD Image (PNG) Export (Dual-Engine: 100% Identical DOM Capture + Vector Fallback)
+// Certificate image is drawn by certificate-render.js (A4 landscape, 300 DPI)
+let activeCertCanvas = null;
+
+function renderPortalCertificatePreview() {
+  const img = document.getElementById('qa-cert-preview');
+  const loading = document.getElementById('qa-cert-loading');
+  activeCertCanvas = null;
+  if (!activeCertData || typeof QACertificate === 'undefined') return Promise.resolve(null);
+  if (img) img.style.opacity = '0';
+  if (loading) loading.style.display = 'grid';
+  return QACertificate.render(activeCertData).then(canvas => {
+    activeCertCanvas = canvas;
+    if (img) {
+      img.src = canvas.toDataURL('image/jpeg', 0.9);
+      img.style.opacity = '1';
+    }
+    if (loading) loading.style.display = 'none';
+    return canvas;
+  });
+}
+
 async function downloadCertificatePNG() {
   if (!activeCertData) {
     toast('Certificate not ready', false);
     return;
   }
-  toast('Preparing HD Certificate Download…');
-
-  // 1. Wait for custom web fonts to be fully loaded
-  if (document.fonts && document.fonts.ready) {
-    try {
-      await document.fonts.ready;
-    } catch (e) {
-      // Font wait timeout fallback
-    }
+  toast('HD certificate taiyaar ho raha hai…');
+  const canvas = activeCertCanvas || await renderPortalCertificatePreview();
+  if (!canvas) {
+    toast('Certificate ban nahi paya. Dobara try karein.', false);
+    return;
   }
+  await QACertificate.download(canvas, activeCertData.studentName);
+  toast('🎓 Certificate download ho gaya (A4, 300 DPI)!');
+}
 
-  // 2. Primary Engine: Ultra-HD DOM Screenshot via html2canvas (Clone to fixed 1020px desktop width)
-  const certElement = document.getElementById('certificate-print-area');
-  if (typeof html2canvas !== 'undefined' && certElement) {
-    try {
-      const offscreenWrap = document.createElement('div');
-      offscreenWrap.style.position = 'fixed';
-      offscreenWrap.style.left = '-9999px';
-      offscreenWrap.style.top = '0';
-      offscreenWrap.style.width = '1020px';
-      offscreenWrap.style.zIndex = '-9999';
-      offscreenWrap.style.background = '#ffffff';
-
-      const clone = certElement.cloneNode(true);
-      clone.style.width = '1020px';
-      clone.style.maxWidth = '1020px';
-      clone.style.minWidth = '1020px';
-      clone.style.boxSizing = 'border-box';
-      clone.style.margin = '0';
-      offscreenWrap.appendChild(clone);
-      document.body.appendChild(offscreenWrap);
-
-      // Brief tick for DOM reflow
-      await new Promise(r => setTimeout(r, 100));
-
-      const h2cCanvas = await html2canvas(clone, {
-        scale: 2.5, // 2550px width - crystal clear 300 DPI
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#fbf6ec',
-        logging: false,
-        imageTimeout: 5000
-      });
-
-      if (offscreenWrap.parentNode) {
-        document.body.removeChild(offscreenWrap);
-      }
-
-      if (h2cCanvas && h2cCanvas.width > 800) {
-        triggerCanvasDownload(h2cCanvas, activeCertData.studentName);
-        return;
-      }
-    } catch (h2cErr) {
-      console.warn('html2canvas capture skipped/failed, switching to comprehensive 2D Canvas engine:', h2cErr);
-    }
+async function printPortalCertificate() {
+  if (!activeCertData) return;
+  const canvas = activeCertCanvas || await renderPortalCertificatePreview();
+  if (canvas && !QACertificate.print(canvas)) {
+    toast('Print ke liye popup allow kariye, ya Download karke print kariye.', false);
   }
-
-  // 3. Fallback Engine: Comprehensive Vector 2D Canvas Renderer (All 15+ elements included)
-  const canvas = document.getElementById('cert-export-canvas') || document.createElement('canvas');
-  canvas.width = 1754; // A4 Landscape 150 DPI
-  canvas.height = 1240;
-  const ctx = canvas.getContext('2d');
-
-  // Background Parchment Radial Gradient
-  const bgGrad = ctx.createRadialGradient(877, 620, 50, 877, 620, 920);
-  bgGrad.addColorStop(0, '#ffffff');
-  bgGrad.addColorStop(0.6, '#fbf6ec');
-  bgGrad.addColorStop(1, '#f4ebd9');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Outer Gold Double Border
-  ctx.lineWidth = 14;
-  ctx.strokeStyle = '#c99738';
-  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
-
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = '#ecd394';
-  ctx.strokeRect(48, 48, canvas.width - 96, canvas.height - 96);
-
-  // Inner Frame Borders
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = 'rgba(201, 151, 56, 0.45)';
-  ctx.strokeRect(66, 66, canvas.width - 132, canvas.height - 132);
-
-  ctx.setLineDash([6, 4]);
-  ctx.strokeStyle = 'rgba(201, 151, 56, 0.3)';
-  ctx.strokeRect(74, 74, canvas.width - 148, canvas.height - 148);
-  ctx.setLineDash([]);
-
-  // Ornate Corner Filigrees
-  drawCornerArabesque(ctx, 48, 48, 1, 1);
-  drawCornerArabesque(ctx, canvas.width - 48, 48, -1, 1);
-  drawCornerArabesque(ctx, 48, canvas.height - 48, 1, -1);
-  drawCornerArabesque(ctx, canvas.width - 48, canvas.height - 48, -1, -1);
-
-  // Microprint Security Border Line
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(184, 132, 59, 0.65)';
-  ctx.font = '8px monospace';
-  ctx.fillText('★ QUICK ART PHOTOGRAPHY ACADEMY ★ AN ISO 9001:2015 CERTIFIED INSTITUTION ★ GOVT. OF INDIA MSME (UDYAM-BR-35-0027860) ★ CENTRE: PAT/QAA-800001 ★ VERIFIED CREDENTIAL ★ OFFICIAL RECORD ★ TAMPER-PROOF ACADEMIC REGISTER ★', 877, 59);
-
-  // Background Security Watermark (Concentric Circles + Star + QAA)
-  ctx.save();
-  ctx.strokeStyle = 'rgba(216, 161, 83, 0.08)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([8, 6]);
-  ctx.beginPath();
-  ctx.arc(877, 620, 210, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-  ctx.strokeStyle = 'rgba(216, 161, 83, 0.06)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.arc(877, 620, 165, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.strokeStyle = 'rgba(216, 161, 83, 0.05)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.arc(877, 620, 120, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(216, 161, 83, 0.08)';
-  ctx.font = 'bold 50px "Cinzel", Georgia, serif';
-  ctx.fillText('QAA', 877, 638);
-  ctx.restore();
-
-  // Helper to load image asynchronously
-  const loadImage = (src) => new Promise((resolve) => {
-    if (!src) return resolve(null);
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
-
-  // Load logo
-  const domLogo = document.getElementById('cert-logo-img');
-  let logoImg = null;
-  if (domLogo && domLogo.complete && domLogo.naturalWidth > 0) {
-    logoImg = domLogo;
-  } else {
-    logoImg = await loadImage('../assets/quick-art-logo.png');
-  }
-
-  // Draw Royal Laurel Wreath around logo
-  ctx.save();
-  const laurelGrad = ctx.createLinearGradient(810, 80, 940, 160);
-  laurelGrad.addColorStop(0, '#b8843b');
-  laurelGrad.addColorStop(0.5, '#ecc779');
-  laurelGrad.addColorStop(1, '#996a24');
-  ctx.fillStyle = laurelGrad;
-
-  // Left laurel leaves
-  const leftLeaves = [
-    [835, 132, 18, 9, -0.4],
-    [827, 116, 20, 10, -0.7],
-    [830, 98, 19, 9, -1.0],
-    [840, 82, 17, 8, -1.3],
-    [856, 72, 15, 7, -1.6]
-  ];
-  for (const [lx, ly, rx, ry, rot] of leftLeaves) {
-    ctx.save();
-    ctx.translate(lx, ly);
-    ctx.rotate(rot);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // Right laurel leaves
-  const rightLeaves = [
-    [919, 132, 18, 9, 0.4],
-    [927, 116, 20, 10, 0.7],
-    [924, 98, 19, 9, 1.0],
-    [914, 82, 17, 8, 1.3],
-    [898, 72, 15, 7, 1.6]
-  ];
-  for (const [lx, ly, rx, ry, rot] of rightLeaves) {
-    ctx.save();
-    ctx.translate(lx, ly);
-    ctx.rotate(rot);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-  ctx.restore();
-
-  // Draw Stars above logo
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#c99738';
-  ctx.font = '16px Arial, sans-serif';
-  ctx.fillText('★   ★   ★', 877, 74);
-
-  // Draw Logo seamlessly onto parchment
-  if (logoImg) {
-    const logoSize = 74;
-    const logoX = 877 - (logoSize / 2);
-    const logoY = 82;
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(877, logoY + (logoSize / 2), (logoSize / 2) + 2, 0, Math.PI * 2);
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(201, 151, 56, 0.65)';
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(877, logoY + (logoSize / 2), logoSize / 2, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-    ctx.restore();
-
-    // Ribbon ESTD under logo
-    ctx.fillStyle = '#b8843b';
-    ctx.beginPath();
-    ctx.roundRect(832, logoY + logoSize + 4, 90, 18, 3);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 9.5px "Cinzel", Georgia, serif';
-    ctx.fillText('ESTD. 2014', 877, logoY + logoSize + 16);
-  }
-
-  // Header Titles
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#141720';
-  ctx.font = 'bold 34px "Cinzel", Georgia, serif';
-  ctx.fillText('QUICK ART PHOTOGRAPHY ACADEMY', 877, 206);
-
-  ctx.fillStyle = '#8c6a28';
-  ctx.font = 'bold 13.5px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('ACADEMY OF CINEMATIC FILMMAKING, PHOTOGRAPHY & DIGITAL ARTS', 877, 226);
-
-  ctx.fillStyle = '#5c584e';
-  ctx.font = 'bold 11px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('AN ISO 9001:2015 CERTIFIED INSTITUTION • GOVT. OF INDIA MSME REGD. (UDYAM-BR-35-0027860) • CENTRE CODE: PAT/QAA-800001', 877, 248);
-
-  // Thin separator rule
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = 'rgba(201, 151, 56, 0.35)';
-  ctx.beginPath();
-  ctx.moveTo(420, 258);
-  ctx.lineTo(1334, 258);
-  ctx.stroke();
-
-  // Gold Ribbon Banner
-  const certTitleText = '★  CERTIFICATE OF COMPLETION  ★';
-  ctx.font = 'bold 18px "Cinzel", Georgia, serif';
-  const titleWidth = ctx.measureText(certTitleText).width;
-  const ribbonWidth = Math.max(540, titleWidth + 80);
-  const ribbonX = 877 - (ribbonWidth / 2);
-  const titleGrad = ctx.createLinearGradient(ribbonX, 275, ribbonX + ribbonWidth, 317);
-  titleGrad.addColorStop(0, '#b8843b');
-  titleGrad.addColorStop(0.5, '#ecd394');
-  titleGrad.addColorStop(1, '#a87224');
-  ctx.fillStyle = titleGrad;
-  ctx.beginPath();
-  ctx.roundRect(ribbonX, 272, ribbonWidth, 42, 6);
-  ctx.fill();
-
-  ctx.fillStyle = '#141006';
-  ctx.font = 'bold 18px "Cinzel", Georgia, serif';
-  ctx.fillText(certTitleText, 877, 299);
-
-  // Registration & Authenticity Code
-  ctx.fillStyle = '#736750';
-  ctx.font = 'bold 11.5px monospace';
-  ctx.fillText('Registration No: QAA/ISO-2026/0842 • Authenticity Verified', 877, 332);
-
-  // Presented To
-  ctx.fillStyle = '#585143';
-  ctx.font = 'italic 19px "Playfair Display", Georgia, serif';
-  ctx.fillText('This is to certify that', 877, 372);
-
-  // Student Name
-  ctx.fillStyle = '#94661a';
-  ctx.font = 'bold 50px "Cinzel", Georgia, serif';
-  ctx.fillText(activeCertData.studentName, 877, 436);
-
-  // Gold Accent Underline
-  ctx.lineWidth = 2.5;
-  ctx.strokeStyle = '#c99738';
-  ctx.beginPath();
-  ctx.moveTo(540, 452);
-  ctx.lineTo(1214, 452);
-  ctx.stroke();
-
-  // Citation Body
-  ctx.fillStyle = '#403c35';
-  ctx.font = '16.5px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('in recognition of successfully completing all academic modules, rigorous practical assignments,', 877, 498);
-  ctx.fillText('industry-standard real client workflows, and demonstrating professional mastery in', 877, 524);
-
-  // Course Name
-  ctx.fillStyle = '#12151d';
-  ctx.font = 'bold 36px "Cinzel", Georgia, serif';
-  ctx.fillText(activeCertData.courseTitle, 877, 580);
-
-  // Meta Badges
-  ctx.fillStyle = '#704408';
-  ctx.font = 'bold 15px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('★ Grade: Distinction (Grade A+)   •   ✓ Practical Portfolio Approved   •   🛡️ Industry Standard Certified', 877, 626);
-
-  // Footer Left: Verification & QR
-  ctx.textAlign = 'left';
-  
-  // Extract or load QR code
-  let qrImg = null;
-  const qrFrame = document.getElementById('cert-qr-frame');
-  if (qrFrame) {
-    const domCanvas = qrFrame.querySelector('canvas');
-    const domImg = qrFrame.querySelector('img');
-    if (domCanvas) {
-      qrImg = domCanvas;
-    } else if (domImg && domImg.src) {
-      qrImg = domImg;
-    }
-  }
-  if (!qrImg) {
-    try {
-      qrImg = await loadImage(activeCertData.verifyUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(activeCertData.verifyUrl)}` : '');
-    } catch (e) {}
-  }
-
-  // Draw QR Frame
-  ctx.fillStyle = '#ffffff';
-  ctx.strokeStyle = '#c99738';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.roundRect(118, 930, 96, 96, 4);
-  ctx.fill();
-  ctx.stroke();
-
-  if (qrImg) {
-    try {
-      ctx.drawImage(qrImg, 122, 934, 88, 88);
-    } catch (qrErr) {}
-  }
-
-  ctx.fillStyle = '#6d5423';
-  ctx.font = 'bold 9.5px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('SCAN TO VERIFY ONLINE', 120, 1044);
-
-  ctx.fillStyle = '#141720';
-  ctx.font = 'bold 13.5px monospace';
-  ctx.fillText(`ID: ${activeCertData.certificateId}`, 120, 1064);
-
-  // Draw Vector Barcode Stripes (Matching SVG Barcode)
-  const barcodeBars = [
-    [0, 3], [5, 1], [8, 4], [15, 2], [19, 1], [22, 3], [27, 5],
-    [34, 2], [38, 1], [41, 3], [46, 2], [50, 4], [56, 1], [59, 3],
-    [64, 5], [71, 2], [75, 1], [78, 3], [83, 4], [89, 2], [93, 1],
-    [96, 5], [103, 2], [107, 3], [112, 1], [115, 4], [121, 2], [125, 3]
-  ];
-  ctx.fillStyle = '#444444';
-  for (const [bx, bw] of barcodeBars) {
-    ctx.fillRect(120 + bx * 1.15, 1076, bw * 1.15, 18);
-  }
-
-  // Footer Center: Ornate 3D Gold Seal with Ribbons
-  ctx.save();
-  const sealX = 877;
-  const sealY = 1045;
-  const sealR = 56;
-
-  // Ribbon Tails
-  ctx.fillStyle = '#99222c';
-  ctx.beginPath();
-  ctx.moveTo(sealX - 22, sealY + 20);
-  ctx.lineTo(sealX - 35, sealY + 75);
-  ctx.lineTo(sealX - 22, sealY + 66);
-  ctx.lineTo(sealX - 9, sealY + 75);
-  ctx.lineTo(sealX - 5, sealY + 25);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(sealX + 22, sealY + 20);
-  ctx.lineTo(sealX + 35, sealY + 75);
-  ctx.lineTo(sealX + 22, sealY + 66);
-  ctx.lineTo(sealX + 9, sealY + 75);
-  ctx.lineTo(sealX + 5, sealY + 25);
-  ctx.fill();
-
-  // Seal Body Radial Gradient
-  const sealGrad = ctx.createRadialGradient(sealX - 15, sealY - 15, 5, sealX, sealY, sealR);
-  sealGrad.addColorStop(0, '#fff4cc');
-  sealGrad.addColorStop(0.35, '#e0ab4a');
-  sealGrad.addColorStop(0.75, '#a36f1c');
-  sealGrad.addColorStop(1, '#613e09');
-  ctx.fillStyle = sealGrad;
-
-  // Serrated Star Edge (36 teeth)
-  ctx.beginPath();
-  for (let i = 0; i < 72; i++) {
-    const angle = (i * Math.PI) / 36;
-    const r = i % 2 === 0 ? sealR + 4 : sealR - 1;
-    const px = sealX + r * Math.cos(angle);
-    const py = sealY + r * Math.sin(angle);
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
-  }
-  ctx.closePath();
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = '#f5df9a';
-  ctx.stroke();
-
-  // Inner rings
-  ctx.beginPath();
-  ctx.arc(sealX, sealY, sealR - 10, 0, Math.PI * 2);
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = 'rgba(255, 245, 200, 0.85)';
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(sealX, sealY, sealR - 22, 0, Math.PI * 2);
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = 'rgba(255, 245, 200, 0.6)';
-  ctx.stroke();
-
-  // Curved Top & Bottom Text on Seal
-  ctx.fillStyle = '#321c02';
-  ctx.font = 'bold 8.5px "Cinzel", Georgia, serif';
-  drawArcText(ctx, '★ QUICK ART ACADEMY ★', sealX, sealY, sealR - 16, -2.4, -0.74, true);
-  ctx.font = 'bold 7.5px "Cinzel", Georgia, serif';
-  drawArcText(ctx, 'OFFICIAL SEAL • EXCELLENCE', sealX, sealY, sealR - 16, 2.35, 0.79, false);
-
-  // Center Emblem (Star Crown & Camera Symbol)
-  ctx.fillStyle = '#fff5d0';
-  ctx.beginPath();
-  ctx.arc(sealX, sealY - 4, 3, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = '#321c02';
-  ctx.font = 'bold 11px "Cinzel", Georgia, serif';
-  ctx.fillText('QAA', sealX, sealY + 11);
-  ctx.restore();
-
-  // Footer Right: Issue Date, Official Red Stamp & Anil Sharma Signature
-  // 1. Date of Issue Block
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#141720';
-  ctx.font = 'bold 14.5px "Cinzel", Georgia, serif';
-  ctx.fillText(activeCertData.issuedDate, 1630, 946);
-  ctx.fillStyle = '#8c6a28';
-  ctx.font = 'bold 11px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('Date of Issue', 1630, 964);
-
-  // 2. Official Red Verified Stamp (Side-by-side)
-  ctx.save();
-  const stampX = 1360;
-  const stampY = 1045;
-  const stampR = 38;
-
-  ctx.translate(stampX, stampY);
-  ctx.rotate(-12 * Math.PI / 180);
-
-  ctx.strokeStyle = '#a72332';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([4, 2.5]);
-  ctx.beginPath();
-  ctx.arc(0, 0, stampR, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.arc(0, 0, stampR - 5, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#a72332';
-  ctx.font = 'bold 6.5px "Cinzel", Georgia, serif';
-  ctx.fillText('QUICK ART', 0, -16);
-  ctx.font = '900 8.5px "Cinzel", Georgia, serif';
-  ctx.fillText('DIRECTOR', 0, -4);
-  ctx.font = '6px Arial, sans-serif';
-  ctx.fillText('★ ★ ★', 0, 7);
-  ctx.font = 'bold 6.5px "Cinzel", Georgia, serif';
-  ctx.fillText('VERIFIED', 0, 18);
-  ctx.restore();
-
-  // 3. Signature Column on the right
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#13151e';
-  ctx.font = 'italic 46px "Alex Brush", cursive';
-  ctx.fillText('Anil Sharma', 1630, 1028);
-
-  ctx.strokeStyle = '#141720';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(1440, 1046);
-  ctx.lineTo(1630, 1046);
-  ctx.stroke();
-
-  ctx.fillStyle = '#141720';
-  ctx.font = 'bold 16px "Cinzel", Georgia, serif';
-  ctx.fillText('Anil Sharma', 1630, 1070);
-  ctx.fillStyle = '#845714';
-  ctx.font = 'bold 12.5px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('Founder & Lead Instructor', 1630, 1090);
-  ctx.fillStyle = '#5c584e';
-  ctx.font = 'bold 11px "Plus Jakarta Sans", Arial, sans-serif';
-  ctx.fillText('Quick Art Photography Academy', 1630, 1106);
-
-  // Bottom Tamper-Evident Security Footer Notice
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(100, 90, 75, 0.85)';
-  ctx.font = 'bold 9.5px "Plus Jakarta Sans", monospace';
-  ctx.fillText('VERIFIED OFFICIAL RECORD • THIS DOCUMENT CARRIES TAMPER-EVIDENT DIGITAL VALIDATION • VALID WORLDWIDE', 877, 1152);
-
-  triggerCanvasDownload(canvas, activeCertData.studentName);
 }
 
 function triggerCanvasDownload(canvas, studentName) {
@@ -3262,14 +2797,17 @@ function submitQuiz() {
     try {
       localStorage.setItem('qaa_student_info', JSON.stringify(currentStudent));
     } catch (_) {}
+    const quizSync = lmsApi('record-quiz-pass', { method: 'POST', body: { courseId: currentCourse.id, scorePct } })
+      .catch(err => console.warn('Quiz result sync failed:', err));
 
     updateCertificateUnlockState();
     const stats = getCourseLessonStats(currentCourse);
     if (stats.pct >= 100) {
       toast('🎓 Outstanding! Course lessons aur test 100% complete! Generating certificate...');
       triggerConfettiCelebration();
+      const quizCourseId = currentCourse.id;
       setTimeout(() => {
-        openCertificateModal(currentCourse.id);
+        quizSync.then(() => openCertificateModal(quizCourseId));
       }, 900);
     } else {
       toast(`🎉 Test passed (${scorePct}%)! Baaki lessons complete karne ke baad certificate unlock hoga.`);
@@ -8213,7 +7751,7 @@ async function submitOfflineExam(e) {
 function openExamCertificateModal(certId) {
   const studentName = currentStudent ? currentStudent.name : 'Student';
   const courseTitle = 'Offline On-Campus 14-Week Professional Master Class';
-  populateCertificateUI(studentName, courseTitle, 'master-class', '14 Weeks / 200 Hours', certId);
+  populateCertificateUI(studentName, courseTitle, 'master-class', '14 Weeks / 200 Hours', certId, currentStudent && currentStudent.certDate);
   const modal = document.getElementById('modal-certificate');
   if (modal) modal.classList.add('show');
 }

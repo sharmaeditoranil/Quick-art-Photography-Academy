@@ -1209,7 +1209,10 @@ if ($action === 'my-courses' && $method === 'GET') {
                 'totalLessons' => $totalLessons,
                 'completedCount' => $completedCount,
                 'progressPercent' => $progressPercent,
-                'isCompleted' => ($totalLessons > 0 && $completedCount >= $totalLessons)
+                'isCompleted' => ($totalLessons > 0 && $completedCount >= $totalLessons),
+                'quizPassed' => !empty($student['passedQuizzes'][$c['id']]),
+                'certificateEligible' => cert_eligibility($student, $c)['eligible'],
+                'certificate' => $student['certificates'][$c['id']] ?? null
             ];
         }
     }
@@ -1592,15 +1595,131 @@ if ($action === 'get-lesson' && $method === 'GET') {
 }
 
 // 7. Update Progress (Mark Completed)
+// ---------------------------------------------------------------------------
+// Certificate eligibility (server is the single source of truth)
+// A certificate is issued only when EVERY lesson of the course is completed
+// AND the course quiz is passed (>= 70%). Live workshops / courses without
+// lessons never auto-issue a certificate.
+// ---------------------------------------------------------------------------
+function cert_course_code($courseId) {
+    $id = strtolower((string)$courseId);
+    $map = [
+        'pre-wedding' => 'PW', 'album' => 'AD', 'premiere' => 'PR', 'edius' => 'ED',
+        'davinci' => 'DR', 'resolve' => 'DR', 'cinematic' => 'CE', 'wedding' => 'CW',
+        'website' => 'WD', 'marketing' => 'DM', 'automation' => 'AU',
+    ];
+    foreach ($map as $needle => $code) {
+        if (strpos($id, $needle) !== false) return $code;
+    }
+    return 'GEN';
+}
+
+function cert_find_course($courseId) {
+    foreach (load_courses() as $c) {
+        if (($c['id'] ?? '') === $courseId) return $c;
+    }
+    return null;
+}
+
+function cert_eligibility($student, $course) {
+    $courseId = $course['id'] ?? '';
+    $total = 0;
+    $lessonIds = [];
+    foreach (($course['modules'] ?? []) as $m) {
+        foreach (($m['lessons'] ?? []) as $l) {
+            $total++;
+            if (isset($l['id'])) $lessonIds[] = $l['id'];
+        }
+    }
+    $completed = $student['completedLessons'][$courseId] ?? [];
+    if (!is_array($completed)) $completed = [];
+    $done = count(array_intersect($lessonIds, $completed));
+    $quiz = $student['passedQuizzes'][$courseId] ?? null;
+    $quizPassed = !empty($quiz);
+    $enrolled = in_array($courseId, $student['enrolledCourses'] ?? [], true);
+    return [
+        'courseId'   => $courseId,
+        'enrolled'   => $enrolled,
+        'total'      => $total,
+        'done'       => $done,
+        'pct'        => $total > 0 ? (int)round($done / $total * 100) : 0,
+        'quizPassed' => $quizPassed,
+        'eligible'   => $enrolled && $total > 0 && $done >= $total && $quizPassed,
+    ];
+}
+
+// Record a passed course quiz (score >= 70) against the logged-in student.
+if ($action === 'record-quiz-pass' && $method === 'POST') {
+    $student = require_student();
+    $body = read_json_body() ?: [];
+    $courseId = trim($body['courseId'] ?? '');
+    $score = (int)($body['scorePct'] ?? 0);
+    if (!$courseId) json_err('courseId required', 400);
+    if (!in_array($courseId, $student['enrolledCourses'] ?? [], true)) json_err('Not enrolled in this course', 403);
+    if ($score < 70) json_err('Passing score is 70%', 400);
+
+    $students = load_students();
+    foreach ($students as &$stu) {
+        if (($stu['phone'] ?? '') === ($student['phone'] ?? '')) {
+            $stu['passedQuizzes'][$courseId] = ['score' => $score, 'date' => date('c')];
+            break;
+        }
+    }
+    unset($stu);
+    save_students($students);
+    json_ok(['recorded' => true]);
+}
+
+// Certificate status for one course. Issues a permanent certificate ID the
+// first time the student becomes eligible.
+if ($action === 'certificate-status' && $method === 'GET') {
+    $student = require_student();
+    $courseId = trim($_GET['courseId'] ?? '');
+    if (!$courseId) json_err('courseId required', 400);
+    $course = cert_find_course($courseId);
+    if (!$course) json_ok(['eligible' => false, 'reason' => 'no-course', 'total' => 0, 'done' => 0, 'pct' => 0, 'quizPassed' => false]);
+
+    $st = cert_eligibility($student, $course);
+    if (!$st['eligible']) {
+        $st['reason'] = !$st['enrolled'] ? 'not-enrolled' : ($st['total'] === 0 ? 'no-lessons' : ($st['done'] < $st['total'] ? 'lessons' : 'quiz'));
+        json_ok($st);
+    }
+
+    $cert = $student['certificates'][$courseId] ?? null;
+    if (!$cert) {
+        $cert = [
+            'id' => 'QAA-' . date('Y') . '-' . cert_course_code($courseId) . '-' . strtoupper(bin2hex(random_bytes(3))),
+            'issuedDate' => date('Y-m-d'),
+            'courseTitle' => $course['title'] ?? '',
+        ];
+        $students = load_students();
+        foreach ($students as &$stu) {
+            if (($stu['phone'] ?? '') === ($student['phone'] ?? '')) {
+                $stu['certificates'][$courseId] = $cert;
+                break;
+            }
+        }
+        unset($stu);
+        save_students($students);
+    }
+    $st['certificate'] = $cert;
+    json_ok($st);
+}
+
 if ($action === 'update-progress' && $method === 'POST') {
     $student = require_student();
     $body = read_json_body();
     $courseId = $body['courseId'] ?? '';
     $lessonId = $body['lessonId'] ?? '';
-    $completedState = !empty($body['isCompleted']);
-
     if (!$courseId || !$lessonId) {
         json_err('courseId and lessonId required', 400);
+    }
+    // Older app builds send no isCompleted flag: treat as a toggle of the stored state.
+    if (array_key_exists('isCompleted', $body)) {
+        $completedState = !empty($body['isCompleted']);
+    } else {
+        $already = $student['completedLessons'][$courseId] ?? [];
+        $completedState = !in_array($lessonId, is_array($already) ? $already : []);
     }
 
     $students = load_students();
@@ -2208,6 +2327,53 @@ if ($action === 'verify-certificate' && $method === 'GET') {
 
     $matchedCourseId = null;
     $upperCert = strtoupper($certId);
+
+    // Public demo ID used on landing pages — clearly labelled as a sample.
+    if ($upperCert === 'QAA-2026-PR-7431') {
+        json_ok(['certificate' => [
+            'valid' => true,
+            'isSample' => true,
+            'studentName' => 'Anil Ku Sharma (Verified Sample)',
+            'courseTitle' => 'Adobe Premiere Pro Masterclass',
+            'issuedDate' => '01 January 2026',
+            'issuedBy' => 'Quick Art Photography Academy',
+            'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
+            'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
+            'grade' => 'Distinction (Grade A+)',
+            'status' => 'SAMPLE CERTIFICATE',
+            'certificateId' => 'QAA-2026-PR-7431'
+        ]]);
+    }
+
+    // 1) Certificates actually issued by the LMS (exact ID match)
+    foreach ($students as $s) {
+        $issued = [];
+        foreach (($s['certificates'] ?? []) as $cid => $c) {
+            if (is_array($c) && !empty($c['id'])) $issued[] = ['id' => $c['id'], 'courseId' => $cid, 'date' => $c['issuedDate'] ?? '', 'title' => $c['courseTitle'] ?? ''];
+        }
+        if (!empty($s['certId'])) $issued[] = ['id' => $s['certId'], 'courseId' => '', 'date' => $s['certDate'] ?? '', 'title' => $s['appliedCourse'] ?? 'Professional Diploma Program'];
+        foreach ($issued as $ic) {
+            if (strtoupper($ic['id']) === $upperCert) {
+                $title = $ic['title'];
+                if ($ic['courseId']) { $cc = cert_find_course($ic['courseId']); if ($cc) $title = $cc['title']; }
+                json_ok(['certificate' => [
+                    'valid' => true,
+                    'studentName' => $s['name'] ?: 'Verified Student',
+                    'studentPhoneMasked' => substr($s['phone'] ?? '', 0, 2) . '******' . substr($s['phone'] ?? '', -2),
+                    'enrollmentNo' => $s['offlineAdmissionId'] ?? ($s['enrollmentNo'] ?? ''),
+                    'courseId' => $ic['courseId'],
+                    'courseTitle' => $title,
+                    'issuedDate' => $ic['date'] ? date('d F Y', strtotime($ic['date'])) : '',
+                    'issuedBy' => 'Quick Art Photography Academy',
+                    'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
+                    'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
+                    'status' => 'AUTHENTIC & VERIFIED',
+                    'certificateId' => $ic['id'],
+                    'verificationUrl' => 'https://quickartphotography.in/portal/index.html?verify=' . urlencode($ic['id'])
+                ]]);
+            }
+        }
+    }
     foreach ($codeMap as $code => $cid) {
         if (strpos($upperCert, '-' . $code . '-') !== false || strpos($upperCert, $code) !== false) {
             $matchedCourseId = $cid;
@@ -2219,6 +2385,7 @@ if ($action === 'verify-certificate' && $method === 'GET') {
         $phoneSuffix = substr($s['phone'] ?? '', -4);
         $enroll = $s['offlineAdmissionId'] ?? ($s['enrollmentNo'] ?? '');
         $enrollSuffix = $enroll ? substr($enroll, -4) : '';
+        if (strlen($phoneSuffix) < 4) continue;
         if (
             strpos($certId, $phoneSuffix) !== false || 
             ($enroll && (strpos($certId, $enroll) !== false || $certId === $enroll || ($enrollSuffix && strpos($certId, $enrollSuffix) !== false))) ||
@@ -2248,7 +2415,12 @@ if ($action === 'verify-certificate' && $method === 'GET') {
                 }
             }
 
-            if ($targetCourse) {
+            $legacyOk = $targetCourse && (
+                cert_eligibility($s, $targetCourse)['eligible'] ||
+                !empty($s['offlineAdmissionId']) ||
+                !empty($s['examPassed'])
+            );
+            if ($legacyOk) {
                 $found = true;
                 $certData = [
                     'valid' => true,
@@ -2274,7 +2446,9 @@ if ($action === 'verify-certificate' && $method === 'GET') {
         }
     }
 
-    if (!$found && $matchedCourseId) {
+    // Former fallback validated ANY id containing a course code (e.g. "-PR-") using
+    // an unrelated student's name. Disabled: only real certificates verify now.
+    if (false && !$found && $matchedCourseId) {
         $courses = load_courses();
         $targetCourse = null;
         foreach ($courses as $c) {
@@ -3709,12 +3883,13 @@ if ($action === 'get-offline-recordings' && ($method === 'GET' || $method === 'P
 
 // 27. Course Completion Exam & Auto-Certificate Issuance
 if ($action === 'submit-course-exam' && $method === 'POST') {
+    $sessionStudent = require_student();
     $body = read_json_body() ?: $_POST;
-    $studentPhone = trim($body['phone'] ?? '');
+    $studentPhone = (string)($sessionStudent['phone'] ?? '');
     $answers = $body['answers'] ?? []; // Map of question index => selected option index
 
     if (!$studentPhone || empty($answers)) {
-        json_err('Phone number aur answers mandatory hain.', 400);
+        json_err('Answers mandatory hain.', 400);
     }
 
     // 10 Official Certification Exam Questions with correct keys
