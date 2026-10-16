@@ -2408,6 +2408,33 @@ fbq('track', 'PageView');
 </div>
 
 <!-- Set Student Email + Password Modal -->
+<div id="adminCertModal" class="modal" onclick="if(event.target.id==='adminCertModal')closeAdminCertModal()">
+  <div class="modal-inner" style="max-width:760px">
+    <div class="modal-hdr">
+      <div>
+        <h2 id="adminCertTitle" style="margin:0;font-size:20px">🎓 Student Certificate</h2>
+        <div class="muted" style="font-size:12px;margin-top:4px">Admin view — QR scan karne par certificate verify hoga. Student ko portal me course/exam poora hone ke baad hi milega.</div>
+      </div>
+      <button onclick="closeAdminCertModal()" class="icon-btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="adminCertCourses" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+        <select id="adminCertOtherCourse" style="flex:1;min-width:200px"></select>
+        <button class="btn btn-outline" style="font-size:12px" onclick="viewAdminCertificate(document.getElementById('adminCertOtherCourse').value)">Is course ka certificate dekhein</button>
+      </div>
+      <div id="adminCertPreviewWrap" style="display:none;margin-top:16px">
+        <div id="adminCertMeta" style="font-size:12.5px;margin-bottom:8px"></div>
+        <div id="adminCertPreview" style="background:#0b0e15;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px;text-align:center;min-height:120px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="downloadAdminCertificate()">📥 Download HD (PNG)</button>
+          <a id="adminCertVerifyLink" href="#" target="_blank" class="btn btn-outline">🔍 Verify Page kholen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="setPasswordModal" class="modal" onclick="if(event.target.id==='setPasswordModal')closeSetPasswordModal()">
   <div class="modal-inner" style="max-width:480px">
     <div class="modal-hdr">
@@ -5242,9 +5269,7 @@ function renderLmsStudents() {
     actionsHtml += `
       <button onclick="openStudentWhatsApp('${s.phone}', '${escapeHtml(s.name || '')}')" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#34d399;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.12)" title="Send WhatsApp Message">💬</button>
       <a href="tel:+91${s.phone}" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#93c5fd;border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.12)" title="Call Student">📞</a>
-      ${issuedCerts.length
-        ? issuedCerts.map(c => `<a href="portal/?verify=${encodeURIComponent(c.id)}" target="_blank" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#fde68a;border-color:rgba(216,161,83,0.3);background:rgba(216,161,83,0.12)" title="Verify Certificate: ${escapeHtml(c.title)}">🎓 ${escapeHtml(c.id)}</a>`).join('')
-        : `<span class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#64748b;border-color:rgba(100,116,139,0.3);cursor:default;opacity:0.7" title="Is student ko abhi koi certificate issue nahi hua">🎓 No Certificate</span>`}
+      <button onclick="openAdminCertModal('${s.phone}')" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#fde68a;border-color:rgba(216,161,83,0.3);background:rgba(216,161,83,0.12)" title="${issuedCerts.length ? 'Certificate: ' + escapeHtml(issuedCerts.map(c => c.id).join(', ')) : 'Certificate dekhein / download karein'}">🎓 ${issuedCerts.length ? escapeHtml(issuedCerts[0].id) : 'Certificate'}</button>
       <button onclick="openSetPasswordModal('${s.phone}', '${escapeHtml(s.email || '')}')" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#c4b5fd;border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.12)" title="Set Email/Password Login">🔑</button>
       <button onclick="openEditStudentModal('${s.phone}')" class="btn btn-outline" style="padding:5px 8px;font-size:11px" title="Edit Student">✏️</button>
       <button onclick="deleteStudent('${s.phone}')" class="btn btn-danger" style="padding:5px 8px;font-size:11px" title="Remove Student">✕</button>
@@ -5789,6 +5814,116 @@ function populateCourseCheckboxes(selectedIds) {
       <span style="font-weight:700;color:#34d399">₹${Number(c.price || 4999).toLocaleString()}</span>
     </label>
   `).join('');
+}
+
+// ---------- Admin Certificate View (view / issue / download / verify) ----------
+let adminCertStudent = null;
+let adminCertData = null;
+let adminCertCanvas = null;
+
+function loadAdminCertLibs() {
+  if (window.QACertificate && window.QRCode) return Promise.resolve();
+  const load = src => new Promise((resolve, reject) => {
+    const el = document.createElement('script');
+    el.src = src; el.onload = resolve; el.onerror = () => reject(new Error('Load failed: ' + src));
+    document.head.appendChild(el);
+  });
+  return (window.QRCode ? Promise.resolve() : load('portal/qrcode.min.js'))
+    .then(() => window.QACertificate ? null : load('portal/certificate-render.js?v=5'));
+}
+
+function adminCertCourseList(s) {
+  const real = id => allLmsCourses.find(c => c.id === id && !String(id).startsWith('live_'));
+  const ids = [];
+  (s.enrolledCourses || []).forEach(id => { if (real(id) && !ids.includes(id)) ids.push(id); });
+  if (s.formCourseId && real(s.formCourseId) && !ids.includes(s.formCourseId)) ids.push(s.formCourseId);
+  Object.keys(s.certificates || {}).forEach(id => { if (!ids.includes(id)) ids.push(id); });
+  return ids.map(id => {
+    const c = real(id);
+    const cert = (s.certificates || {})[id];
+    return { id, title: (c && c.title) || (cert && cert.courseTitle) || id, certId: cert && cert.id };
+  });
+}
+
+function openAdminCertModal(phone) {
+  const s = allLmsStudents.find(x => String(x.phone) === String(phone));
+  if (!s) return;
+  adminCertStudent = s;
+  adminCertData = null;
+  adminCertCanvas = null;
+  document.getElementById('adminCertTitle').textContent = `🎓 Certificate — ${s.name || s.phone}`;
+  document.getElementById('adminCertPreviewWrap').style.display = 'none';
+
+  const list = adminCertCourseList(s);
+  const box = document.getElementById('adminCertCourses');
+  box.innerHTML = list.length ? list.map(c => `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);border-radius:10px;background:rgba(255,255,255,0.03)">
+      <div>
+        <div style="font-weight:700;color:#fff;font-size:13.5px">${escapeHtml(c.title)}</div>
+        <div class="muted" style="font-size:11.5px">${c.certId ? 'Certificate ID: <strong style="color:#fde68a">' + escapeHtml(c.certId) + '</strong>' : 'Abhi certificate ID issue nahi hua — dekhne par ID ban jayegi'}</div>
+      </div>
+      <button class="btn btn-gold" style="font-size:12px;padding:6px 12px;white-space:nowrap" onclick="viewAdminCertificate('${escapeHtml(c.id)}')">👁️ View Certificate</button>
+    </div>`).join('')
+    : '<div class="muted" style="font-size:13px">Is student ka koi course enrolled nahi hai. Neeche se course chun kar certificate dekh sakte hain.</div>';
+
+  const sel = document.getElementById('adminCertOtherCourse');
+  sel.innerHTML = allLmsCourses
+    .filter(c => !String(c.id).startsWith('live_'))
+    .map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.title || c.id)}</option>`).join('');
+
+  document.getElementById('adminCertModal').classList.add('show');
+}
+
+function closeAdminCertModal() {
+  document.getElementById('adminCertModal').classList.remove('show');
+}
+
+async function viewAdminCertificate(courseId) {
+  const s = adminCertStudent;
+  if (!s || !courseId) return;
+  const wrap = document.getElementById('adminCertPreviewWrap');
+  const prev = document.getElementById('adminCertPreview');
+  wrap.style.display = 'block';
+  prev.innerHTML = '<div class="muted" style="padding:30px">Certificate taiyaar ho raha hai…</div>';
+  try {
+    const [res] = await Promise.all([
+      lmsAdmin('admin-certificate', { method: 'POST', body: { phone: s.phone, courseId } }),
+      loadAdminCertLibs()
+    ]);
+    const c = res.certificate;
+    // Keep the local list in sync so the row button shows the real ID
+    s.certificates = s.certificates || {};
+    s.certificates[courseId] = { id: c.id, issuedDate: c.issuedDate, courseTitle: c.courseTitle };
+
+    adminCertData = {
+      studentName: c.studentName,
+      courseTitle: c.courseTitle,
+      courseId: c.courseId,
+      certificateId: c.id,
+      issuedDate: c.issuedDate,
+      verifyUrl: c.verifyUrl,
+      enrollmentNo: c.enrollmentNo
+    };
+    document.getElementById('adminCertMeta').innerHTML =
+      `<strong style="color:#fff">${escapeHtml(c.courseTitle)}</strong> · ID: <strong style="color:#fde68a">${escapeHtml(c.id)}</strong> · Issued: ${escapeHtml(c.issuedDate)}`;
+    document.getElementById('adminCertVerifyLink').href = c.verifyUrl;
+
+    adminCertCanvas = await QACertificate.render(adminCertData);
+    const img = new Image();
+    img.src = adminCertCanvas.toDataURL('image/jpeg', 0.85);
+    img.alt = 'Certificate preview';
+    img.style.cssText = 'max-width:100%;height:auto;border-radius:6px;display:block;margin:0 auto';
+    prev.innerHTML = '';
+    prev.appendChild(img);
+    if (typeof renderLmsStudents === 'function') renderLmsStudents();
+  } catch (err) {
+    prev.innerHTML = `<div style="color:#f87171;padding:20px">Certificate load nahi hua: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+async function downloadAdminCertificate() {
+  if (!adminCertCanvas || !adminCertData) { toast('Pehle certificate View karein', false); return; }
+  await QACertificate.download(adminCertCanvas, adminCertData.studentName);
 }
 
 function closeStudentModal() {

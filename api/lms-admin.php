@@ -281,6 +281,12 @@ if ($action === 'get-students' && $method === 'GET') {
     }
     unset($stu);
 
+    // Course from the admission form (used by Admin certificate view)
+    foreach ($students as &$stu) {
+        if (!empty($stu['appliedCourse'])) $stu['formCourseId'] = map_offline_course_id($stu['appliedCourse']);
+    }
+    unset($stu);
+
     // If any offline applicant is not yet present in students array, synthesize them so admin sees every applicant
     foreach ($allAdms as $adm) {
         $p = clean_phone($adm['phone'] ?? '');
@@ -304,6 +310,7 @@ if ($action === 'get-students' && $method === 'GET') {
                 'enrolledAt' => $adm['createdAt'] ?? date('c'),
                 'enrolledCourses' => $enrolledCourses,
                 'enrolledCourseNames' => $enrolledNames,
+                'formCourseId' => $cId,
                 'completedLessons' => [],
                 'totalCompletedLessons' => 0,
                 'lastActive' => $adm['createdAt'] ?? date('c'),
@@ -335,6 +342,87 @@ if ($action === 'get-students' && $method === 'GET') {
     }
 
     json_ok(['students' => $students, 'courses' => $courses, 'offlineAdmissions' => array_values($allAdms)]);
+}
+
+// 4b. Admin: view / issue a student's certificate for one course.
+// Idempotent — returns the existing certificate ID if one was already issued
+// (by the portal or by admin). The ID is stored so the QR on it verifies, and the
+// student later gets the same ID in the portal once they finish the course.
+if ($action === 'admin-certificate' && $method === 'POST') {
+    $body = read_json_body() ?: [];
+    $phone = clean_phone($body['phone'] ?? '');
+    $courseId = trim($body['courseId'] ?? '');
+    if (strlen($phone) < 10 || !$courseId) json_err('phone and courseId required', 400);
+
+    $course = null;
+    foreach (get_all_courses() as $c) {
+        if (($c['id'] ?? '') === $courseId) { $course = $c; break; }
+    }
+    $courseTitle = $course['title'] ?? trim($body['courseTitle'] ?? '');
+    if (!$courseTitle) json_err('Course not found', 404);
+
+    // Student / admission details
+    $students = get_all_students();
+    $stuIdx = null;
+    foreach ($students as $i => $st) {
+        if (clean_phone($st['phone'] ?? '') === $phone) { $stuIdx = $i; break; }
+    }
+    $adm = null;
+    $admFile = DATA_DIR . '/offline-admissions.json';
+    foreach ((file_exists($admFile) ? (json_decode(file_get_contents($admFile), true) ?: []) : []) as $a) {
+        if (clean_phone($a['phone'] ?? '') === $phone) { $adm = $a; break; }
+    }
+    $stu = $stuIdx !== null ? $students[$stuIdx] : [];
+    $name = trim($stu['name'] ?? '') ?: trim($adm['fullName'] ?? '') ?: 'Student';
+    $enrollNo = ($stu['offlineAdmissionId'] ?? '') ?: (($stu['enrollmentNo'] ?? '') ?: (($adm['id'] ?? '') ?: ('QAA-' . date('Y') . '-' . substr($phone, -4))));
+
+    $issuedFile = DATA_DIR . '/issued-certificates.json';
+    $issued = file_exists($issuedFile) ? (json_decode(file_get_contents($issuedFile), true) ?: []) : [];
+
+    // Existing certificate? (portal-issued first, then admin-issued)
+    $cert = $stu['certificates'][$courseId] ?? null;
+    if (!$cert) {
+        foreach ($issued as $ic) {
+            if (($ic['phone'] ?? '') === $phone && ($ic['courseId'] ?? '') === $courseId) {
+                $cert = ['id' => $ic['id'], 'issuedDate' => $ic['issuedDate'], 'courseTitle' => $ic['courseTitle']];
+                break;
+            }
+        }
+    }
+
+    if (!$cert) {
+        $cid = strtolower($courseId);
+        $code = 'GEN';
+        foreach (['pre-wedding' => 'PW', 'album' => 'AD', 'premiere' => 'PR', 'edius' => 'ED', 'davinci' => 'DR', 'resolve' => 'DR',
+                  'cinematic' => 'CE', 'wedding' => 'CW', 'website' => 'WD', 'marketing' => 'DM', 'automation' => 'AU'] as $needle => $cc) {
+            if (strpos($cid, $needle) !== false) { $code = $cc; break; }
+        }
+        $cert = [
+            'id' => 'QAA-' . date('Y') . '-' . $code . '-' . strtoupper(bin2hex(random_bytes(3))),
+            'issuedDate' => date('Y-m-d'),
+            'courseTitle' => $courseTitle,
+        ];
+        $issued[] = [
+            'id' => $cert['id'], 'phone' => $phone, 'name' => $name, 'courseId' => $courseId,
+            'courseTitle' => $courseTitle, 'enrollmentNo' => $enrollNo,
+            'issuedDate' => $cert['issuedDate'], 'issuedBy' => 'admin', 'createdAt' => date('c')
+        ];
+        file_put_contents($issuedFile, json_encode($issued, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+        if ($stuIdx !== null) {
+            $students[$stuIdx]['certificates'][$courseId] = $cert;
+            save_all_students($students);
+        }
+    }
+
+    json_ok(['certificate' => [
+        'id' => $cert['id'],
+        'issuedDate' => $cert['issuedDate'] ?? date('Y-m-d'),
+        'courseId' => $courseId,
+        'courseTitle' => $courseTitle,
+        'studentName' => $name,
+        'enrollmentNo' => $enrollNo,
+        'verifyUrl' => 'https://quickartphotography.in/portal/?verify=' . urlencode($cert['id'])
+    ]]);
 }
 
 // 5. Enroll / Create Student (Manual Enrollment from Admin)

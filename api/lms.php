@@ -1212,7 +1212,8 @@ if ($action === 'my-courses' && $method === 'GET') {
                 'isCompleted' => ($totalLessons > 0 && $completedCount >= $totalLessons),
                 'quizPassed' => !empty($student['passedQuizzes'][$c['id']]),
                 'certificateEligible' => cert_eligibility($student, $c)['eligible'],
-                'certificate' => $student['certificates'][$c['id']] ?? null
+                // Admin may pre-issue an ID; the student only sees it once eligible
+                'certificate' => cert_eligibility($student, $c)['eligible'] ? ($student['certificates'][$c['id']] ?? null) : null
             ];
         }
     }
@@ -1688,6 +1689,16 @@ if ($action === 'certificate-status' && $method === 'GET') {
     }
 
     $cert = $student['certificates'][$courseId] ?? null;
+    if (!$cert) {
+        // Reuse an ID the Admin already issued for this course, so both copies match
+        $issuedFile = DATA_DIR . '/issued-certificates.json';
+        foreach ((file_exists($issuedFile) ? (json_decode(file_get_contents($issuedFile), true) ?: []) : []) as $ic) {
+            if (($ic['phone'] ?? '') === clean_phone($student['phone'] ?? '') && ($ic['courseId'] ?? '') === $courseId) {
+                $cert = ['id' => $ic['id'], 'issuedDate' => $ic['issuedDate'] ?? date('Y-m-d'), 'courseTitle' => $ic['courseTitle'] ?? ($course['title'] ?? '')];
+                break;
+            }
+        }
+    }
     if (!$cert) {
         $cert = [
             'id' => 'QAA-' . date('Y') . '-' . cert_course_code($courseId) . '-' . strtoupper(bin2hex(random_bytes(3))),
@@ -2344,6 +2355,31 @@ if ($action === 'verify-certificate' && $method === 'GET') {
             'grade' => 'Distinction (Grade A+)',
             'status' => 'SAMPLE CERTIFICATE',
             'certificateId' => 'QAA-2026-PR-7431'
+        ]]);
+    }
+
+    // 0) Certificates issued from the Admin panel
+    $issuedFile = DATA_DIR . '/issued-certificates.json';
+    foreach ((file_exists($issuedFile) ? (json_decode(file_get_contents($issuedFile), true) ?: []) : []) as $ic) {
+        if (strtoupper($ic['id'] ?? '') !== $upperCert) continue;
+        $nm = $ic['name'] ?? 'Verified Student';
+        foreach ($students as $s) {
+            if (clean_phone($s['phone'] ?? '') === ($ic['phone'] ?? '') && !empty($s['name'])) { $nm = $s['name']; break; }
+        }
+        json_ok(['certificate' => [
+            'valid' => true,
+            'studentName' => $nm,
+            'studentPhoneMasked' => substr($ic['phone'] ?? '', 0, 2) . '******' . substr($ic['phone'] ?? '', -2),
+            'enrollmentNo' => $ic['enrollmentNo'] ?? '',
+            'courseId' => $ic['courseId'] ?? '',
+            'courseTitle' => $ic['courseTitle'] ?? '',
+            'issuedDate' => !empty($ic['issuedDate']) ? date('d F Y', strtotime($ic['issuedDate'])) : '',
+            'issuedBy' => 'Quick Art Photography Academy',
+            'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
+            'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
+            'status' => 'AUTHENTIC & VERIFIED',
+            'certificateId' => $ic['id'],
+            'verificationUrl' => 'https://quickartphotography.in/portal/index.html?verify=' . urlencode($ic['id'])
         ]]);
     }
 
