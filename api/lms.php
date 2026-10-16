@@ -1398,11 +1398,12 @@ if ($action === 'course-details' && $method === 'GET') {
 
     $enrolled = $student['enrolledCourses'] ?? [];
     $isOffline = !empty($student['isOfflineStudent']) || !empty($student['offlineAdmissionId']) || !empty($student['appliedCourse']);
-    $isPaid500 = !empty($student['isPaid500']) || (($student['paymentStatus'] ?? '') === 'paid');
+    // Admission-form course unlocks only after Admin approval (payment alone is not enough)
+    $isApproved = !empty($student['isApproved']) && in_array($student['status'] ?? '', ['active', 'approved']);
     $appliedCourseTitle = trim($student['appliedCourse'] ?? '');
 
     if (!in_array($courseId, $enrolled)) {
-        if ($isOffline && $isPaid500 && !empty($appliedCourseTitle) && map_offline_course_id($appliedCourseTitle) === $courseId) {
+        if ($isOffline && $isApproved && !empty($appliedCourseTitle) && map_offline_course_id($appliedCourseTitle) === $courseId) {
             $enrolled[] = $courseId;
             $student['enrolledCourses'] = $enrolled;
         } else {
@@ -1512,11 +1513,12 @@ if ($action === 'get-lesson' && $method === 'GET') {
 
     $enrolled = $student['enrolledCourses'] ?? [];
     $isOffline = !empty($student['isOfflineStudent']) || !empty($student['offlineAdmissionId']) || !empty($student['appliedCourse']);
-    $isPaid500 = !empty($student['isPaid500']) || (($student['paymentStatus'] ?? '') === 'paid');
+    // Admission-form course unlocks only after Admin approval (payment alone is not enough)
+    $isApproved = !empty($student['isApproved']) && in_array($student['status'] ?? '', ['active', 'approved']);
     $appliedCourseTitle = trim($student['appliedCourse'] ?? '');
 
     if (!in_array($courseId, $enrolled)) {
-        if ($isOffline && $isPaid500 && !empty($appliedCourseTitle) && map_offline_course_id($appliedCourseTitle) === $courseId) {
+        if ($isOffline && $isApproved && !empty($appliedCourseTitle) && map_offline_course_id($appliedCourseTitle) === $courseId) {
             $enrolled[] = $courseId;
             $student['enrolledCourses'] = $enrolled;
         } else {
@@ -1894,7 +1896,7 @@ if ($action === 'checkout-enroll' && $method === 'POST') {
     $found = false;
 
     foreach ($students as &$stu) {
-        if ($stu['phone'] === $phone) {
+        if (clean_phone($stu['phone'] ?? '') === $phone) {
             if ($name) $stu['name'] = $name;
             if ($email) $stu['email'] = $email;
             if (!in_array($courseId, $stu['enrolledCourses'] ?? [])) {
@@ -2132,7 +2134,7 @@ if ($action === 'verify-razorpay-payment' && $method === 'POST') {
     $found = false;
 
     foreach ($students as &$stu) {
-        if ($stu['phone'] === $phone) {
+        if (clean_phone($stu['phone'] ?? '') === $phone) {
             if ($name) $stu['name'] = $name;
             if ($email) $stu['email'] = $email;
             if (!in_array($courseId, $stu['enrolledCourses'] ?? [])) {

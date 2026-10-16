@@ -569,6 +569,14 @@ function renderOfflinePendingBanner() {
 
   const courseTitle = escapeHtml(pending.appliedCourse);
   const admId = escapeHtml(pending.admissionId || 'QAA-OFF-2026');
+  // Payment (online or cash) never unlocks the course by itself — Admin approval is always required
+  const feeDone = pending.paymentStatus === 'paid' || pending.isOnlineBatch;
+  const statusLine = feeDone
+    ? '<span style="color: #f59e0b; font-weight: 700;">⏳ Admin Approval Pending</span>'
+    : '<span style="color: #f59e0b; font-weight: 700;">₹500 Seat Registration Fee Pending • Admin Approval Pending</span>';
+  const actions = feeDone
+    ? '<span style="font-size: 12px; color: #94a3b8;">Admin approval milte hi course aur classroom unlock ho jayega.</span>\n        <a href="https://wa.me/919939800780" target="_blank" class="btn btn-outline" style="padding: 10px 18px; font-size: 13px;">WhatsApp Support 💬</a>'
+    : '<a href="../admission/" class="btn btn-gold" style="padding: 10px 18px; font-size: 13px; font-weight: 800; text-decoration: none;">⚡ Pay ₹500 Registration Fee →</a>\n        <span style="font-size: 12px; color: #64748b;">ya Siwan campus aakar cash/UPI pay karein. Payment ke baad Admin approval par course unlock hoga.</span>';
 
   slot.style.display = 'block';
   slot.innerHTML = `
@@ -578,12 +586,11 @@ function renderOfflinePendingBanner() {
         <div>
           <div style="font-size: 11px; font-weight: 850; letter-spacing: 0.08em; color: #fbbf24; text-transform: uppercase;">Offline On-Campus Batch • Seat Reserved</div>
           <h3 style="margin: 4px 0 3px; font-size: 17.5px; font-weight: 800; color: #ffffff;">${courseTitle}</h3>
-          <p style="margin: 0; font-size: 12.5px; color: #94a3b8;">Application ID: <strong style="color: #ffffff;">${admId}</strong> • Siwan 4K Suite • <span style="color: #f59e0b; font-weight: 700;">₹500 Seat Registration Fee Pending</span></p>
+          <p style="margin: 0; font-size: 12.5px; color: #94a3b8;">Application ID: <strong style="color: #ffffff;">${admId}</strong> • Siwan 4K Suite • ${statusLine}</p>
         </div>
       </div>
       <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-        <a href="../admission/" class="btn btn-gold" style="padding: 10px 18px; font-size: 13px; font-weight: 800; text-decoration: none;">⚡ Pay ₹500 &amp; Unlock Course →</a>
-        <span style="font-size: 12px; color: #64748b;">ya Siwan campus aakar cash/UPI pay karein</span>
+        ${actions}
       </div>
     </div>
   `;
@@ -663,13 +670,15 @@ function renderMyCoursesGrid() {
         grid.innerHTML = `
           <div class="card" style="grid-column: 1/-1; padding: 48px 24px; text-align: center; background: #111520; border: 1.5px solid rgba(245,158,11,0.35); border-radius: 20px;">
             <div style="font-size: 42px; margin-bottom: 12px;">🔒</div>
-            <div style="font-size: 11px; font-weight: 850; letter-spacing: 0.08em; color: #fbbf24; text-transform: uppercase; margin-bottom: 6px;">Offline Course Reservation Pending</div>
+            <div style="font-size: 11px; font-weight: 850; letter-spacing: 0.08em; color: #fbbf24; text-transform: uppercase; margin-bottom: 6px;">Admin Approval Pending</div>
             <h3 style="font-size: 21px; font-weight: 800; color: #fff;">${escapeHtml(window._offlinePending.appliedCourse)}</h3>
             <p class="muted" style="margin: 10px auto 24px; max-width: 500px; line-height: 1.6; font-size: 14px;">
-              Aapka offline course reservation register ho chuka hai (ID: <strong style="color:#fff;">${escapeHtml(window._offlinePending.admissionId || '')}</strong>)। Classroom video lessons aur daily workstation tasks access pane ke liye ₹500 Seat Registration Fee confirm karein.
+              Aapka offline course reservation register ho chuka hai (ID: <strong style="color:#fff;">${escapeHtml(window._offlinePending.admissionId || '')}</strong>)। ${(window._offlinePending.paymentStatus === 'paid' || window._offlinePending.isOnlineBatch)
+                ? 'Aapka form Admin review me hai. Admin approval milte hi classroom video lessons aur daily tasks unlock ho jayenge.'
+                : '₹500 Seat Registration Fee pay karein (online ya campus par). Payment ke baad Admin approval milte hi classroom video lessons aur daily tasks unlock honge.'}
             </p>
             <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-              <a href="../admission/" class="btn btn-gold">⚡ Pay ₹500 &amp; Unlock Course →</a>
+              ${(window._offlinePending.paymentStatus === 'paid' || window._offlinePending.isOnlineBatch) ? '' : '<a href="../admission/" class="btn btn-gold">⚡ Pay ₹500 Registration Fee →</a>'}
               <a href="https://wa.me/919939800780" target="_blank" class="btn btn-outline">WhatsApp Support 💬</a>
             </div>
           </div>

@@ -2624,3 +2624,25 @@ body.adm-body {
   }
 }
 
+
+/* ── Compact ID card preview in the success popup (mobile) ──
+   Front & back sit side by side at reduced size. During download the
+   .adm-dl-mode class restores full size so the PNG stays high-resolution. */
+@media (max-width: 600px) {
+  .adm-issued-card-wrapper {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: center;
+    gap: 8px !important;
+  }
+  .adm-issued-card-wrapper .adm-card-unit {
+    width: auto !important;
+    zoom: 0.52;
+  }
+  .adm-modal.adm-dl-mode .adm-issued-card-wrapper .adm-card-unit { zoom: 1; }
+  .adm-modal.adm-dl-mode .adm-issued-card-wrapper { flex-direction: column !important; align-items: center !important; }
+}
+@media (max-width: 370px) {
+  .adm-issued-card-wrapper .adm-card-unit { zoom: 0.48; }
+  .adm-modal.adm-dl-mode .adm-issued-card-wrapper .adm-card-unit { zoom: 1; }
+}

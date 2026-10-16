@@ -198,7 +198,7 @@
   <div class="verify-box">
     <div class="verify-badge-top">
       <span class="verify-dot"></span>
-      <span>OFFICIAL CREDENTIAL VERIFIED</span>
+      <span id="v-badge-text">VERIFYING CREDENTIAL…</span>
     </div>
 
     <div class="verify-logo-row">
@@ -216,8 +216,8 @@
     <h1 class="verify-name" id="v-name">Verified Student</h1>
     <div class="verify-course" id="v-course">Wedding Film-making Course</div>
 
-    <div class="verify-stamp">
-      ✓ AUTHENTIC ADMISSION CONFIRMED
+    <div class="verify-stamp" id="v-stamp">
+      ⏳ CHECKING ACADEMY RECORDS…
     </div>
 
     <div class="verify-table">
@@ -286,12 +286,33 @@
       }
 
 
+      function setVerifyState(state) {
+        var badge = document.getElementById('v-badge-text');
+        var stamp = document.getElementById('v-stamp');
+        var map = {
+          approved: ['OFFICIAL CREDENTIAL VERIFIED', '✓ AUTHENTIC ADMISSION CONFIRMED', ''],
+          pending: ['ADMISSION PENDING APPROVAL', '⏳ FORM RECEIVED • ADMIN APPROVAL PENDING', '#f59e0b'],
+          notfound: ['RECORD NOT FOUND', '✕ NO MATCHING ADMISSION RECORD', '#ef4444'],
+          error: ['VERIFICATION UNAVAILABLE', '⚠ COULD NOT REACH ACADEMY RECORDS', '#94a3b8']
+        };
+        var m = map[state] || map.error;
+        if (badge) badge.textContent = m[0];
+        if (stamp) {
+          stamp.textContent = m[1];
+          if (m[2]) { stamp.style.color = m[2]; stamp.style.borderColor = m[2]; }
+        }
+      }
+
       // Fetch authentic live admission record
       if (id || phone) {
         fetch('../api/lms.php?action=verify-student-admission&id=' + encodeURIComponent(id) + '&phone=' + encodeURIComponent(phone))
           .then(function (res) { return res.json(); })
           .then(function (data) {
             if (data && data.ok) {
+              // Only an Admin-approved admission is shown as verified
+              var st = String(data.status || '').toLowerCase();
+              var approved = st === 'approved' || st === 'active' || st === 'approved_alumni';
+              setVerifyState(approved ? 'approved' : 'pending');
               if (data.name) document.getElementById('v-name').textContent = data.name;
               if (data.course) document.getElementById('v-course').textContent = data.course;
               if (data.studio) document.getElementById('v-studio').textContent = data.studio;
@@ -303,9 +324,11 @@
                 if (!p.startsWith('http') && !p.startsWith('/') && !p.startsWith('data:')) p = '/' + p;
                 vPhoto.src = p;
               }
+            } else {
+              setVerifyState('notfound');
             }
           })
-          .catch(function () {});
+          .catch(function () { setVerifyState('error'); });
       }
     })();
   </script>

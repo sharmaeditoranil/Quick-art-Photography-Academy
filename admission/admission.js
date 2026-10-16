@@ -935,7 +935,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (topTagText) topTagText.textContent = 'APPLICATION REGISTERED • PENDING CAMPUS APPROVAL';
       if (mainTitle) mainTitle.textContent = 'Admission Form Registered! (Pending Approval)';
       if (mainSub) {
-        mainSub.innerHTML = 'Aapka admission submit ho gaya hai. Aapne <strong>Pay at Siwan Campus / Cash on Arrival</strong> select kiya hai.<br><span style="color:#fbbf24; font-weight:600;">🏛️ Note:</span> Admin se verification aur campus desk par fees payment verify hone ke baad aapka official ID Card aur LMS Portal active kiya jayega.';
+        var payNote;
+        if (isPaid) {
+          payNote = 'Aapka <strong>₹500 online payment receive ho gaya hai</strong>.';
+        } else if (data.isOnlineBatch) {
+          payNote = 'Aapka <strong>Online Batch admission form</strong> receive ho gaya hai.';
+        } else if (data.paymentMode === 'cash') {
+          payNote = 'Aapne <strong>Pay at Siwan Campus / Cash on Arrival</strong> select kiya hai.';
+        } else {
+          payNote = 'Aapka <strong>₹500 registration fee abhi pending hai</strong> (online ya campus par pay karein).';
+        }
+        mainSub.innerHTML = 'Aapka admission submit ho gaya hai. ' + payNote + '<br><span style="color:#fbbf24; font-weight:600;">🏛️ Note:</span> Payment online ho ya offline, Admin approval ke baad hi aapka official ID Card, LMS Portal aur Course access active kiya jayega.';
       }
       if (photoRibbon) {
         photoRibbon.textContent = 'PROVISIONAL';
@@ -973,6 +983,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var btn = side === 'back' ? document.getElementById('btn-dl-back') : document.getElementById('btn-dl-front');
     if (btn) btn.innerHTML = '⏳ Generating High-Res ' + side.toUpperCase() + '...';
 
+    var dlModal = document.getElementById('adm-success-modal');
+    if (dlModal) dlModal.classList.add('adm-dl-mode');
+    var endDlMode = function () { if (dlModal) dlModal.classList.remove('adm-dl-mode'); };
+
     if (window.html2canvas) {
       window.html2canvas(card, {
         scale: 3, // 300 DPI high resolution
@@ -987,16 +1001,19 @@ document.addEventListener('DOMContentLoaded', function () {
         a.click();
         document.body.removeChild(a);
 
+        endDlMode();
         if (btn) btn.innerHTML = '✓ ' + side.toUpperCase() + ' Downloaded! 📥';
         setTimeout(function () {
           if (btn) btn.innerHTML = '<span>📥 Download ' + (side === 'front' ? 'Front' : 'Back') + ' Side (PNG)</span>';
         }, 3000);
       }).catch(function (err) {
         console.error('html2canvas error:', err);
+        endDlMode();
         window.print();
         if (btn) btn.innerHTML = '<span>📥 Download ' + (side === 'front' ? 'Front' : 'Back') + ' Side (PNG)</span>';
       });
     } else {
+      endDlMode();
       window.print();
     }
   };
