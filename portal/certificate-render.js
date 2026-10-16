@@ -245,9 +245,9 @@
     [[-1, 1], [1, 1]].forEach(function (d) {
       ctx.beginPath();
       ctx.moveTo(cx + d[0] * 14, cy + r * 0.55);
-      ctx.lineTo(cx + d[0] * 34, cy + r + 40);
-      ctx.lineTo(cx + d[0] * 22, cy + r + 32);
-      ctx.lineTo(cx + d[0] * 12, cy + r + 44);
+      ctx.lineTo(cx + d[0] * 34, cy + r + 30);
+      ctx.lineTo(cx + d[0] * 22, cy + r + 23);
+      ctx.lineTo(cx + d[0] * 12, cy + r + 33);
       ctx.lineTo(cx + d[0] * 2, cy + r * 0.6);
       ctx.closePath();
       ctx.fill();
@@ -441,9 +441,23 @@
       ctx.fillText('Founder & Director, Quick Art Photography Academy', sx, fy + 52);
 
       // Bottom line
-      ctx.fillStyle = 'rgba(91,79,62,0.75)';
+      // "Valid all over India" (gold, bold) followed by the address, centred as one line
+      var validTxt = '★ VALID ALL OVER INDIA ★';
+      var restTxt = '   •   QUICKARTPHOTOGRAPHY.IN  •  AYODHYA PURI, SIWAN, BIHAR 841226';
+      var measure = function (t, sp) {
+        return t.split('').reduce(function (w, c) { return w + ctx.measureText(c).width; }, 0) + sp * (t.length - 1);
+      };
+      ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
+      var vW = measure(validTxt, 1.4);
       ctx.font = '600 8.5px "Plus Jakarta Sans", sans-serif';
-      spacedText(ctx, 'QUICKARTPHOTOGRAPHY.IN  •  AYODHYA PURI, SIWAN, BIHAR 841226', cx, H - 58, 1.2);
+      var rW = measure(restTxt, 1.2);
+      var startX = cx - (vW + rW) / 2;
+      ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = GOLD_DEEP;
+      spacedText(ctx, validTxt, startX + vW / 2, H - 58, 1.4);
+      ctx.font = '600 8.5px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = 'rgba(91,79,62,0.75)';
+      spacedText(ctx, restTxt, startX + vW + rW / 2, H - 58, 1.2);
 
       return canvas;
     });
