@@ -43,6 +43,10 @@ async function apiFetch(action, opts = {}) {
     'Content-Type': 'application/json',
     'X-Student-Token': token
   }, opts.headers || {});
+  // Academy's own number: server shows its OTP only to a logged-in admin (same browser)
+  if (action === 'send-otp') {
+    try { const at = localStorage.getItem('qa_admin_token'); if (at) headers['X-Admin-Token'] = at; } catch (_) {}
+  }
 
   const fetchOptions = {
     method: opts.method || 'GET',

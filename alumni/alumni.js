@@ -105,13 +105,14 @@ document.addEventListener('DOMContentLoaded', function () {
       var highlight = alm.highlight ? escapeHtml(alm.highlight) : 'Specialized in 4K wedding post-production & cinematic skin tone color wheels.';
 
       var featuredBadgeHtml = alm.featured ? '<span class="alm-card-featured-badge">⭐ FEATURED</span>' : '';
-      var igHtml = alm.instagram ? '<a href="' + escapeHtml(alm.instagram) + '" target="_blank" rel="noopener noreferrer" class="alm-social-btn">Instagram ↗</a>' : '';
+      var igUrl = /^https?:\/\//i.test(String(alm.instagram || '').trim()) ? String(alm.instagram).trim() : '';
+      var igHtml = igUrl ? '<a href="' + escapeHtml(igUrl) + '" target="_blank" rel="noopener noreferrer" class="alm-social-btn">Instagram ↗</a>' : '';
 
       card.innerHTML =
         featuredBadgeHtml +
         '<div class="alm-card-header">' +
           '<div class="alm-avatar-wrap">' +
-            '<img src="' + photoSrc + '" alt="' + escapeHtml(alm.name) + '" width="72" height="72" loading="lazy" onerror="this.src=\'../assets/anil-sharma.webp\'">' +
+            '<img src="' + escapeHtml(/^\s*(javascript|vbscript|data:text)/i.test(photoSrc) ? '../home-assets/6a62e4eb3643ad.jpeg' : photoSrc) + '" alt="' + escapeHtml(alm.name) + '" width="72" height="72" loading="lazy" onerror="this.src=\'../assets/anil-sharma.webp\'">' +
           '</div>' +
           '<div class="alm-card-meta">' +
             '<h3>' + escapeHtml(alm.name) + '</h3>' +
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="alm-highlight-quote">“' + highlight + '”</div>' +
         '<div class="alm-card-footer">' +
           '<a href="../portal/?cert=' + encodeURIComponent(certId) + '" class="alm-cert-pill" title="Verify ISO Certificate">' +
-            '<span>🛡️ ' + certId + '</span>' +
+            '<span>🛡️ ' + escapeHtml(certId) + '</span>' +
           '</a>' +
           igHtml +
         '</div>';

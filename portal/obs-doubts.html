@@ -546,8 +546,7 @@
           // If unauthorized, prompt for Admin Password once and save for future OBS sessions
           const pwd = prompt('Academy Admin Password enter karein (Jo Website Admin Panel login karne ke liye use karte hain):');
           if (pwd) {
-            localStorage.setItem('qa_admin_token', pwd);
-            // Attempt login to get session token
+            // Exchange the password for a session token (the password itself is never stored)
             try {
               const loginRes = await fetch('../api/admin.php?action=login', {
                 method: 'POST',
@@ -559,7 +558,7 @@
               }
             } catch (_) {}
 
-            const activeTok = localStorage.getItem('qa_admin_token') || pwd;
+            const activeTok = localStorage.getItem('qa_admin_token') || '';
             const retryRes = await fetch('../api/lms-admin.php?action=reply-live-doubt', {
               method: 'POST',
               headers: {

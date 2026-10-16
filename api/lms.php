@@ -235,6 +235,79 @@ function create_student_session($phone) {
     return $token;
 }
 
+// Confirm a Razorpay payment with Razorpay itself (not just the browser's word):
+// valid signature + payment belongs to this order + payment captured/authorized.
+// Returns ['payment' => ..., 'order' => ..., 'notes' => [...]] or stops with an error.
+function razorpay_confirm_payment($orderId, $paymentId, $signature) {
+    $settings = load_lms_settings();
+    $keyId = trim($settings['razorpayKeyId'] ?? '');
+    $keySecret = trim($settings['razorpayKeySecret'] ?? '');
+    if (!$keyId || !$keySecret) json_err('Online payment abhi active nahi hai. Support: +91 9939800780', 503);
+    if (!$orderId || !$paymentId || !$signature) json_err('Incomplete payment verification payload', 400);
+    $expected = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
+    if (!hash_equals($expected, $signature)) json_err('Payment verification failed: Signature mismatch', 400);
+
+    $get = function ($path) use ($keyId, $keySecret) {
+        $ch = curl_init('https://api.razorpay.com/v1' . $path);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERPWD        => $keyId . ':' . $keySecret,
+            CURLOPT_TIMEOUT        => 12,
+        ]);
+        $raw = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return [$code, json_decode((string)$raw, true) ?: []];
+    };
+    [$pc, $payment] = $get('/payments/' . rawurlencode($paymentId));
+    if ($pc !== 200 || ($payment['order_id'] ?? '') !== $orderId || !in_array($payment['status'] ?? '', ['captured', 'authorized'], true)) {
+        json_err('Payment Razorpay se confirm nahi hua. Payment ID: ' . $paymentId . ' — Support: +91 9939800780', 400);
+    }
+    [$oc, $order] = $get('/orders/' . rawurlencode($orderId));
+    if ($oc !== 200) json_err('Payment order verify nahi ho paya. Support: +91 9939800780', 502);
+    return ['payment' => $payment, 'order' => $order, 'notes' => is_array($order['notes'] ?? null) ? $order['notes'] : []];
+}
+
+// Student token from header / bearer (no query string) — null if missing/expired
+function current_student_phone_from_token() {
+    $token = $_SERVER['HTTP_X_STUDENT_TOKEN'] ?? '';
+    if (!$token) {
+        $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+        if (preg_match('/Bearer\s+(.+)$/i', $auth, $m)) $token = trim($m[1]);
+    }
+    if (!$token || !file_exists(LMS_SESSIONS_FILE)) return null;
+    $sessions = json_decode(file_get_contents(LMS_SESSIONS_FILE), true) ?: [];
+    if (!isset($sessions[$token]) || ($sessions[$token]['expiresAt'] ?? 0) < time()) return null;
+    return clean_phone($sessions[$token]['phone'] ?? '');
+}
+
+// Phone was OTP-verified in the last hour (admission / checkout flows)
+function phone_recently_verified($phone) {
+    $f = DATA_DIR . '/verified-admissions.json';
+    $list = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
+    return !empty($list['phones'][$phone]) && ($list['phones'][$phone]['expiresAt'] ?? 0) >= time();
+}
+
+// Simple file-based limiter: max $max hits per $windowSec for a key
+function rate_limit_hit($bucket, $key, $max, $windowSec) {
+    $f = DATA_DIR . '/ratelimit-' . preg_replace('/[^a-z0-9_-]/i', '', $bucket) . '.json';
+    $fp = @fopen($f, 'c+');
+    if (!$fp) return true;
+    flock($fp, LOCK_EX);
+    $data = json_decode(stream_get_contents($fp), true) ?: [];
+    $now = time();
+    foreach ($data as $k => $arr) {
+        $data[$k] = array_values(array_filter((array)$arr, fn($t) => $t > $now - $windowSec));
+        if (!$data[$k]) unset($data[$k]);
+    }
+    $allowed = count($data[$key] ?? []) < $max;
+    if ($allowed) $data[$key][] = $now;
+    ftruncate($fp, 0); rewind($fp);
+    fwrite($fp, json_encode($data));
+    flock($fp, LOCK_UN); fclose($fp);
+    return $allowed;
+}
+
 function require_student() {
     $token = $_SERVER['HTTP_X_STUDENT_TOKEN'] ?? '';
     if (!$token) {
@@ -420,6 +493,14 @@ if ($action === 'send-otp' && $method === 'POST') {
     $demoMode = !empty($settings['otpDemoMode']);
     $defaultOtp = $settings['defaultOtp'] ?? '123456';
 
+    // Anti-abuse: max 5 OTPs per number and 20 per IP per hour
+    if (!$isLocal && (!rate_limit_hit('otp-phone', $phone, 5, 3600) || !rate_limit_hit('otp-ip', $clientIp, 20, 3600))) {
+        json_err('Bahut zyada OTP request ho gaye. 1 ghante baad try karein ya WhatsApp support se baat karein.', 429);
+    }
+    // Academy's own number can't receive WhatsApp from itself: show its OTP only to a logged-in admin
+    $adminTok = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
+    $isAdminCaller = $adminTok && is_valid_session($adminTok);
+
     // Generate 6 digit OTP
     $otp = $demoMode ? $defaultOtp : strval(random_int(100000, 999999));
 
@@ -433,33 +514,27 @@ if ($action === 'send-otp' && $method === 'POST') {
     file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
 
     $isSenderOwnNumber = ($phone === '9939800780'); // WhatsApp Cloud API disallows sending from number to itself
+    if ($isSenderOwnNumber && !$isAdminCaller && !$demoMode && !$isLocal) {
+        json_err('Is number ke liye pehle isi browser me Admin Panel me login karein, phir OTP mangwayein.', 403);
+    }
 
     // Direct WhatsApp OTP via AIbotflow (Official Meta WhatsApp Cloud API)
     if (!$demoMode && !$isSenderOwnNumber && !empty($settings['aibotflowApiKey'])) {
         $sendRes = send_aibotflow_whatsapp_otp($phone, $otp, $settings['aibotflowApiKey'], $settings['aibotflowOtpTemplate'] ?? 'quickart_login_otp');
         if (!$sendRes['ok']) {
             error_log("AIbotflow WhatsApp OTP delivery failure for {$phone}: " . ($sendRes['error'] ?? 'Unknown error'));
-            // Graceful fallback: Still allow demo/screen OTP so user is never blocked on admission
-            json_ok([
-                'message' => 'WhatsApp gateway busy. Aap screen par dikha OTP enter karke aage badh sakte hain.',
-                'phone'   => $phone,
-                'devOtp'  => $otp,
-                'warning' => 'WhatsApp delivery delayed'
-            ]);
+            // Never show the OTP on screen — that let anyone log in to any number
+            json_err('WhatsApp OTP abhi nahi ja paya. Thodi der baad try karein ya Email OTP / WhatsApp support (+91 9939800780) use karein.', 503);
         }
     } elseif (!$demoMode && !$isSenderOwnNumber && empty($settings['aibotflowApiKey'])) {
         error_log("WhatsApp OTP Gateway (AIbotflow) is not configured for phone: {$phone}");
-        json_ok([
-            'message' => 'OTP generate ho gaya hai. Niche enter karein.',
-            'phone'   => $phone,
-            'devOtp'  => $otp
-        ]);
+        json_err('WhatsApp OTP service abhi configured nahi hai. Email se login karein.', 503);
     }
 
     json_ok([
         'message' => $isSenderOwnNumber ? 'Admin number recognized. OTP generated.' : 'OTP sent successfully to your WhatsApp',
         'phone' => $phone,
-        'devOtp' => ($demoMode || $isSenderOwnNumber || $isLocal) ? $otp : null
+        'devOtp' => ($demoMode || $isLocal || ($isSenderOwnNumber && $isAdminCaller)) ? $otp : null
     ]);
 }
 
@@ -483,7 +558,17 @@ if ($action === 'verify-otp' && $method === 'POST') {
     $isLocal = in_array($clientIp, ['127.0.0.1', '::1']) || in_array($serverName, ['localhost', '127.0.0.1']);
     $isDemoMatch = ((!empty($settings['otpDemoMode']) || $isLocal) && $userOtp === ($settings['defaultOtp'] ?? '123456'));
 
-    if (!$isDemoMatch && (!$record || $record['expiresAt'] < time() || $record['otp'] !== $userOtp)) {
+    // Max 5 wrong attempts per OTP, then it is discarded (stops brute force)
+    if (!$isDemoMatch && $record && ($record['attempts'] ?? 0) >= 5) {
+        unset($otps[$phone]);
+        file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
+        json_err('Bahut zyada galat OTP. Naya OTP mangwayein.', 429);
+    }
+    if (!$isDemoMatch && (!$record || $record['expiresAt'] < time() || !hash_equals((string)$record['otp'], $userOtp))) {
+        if ($record) {
+            $otps[$phone]['attempts'] = ($record['attempts'] ?? 0) + 1;
+            file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
+        }
         json_err('Invalid or expired OTP. Please try again.', 401);
     }
 
@@ -613,7 +698,17 @@ if ($action === 'verify-phone-otp' && $method === 'POST') {
     $isLocal = in_array($clientIp, ['127.0.0.1', '::1']) || in_array($serverName, ['localhost', '127.0.0.1']);
     $isDemoMatch = ((!empty($settings['otpDemoMode']) || $isLocal) && $userOtp === ($settings['defaultOtp'] ?? '123456'));
 
-    if (!$isDemoMatch && (!$record || $record['expiresAt'] < time() || $record['otp'] !== $userOtp)) {
+    // Max 5 wrong attempts per OTP, then it is discarded (stops brute force)
+    if (!$isDemoMatch && $record && ($record['attempts'] ?? 0) >= 5) {
+        unset($otps[$phone]);
+        file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
+        json_err('Bahut zyada galat OTP. Naya OTP mangwayein.', 429);
+    }
+    if (!$isDemoMatch && (!$record || $record['expiresAt'] < time() || !hash_equals((string)$record['otp'], $userOtp))) {
+        if ($record) {
+            $otps[$phone]['attempts'] = ($record['attempts'] ?? 0) + 1;
+            file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
+        }
         json_err('Galat ya expired OTP code enter kiya hai. Kripya naya OTP mangwayein.', 401);
     }
 
@@ -662,19 +757,19 @@ if ($action === 'send-email-otp' && $method === 'POST') {
         json_err('Is email se koi student account registered nahi mila.', 404);
     }
 
+    $ipAddr = $_SERVER['REMOTE_ADDR'] ?? '';
+    if (!in_array($ipAddr, ['127.0.0.1', '::1']) && (!rate_limit_hit('otp-email', $email, 5, 3600) || !rate_limit_hit('otp-ip', $ipAddr, 20, 3600))) {
+        json_err('Bahut zyada OTP request ho gaye. 1 ghante baad try karein.', 429);
+    }
+
     $otp = strval(random_int(100000, 999999));
     $settings = load_lms_settings();
     $sendRes = send_email_otp($email, $otp, $purpose, $settings);
 
     if (!$sendRes['ok']) {
         error_log("Email OTP delivery failure for {$email}: " . ($sendRes['error'] ?? 'Unknown error'));
-        json_ok([
-            'message' => 'Email gateway busy. Aap screen par dikha OTP use kar sakte hain.',
-            'email'   => $email,
-            'purpose' => $purpose,
-            'devOtp'  => $otp,
-            'warning' => 'Email delivery delayed'
-        ]);
+        // Never show the OTP on screen — that allowed password resets of any account
+        json_err('Email OTP abhi nahi ja paya. Thodi der baad try karein ya WhatsApp support (+91 9939800780) se baat karein.', 503);
     }
 
     $clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -844,9 +939,25 @@ if ($action === 'email-signup' && $method === 'POST') {
 // 3.1 Supabase Auto-Login after email link confirmation
 if ($action === 'supabase-auto-login' && $method === 'POST') {
     $body = read_json_body();
-    $email = strtolower(trim($body['email'] ?? ''));
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        json_err('Invalid email', 400);
+    // The email must come from Supabase itself (verified access token), never from the browser
+    $accessToken = trim((string)($body['accessToken'] ?? ''));
+    $sbSettings = load_lms_settings();
+    $sbUrl = rtrim($sbSettings['supabaseUrl'] ?? '', '/');
+    $sbKey = $sbSettings['supabaseAnonKey'] ?? '';
+    if (!$accessToken || !$sbUrl || !$sbKey) json_err('Email link login verify nahi ho paya. Dobara login karein.', 401);
+    $ch = curl_init($sbUrl . '/auth/v1/user');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => ['apikey: ' . $sbKey, 'Authorization: Bearer ' . $accessToken],
+        CURLOPT_TIMEOUT => 8
+    ]);
+    $sbRaw = curl_exec($ch);
+    $sbCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $sbUser = json_decode((string)$sbRaw, true) ?: [];
+    $email = strtolower(trim($sbUser['email'] ?? ''));
+    if ($sbCode !== 200 || !filter_var($email, FILTER_VALIDATE_EMAIL) || empty($sbUser['email_confirmed_at'] ?? ($sbUser['confirmed_at'] ?? ''))) {
+        json_err('Email link login verify nahi ho paya. Dobara login karein.', 401);
     }
 
     $students = load_students();
@@ -1860,6 +1971,10 @@ if ($action === 'checkout-enroll' && $method === 'POST') {
 
     if (strlen($phone) < 10) json_err('Valid 10-digit mobile number required', 400);
     if (!$courseId) json_err('Course selection is required', 400);
+    // Free enrollment logs the user in, so the phone must belong to the caller
+    if (current_student_phone_from_token() !== $phone && !phone_recently_verified($phone)) {
+        json_err('Pehle apna mobile number OTP se verify karein.', 401);
+    }
 
     $allCourses = load_courses();
     $selectedCourse = null;
@@ -2093,20 +2208,20 @@ if ($action === 'verify-razorpay-payment' && $method === 'POST') {
     $email = trim($body['email'] ?? '');
     $couponCode = trim($body['couponCode'] ?? '');
 
-    if (!$orderId || !$paymentId || !$signature) {
-        json_err('Incomplete payment verification payload', 400);
+    // Confirm with Razorpay; course & phone come from the paid order, never from the browser
+    $rp = razorpay_confirm_payment($orderId, $paymentId, $signature);
+    $orderCourse = trim((string)($rp['notes']['courseId'] ?? ''));
+    $orderPhone  = clean_phone($rp['notes']['studentPhone'] ?? '');
+    if (!$orderCourse || strlen($orderPhone) < 10) json_err('Payment order details incomplete. Support: +91 9939800780', 400);
+    if (($courseId && $courseId !== $orderCourse) || (strlen($phone) >= 10 && $phone !== $orderPhone)) {
+        json_err('Payment is order ke course/phone se match nahi karta.', 400);
     }
-    if (strlen($phone) < 10) json_err('Valid 10-digit mobile number required', 400);
-    if (!$courseId) json_err('Course ID required', 400);
-
-    $settings = load_lms_settings();
-    $keySecret = trim($settings['razorpayKeySecret'] ?? '');
-    if (!$keySecret) json_err('Razorpay Key Secret not configured on server', 500);
-
-    // Compute and verify HMAC SHA256 signature
-    $generatedSignature = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
-    if (!hash_equals($generatedSignature, $signature)) {
-        json_err('Payment verification failed: Signature mismatch', 400);
+    $courseId = $orderCourse;
+    $phone = $orderPhone;
+    $couponCode = trim((string)($rp['notes']['coupon'] ?? ''));
+    $alreadyRecorded = false;
+    foreach ((file_exists(LMS_TRANSACTIONS_FILE) ? (json_decode(file_get_contents(LMS_TRANSACTIONS_FILE), true) ?: []) : []) as $t) {
+        if (($t['razorpayPaymentId'] ?? '') === $paymentId) { $alreadyRecorded = true; break; }
     }
 
     $allCourses = load_courses();
@@ -2132,12 +2247,13 @@ if ($action === 'verify-razorpay-payment' && $method === 'POST') {
             $appliedCouponCode = $eval['code'];
 
             $coupons = load_coupons();
-            if (isset($eval['matchedIndex']) && isset($coupons[$eval['matchedIndex']])) {
+            if (!$alreadyRecorded && isset($eval['matchedIndex']) && isset($coupons[$eval['matchedIndex']])) {
                 $coupons[$eval['matchedIndex']]['uses'] = ($coupons[$eval['matchedIndex']]['uses'] ?? 0) + 1;
                 save_coupons($coupons);
             }
         }
     }
+    $finalAmount = isset($rp['payment']['amount']) ? ((int)$rp['payment']['amount']) / 100 : $finalAmount;
 
     // Save/Update student account
     $students = load_students();
@@ -2195,7 +2311,7 @@ if ($action === 'verify-razorpay-payment' && $method === 'POST') {
         'status' => 'completed',
         'date' => date('c')
     ];
-    $txs[] = $newTx;
+    if (!$alreadyRecorded) $txs[] = $newTx;
     file_put_contents(LMS_TRANSACTIONS_FILE, json_encode($txs, JSON_PRETTY_PRINT), LOCK_EX);
 
     // Create session token for immediate classroom access
@@ -2220,12 +2336,10 @@ if ($action === 'verify-student-admission' && ($method === 'GET' || $method === 
     $allAdms = file_exists($admFile) ? json_decode(file_get_contents($admFile), true) ?: [] : [];
     $foundAdm = null;
 
+    // Exact ID match only — looking up by phone let anyone get a stranger's name & photo
+    if (!$searchId) json_err('Admission credential record not found', 404);
     foreach ($allAdms as $a) {
-        if ($searchId && (($a['id'] ?? '') === $searchId || ($a['offlineAdmissionId'] ?? '') === $searchId)) {
-            $foundAdm = $a;
-            break;
-        }
-        if ($phone && clean_phone($a['phone'] ?? '') === $phone) {
+        if (($a['id'] ?? '') === $searchId || ($a['offlineAdmissionId'] ?? '') === $searchId) {
             $foundAdm = $a;
             break;
         }
@@ -2234,11 +2348,7 @@ if ($action === 'verify-student-admission' && ($method === 'GET' || $method === 
     if (!$foundAdm) {
         $students = load_students();
         foreach ($students as $s) {
-            if ($searchId && (($s['id'] ?? '') === $searchId || ($s['offlineAdmissionId'] ?? '') === $searchId || ($s['enrollmentNo'] ?? '') === $searchId)) {
-                $foundAdm = $s;
-                break;
-            }
-            if ($phone && clean_phone($s['phone'] ?? '') === $phone) {
+            if (($s['offlineAdmissionId'] ?? '') === $searchId || ($s['enrollmentNo'] ?? '') === $searchId) {
                 $foundAdm = $s;
                 break;
             }
@@ -2567,6 +2677,15 @@ if ($action === 'update-profile' && $method === 'POST') {
     if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         json_err('Valid email address darj karein', 400);
     }
+    if ($email && $email !== strtolower(trim($stu['email'] ?? ''))) {
+        foreach (load_students() as $other) {
+            if (clean_phone($other['phone'] ?? '') !== clean_phone($stu['phone'] ?? '') && strtolower(trim($other['email'] ?? '')) === $email) {
+                json_err('Ye email kisi doosre account se juda hua hai.', 409);
+            }
+        }
+    }
+    $name = mb_substr(strip_tags($name), 0, 80);
+    $city = mb_substr(strip_tags($city), 0, 80);
 
     $photoUrl = '';
     if ($rawPhoto) {
@@ -3289,36 +3408,22 @@ if ($action === 'verify-workshop-payment' && $method === 'POST') {
     if (strlen($phone) !== 10) json_err('Valid 10-digit phone required', 400);
     if (!$liveId) json_err('Live Class ID required', 400);
 
-    $settings = load_lms_settings();
-    $keySecret = trim($settings['razorpayKeySecret'] ?? '');
-    $hasValidKeys = !empty($settings['razorpayKeyId']) && !empty($keySecret);
-    $razorpayActive = (!empty($settings['razorpayEnabled']) || $hasValidKeys) && $hasValidKeys;
-
-    // Signature verification if Razorpay active and real transaction
-    if ($razorpayActive && $keySecret && !empty($signature) && !str_starts_with($signature, 'direct_')) {
-        $expectedSignature = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
-        if (!hash_equals($expectedSignature, $signature)) {
-            json_err('Invalid Razorpay signature. Verification failed.', 400);
-        }
-    }
+    // Always confirm with Razorpay; workshop & phone come from the paid order.
+    // (Earlier a missing/"direct_" signature skipped this and handed out a login
+    // token for any phone number.)
+    $rp = razorpay_confirm_payment($orderId, $paymentId, $signature);
+    $orderLive  = trim((string)($rp['notes']['liveId'] ?? ''));
+    $orderPhone = clean_phone($rp['notes']['phone'] ?? '');
+    if (!$orderLive || strlen($orderPhone) !== 10) json_err('Payment order details incomplete. Support: +91 9939800780', 400);
+    if ($phone !== $orderPhone) json_err('Payment is phone number se match nahi karta.', 400);
+    $liveId = $orderLive;
 
     $allClasses = get_all_live_classes();
     $target = null;
-    if (!empty($liveId)) {
-        foreach ($allClasses as $c) {
-            if ($c['id'] === $liveId) {
-                $target = $c;
-                break;
-            }
-        }
-    }
-    if (!$target && !empty($allClasses)) {
-        foreach ($allClasses as $c) {
-            if (($c['type'] ?? '') === 'workshop') {
-                $target = $c;
-                $liveId = $c['id'];
-                break;
-            }
+    foreach ($allClasses as $c) {
+        if ($c['id'] === $liveId) {
+            $target = $c;
+            break;
         }
     }
     if (!$target) json_err('Workshop session not found', 404);
@@ -3329,7 +3434,7 @@ if ($action === 'verify-workshop-payment' && $method === 'POST') {
     $isNew = false;
 
     foreach ($students as &$s) {
-        if ($s['phone'] === $phone) {
+        if (clean_phone($s['phone'] ?? '') === $phone) {
             $student = &$s;
             break;
         }
@@ -3618,6 +3723,13 @@ if ($action === 'submit-offline-admission' && $method === 'POST') {
     }
     unset($s);
 
+    // An unverified phone must not take over or edit someone else's existing account
+    if ($existingStudent && !$phoneVerified) {
+        unset($existingStudent);
+        $existingStudent = null;
+        $skipStudentWrite = true;
+    }
+
     if ($existingStudent) {
         $existingStudent['name'] = $fullName;
         if ($email) $existingStudent['email'] = $email;
@@ -3654,7 +3766,7 @@ if ($action === 'submit-offline-admission' && $method === 'POST') {
                 $existingStudent['pendingCourseId'] = $batchCourseId;
             }
         }
-    } else {
+    } elseif (empty($skipStudentWrite)) {
         // New student registering via form: NO courses enrolled until Admin approval!
         $students[] = [
             'id'                 => 'stu_' . time() . '_' . substr(md5($phone), 0, 4),
@@ -3689,7 +3801,8 @@ if ($action === 'submit-offline-admission' && $method === 'POST') {
     }
     save_all_students($students);
 
-    $sessionToken = create_student_session($phone);
+    // Login token only for an OTP-verified phone (otherwise anyone could get into any number's account)
+    $sessionToken = $phoneVerified ? create_student_session($phone) : null;
 
     json_ok([
         'admissionId'   => $admissionId,
@@ -3720,15 +3833,10 @@ if ($action === 'verify-offline-admission-payment' && $method === 'POST') {
     $paymentId   = trim($body['razorpay_payment_id'] ?? '');
     $signature   = trim($body['razorpay_signature'] ?? '');
 
-    $settings = load_settings();
-    $keySecret = trim($settings['razorpayKeySecret'] ?? '');
-
-    if ($keySecret && $orderId && $paymentId && $signature) {
-        $expectedSig = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
-        if (!hash_equals($expectedSig, $signature)) {
-            json_err('Payment verification failed. Invalid signature.', 400);
-        }
-    }
+    // Always confirm with Razorpay (earlier, a missing signature marked any admission "paid"
+    // and returned a login token for that student).
+    $rp = razorpay_confirm_payment($orderId, $paymentId, $signature);
+    if (($rp['notes']['admissionId'] ?? '') !== $admissionId) json_err('Payment is admission se match nahi karta.', 400);
 
     $admissionsFile = DATA_DIR . '/offline-admissions.json';
     $admissions = file_exists($admissionsFile) ? json_decode(file_get_contents($admissionsFile), true) : [];
@@ -3740,7 +3848,7 @@ if ($action === 'verify-offline-admission-payment' && $method === 'POST') {
 
     $admRecord = null;
     foreach ($admissions as &$adm) {
-        if ($adm['id'] === $admissionId || (!empty($adm['razorpayOrderId']) && $adm['razorpayOrderId'] === $orderId)) {
+        if ($adm['id'] === $admissionId && !empty($adm['razorpayOrderId']) && $adm['razorpayOrderId'] === $orderId) {
             $adm['paymentStatus'] = 'paid';
             $adm['isPaid500'] = true;
             $adm['isApproved'] = false; // Requires Admin approval
@@ -4128,7 +4236,8 @@ if ($action === 'get-notifications' && ($method === 'GET' || $method === 'POST')
         $student = get_student_from_token($authTok);
     }
 
-    $studentId = $student ? $student['id'] : trim($_GET['studentId'] ?? ($_POST['studentId'] ?? ''));
+    // Personal notifications only with a valid login; otherwise broadcast ones only
+    $studentId = $student ? $student['id'] : '';
     $courses = $student ? ($student['enrolledCourses'] ?? []) : [];
 
     $notifications = get_student_notifications_list($studentId, $courses);
@@ -4147,7 +4256,7 @@ if ($action === 'get-notifications' && ($method === 'GET' || $method === 'POST')
 if ($action === 'mark-notification-read' && $method === 'POST') {
     $body = read_json_body();
     $notifId = trim($body['id'] ?? ($body['notificationId'] ?? ''));
-    $studentId = trim($body['studentId'] ?? '');
+    $studentId = '';
 
     $authTok = $_SERVER['HTTP_X_STUDENT_TOKEN'] ?? '';
     if ($authTok && function_exists('get_student_from_token')) {

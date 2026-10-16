@@ -281,7 +281,7 @@ fbq('track', 'PageView');
             toast('✅ Email verified! Completing login…');
             const autoRes = await lmsApi('supabase-auto-login', {
               method: 'POST',
-              body: { email: sbUser.email }
+              body: { email: sbUser.email, accessToken: token }
             });
             if (autoRes.token) {
               localStorage.setItem(TOKEN_KEY, autoRes.token);

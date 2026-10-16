@@ -36,17 +36,13 @@ function save_all_live_chats($chats) {
 }
 
 // Ensure admin is logged in (via session token or direct admin password)
+// Session token only. (Sending the raw admin password here bypassed the login
+// rate-limit, allowing unlimited password guessing.)
 $tok = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? ($_SERVER['HTTP_X_ADMIN_PASS'] ?? '');
-if (is_valid_session($tok)) {
-    $settings = load_settings();
-} else {
-    $settings = load_settings();
-    if (!empty($tok) && !empty($settings['adminPasswordHash']) && password_verify($tok, $settings['adminPasswordHash'])) {
-        // Password verified successfully
-    } else {
-        json_err('Unauthorized', 401);
-    }
+if (!is_valid_session($tok)) {
+    json_err('Unauthorized', 401);
 }
+$settings = load_settings();
 
 $action = trim($_GET['action'] ?? ($_POST['action'] ?? ''));
 if (strpos($action, '&') !== false) {

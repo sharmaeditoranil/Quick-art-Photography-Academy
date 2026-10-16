@@ -790,7 +790,15 @@ function verify_email_otp($email, $userOtp, $purpose = '', $settings = []) {
         return ['ok' => false, 'error' => 'Invalid OTP request'];
     }
 
-    if ($rec['otp'] !== $userOtp) {
+    // Max 5 wrong attempts per OTP, then it is discarded (stops brute force)
+    if (($rec['attempts'] ?? 0) >= 5) {
+        unset($otps[$email]);
+        save_email_otps($otps);
+        return ['ok' => false, 'error' => 'Bahut zyada galat OTP. Naya OTP mangwayein.'];
+    }
+    if (!hash_equals((string)$rec['otp'], $userOtp)) {
+        $otps[$email]['attempts'] = ($rec['attempts'] ?? 0) + 1;
+        save_email_otps($otps);
         return ['ok' => false, 'error' => 'Galat OTP code enter kiya hai. Check karke dubara daalein.'];
     }
 
@@ -826,7 +834,9 @@ function save_student_avatar_image($rawInput, $phone = 'student') {
 
     // 1. If it's already an existing /uploads/ path, keep it
     if (is_string($rawInput) && (strpos($rawInput, '/uploads/') === 0 || strpos($rawInput, 'uploads/') === 0)) {
-        return '/' . ltrim($rawInput, '/');
+        // Only a plain image path inside uploads (blocks HTML/JS injection via the "photo" field)
+        $p = '/' . ltrim($rawInput, '/');
+        return preg_match('#^/uploads/[A-Za-z0-9/_-]+\.(jpe?g|png|webp)$#i', $p) && strpos($p, '..') === false ? $p : '';
     }
 
     // 2. Base64 Data URL (e.g. data:image/jpeg;base64,... or data:image/png;base64,...)

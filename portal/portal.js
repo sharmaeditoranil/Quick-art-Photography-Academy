@@ -48,6 +48,10 @@ async function lmsApi(action, opts = {}) {
   if (studentToken) {
     headers['X-Student-Token'] = studentToken;
   }
+  // Academy's own number: server shows its OTP only to a logged-in admin (same browser)
+  if (action === 'send-otp') {
+    try { const at = localStorage.getItem('qa_admin_token'); if (at) headers['X-Admin-Token'] = at; } catch (_) {}
+  }
   let bodyContent = undefined;
   if (opts.body !== undefined && opts.body !== null) {
     bodyContent = typeof opts.body === 'string' ? opts.body : JSON.stringify(opts.body);
@@ -3873,7 +3877,7 @@ async function initStudentSession() {
       if (sbUser && sbUser.email) {
         const autoRes = await lmsApi('supabase-auto-login', {
           method: 'POST',
-          body: { email: sbUser.email }
+          body: { email: sbUser.email, accessToken: sbAccessToken }
         });
         if (autoRes.token) {
           studentToken = autoRes.token;

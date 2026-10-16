@@ -3549,6 +3549,8 @@ function applyFilters(){
 }
 
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// Safe URL for src/href: blocks javascript:/vbscript:/data:text and escapes quotes
+function safeUrl(u){ const v = String(u || '').trim(); return /^(javascript|vbscript|data:text)/i.test(v.replace(/[\s\u0000-\u001f]+/g, '')) ? '#' : escapeHtml(v); }
 // SEC-001: strict phone sanitizer — allow only digits and leading + for tel: hrefs
 function safePhone(s){ return String(s||'').replace(/[^0-9+]/g, '').slice(0, 20); }
 function safeDigits(s){ return String(s||'').replace(/\D/g, '').slice(0, 20); }
@@ -4984,7 +4986,7 @@ async function saveCourseFromStudio() {
     if (courseData.isInternalOnly) {
       toastHtml(`✅ Internal Admission Course saved! Iska koi public page nahi rahega — form submit aur ₹500 fee confirm hone par students ke "My Courses" me automatically show hoga.`, true, 8000);
     } else {
-      toastHtml(`✅ Course saved! Landing page updated: <a href="${finalLandingUrl}" target="_blank" style="color:#bbf7d0;text-decoration:underline;font-weight:700">🌐 View Landing Page →</a>`, true, 8000);
+      toastHtml(`✅ Course saved! Landing page updated: <a href="${safeUrl(finalLandingUrl)}" target="_blank" style="color:#bbf7d0;text-decoration:underline;font-weight:700">🌐 View Landing Page →</a>`, true, 8000);
     }
     loadLmsCourses();
     closeCourseStudio();
@@ -4995,7 +4997,7 @@ async function saveCourseFromStudio() {
     if (idx >= 0) { allLmsCourses[idx] = courseData; } else { allLmsCourses.push(courseData); }
     renderLmsCourses();
     closeCourseStudio();
-    toastHtml(`✅ Course saved to local browser! Landing page updated: <a href="${landingUrl}" target="_blank" style="color:#fde047;text-decoration:underline;font-weight:700">🌐 View Landing Page →</a><br><small style="color:#94a3b8">Note: Backend offline (${escapeHtml(err.message)})</small>`, true, 9000);
+    toastHtml(`✅ Course saved to local browser! Landing page updated: <a href="${safeUrl(landingUrl)}" target="_blank" style="color:#fde047;text-decoration:underline;font-weight:700">🌐 View Landing Page →</a><br><small style="color:#94a3b8">Note: Backend offline (${escapeHtml(err.message)})</small>`, true, 9000);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '💾 Save Course & Publish ✓'; }
   }
@@ -5279,7 +5281,7 @@ function renderLmsStudents() {
       <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
         <td style="max-width:240px">
           <div style="display:flex;align-items:center;gap:10px">
-            <img src="${photoUrl || '../assets/anil-sharma.webp'}" alt="${escapeHtml(s.name || '')}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(245,158,11,0.5);flex-shrink:0" onerror="this.src='../assets/anil-sharma.webp'" />
+            <img src="${safeUrl(photoUrl || '../assets/anil-sharma.webp')}" alt="${escapeHtml(s.name || '')}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(245,158,11,0.5);flex-shrink:0" onerror="this.src='../assets/anil-sharma.webp'" />
             <div style="overflow:hidden">
               <div style="font-weight:700;font-size:13.5px;color:#fff">${escapeHtml(s.name || 'Student')}</div>
               <div style="margin-top:2px">${typeBadge}</div>
@@ -5389,7 +5391,7 @@ function viewOfflineStudentModal(phoneOrId) {
       <!-- Top Hero Strip -->
       <div style="display:flex;align-items:center;gap:16px;background:#131d33;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;margin-bottom:18px">
         <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px">
-          <img id="dossierStudentPhoto_${escapeHtml(phone)}" src="${photoSrc || '../assets/anil-sharma.webp'}" alt="${escapeHtml(fullName)}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #f59e0b;box-shadow:0 6px 16px rgba(0,0,0,0.4)" onerror="this.src='../assets/anil-sharma.webp'" />
+          <img id="dossierStudentPhoto_${escapeHtml(phone)}" src="${safeUrl(photoSrc || '../assets/anil-sharma.webp')}" alt="${escapeHtml(fullName)}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #f59e0b;box-shadow:0 6px 16px rgba(0,0,0,0.4)" onerror="this.src='../assets/anil-sharma.webp'" />
           <button type="button" onclick="triggerAdminPhotoUpload('${escapeHtml(phone)}')" class="btn btn-outline" style="font-size:10.5px;padding:3px 8px;border-radius:6px;color:#fde68a;border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.15);white-space:nowrap;cursor:pointer" title="Upload or Change Student ID Card Photo">
             📷 Change Photo
           </button>
@@ -5498,7 +5500,7 @@ function viewOfflineStudentModal(phoneOrId) {
               <strong style="font-size:12px;color:#fff">Aadhaar Card (Front/Back)</strong>
             </div>
             ${aadhaarSrc ? `
-              <a href="${aadhaarSrc}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#38bdf8;border-color:rgba(56,189,248,0.4);background:rgba(56,189,248,0.1);text-decoration:none">
+              <a href="${safeUrl(aadhaarSrc)}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#38bdf8;border-color:rgba(56,189,248,0.4);background:rgba(56,189,248,0.1);text-decoration:none">
                 👁️ View Aadhaar Card (PDF/Image)
               </a>
             ` : `<span style="font-size:11px;color:#94a3b8">No Aadhaar uploaded</span>`}
@@ -5511,7 +5513,7 @@ function viewOfflineStudentModal(phoneOrId) {
               <strong style="font-size:12px;color:#fff">Education Certificate / Marksheet</strong>
             </div>
             ${certSrc ? `
-              <a href="${certSrc}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#fde68a;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.1);text-decoration:none">
+              <a href="${safeUrl(certSrc)}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#fde68a;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.1);text-decoration:none">
                 👁️ View Certificate (PDF/Image)
               </a>
             ` : `<span style="font-size:11px;color:#94a3b8">No certificate uploaded</span>`}
@@ -5530,8 +5532,8 @@ function viewOfflineStudentModal(phoneOrId) {
             </div>
             ${photoSrc ? `
               <div style="display:flex;align-items:center;gap:10px">
-                <img src="${photoSrc}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid #f59e0b" />
-                <a href="${photoSrc}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#34d399;border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.1);text-decoration:none">
+                <img src="${safeUrl(photoSrc)}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid #f59e0b" />
+                <a href="${safeUrl(photoSrc)}" target="_blank" class="btn btn-outline" style="font-size:11.5px;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:6px;color:#34d399;border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.1);text-decoration:none">
                   👁️ View Full Photo
                 </a>
               </div>
