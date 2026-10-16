@@ -519,4 +519,15 @@
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
+  <url>
+    <loc>https://quickartphotography.in/blog/ai-photoflow-launch-wedding-photo-editing-software/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://quickartphotography.in/assets/ai-photoflow-launch-quick-art-academy.webp</image:loc>
+      <image:title>AI PhotoFlow Launch Celebration at Quick Art Photography Academy Siwan</image:title>
+      <image:caption>AI PhotoFlow wedding photo editing software official launch cake cutting with Anil Sharma and students</image:caption>
+    </image:image>
+  </url>
 </urlset>
