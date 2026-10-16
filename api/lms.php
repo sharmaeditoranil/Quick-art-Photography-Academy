@@ -2376,74 +2376,59 @@ if ($action === 'verify-certificate' && $method === 'GET') {
             }
         }
     }
-    foreach ($codeMap as $code => $cid) {
-        if (strpos($upperCert, '-' . $code . '-') !== false || strpos($upperCert, $code) !== false) {
-            $matchedCourseId = $cid;
-            break;
-        }
-    }
+    // 2) Legacy portal certificates (IDs built in the browser before IDs were stored):
+    //    QAA-2026-<COURSE CODE>-<enrollment suffix | phone last 4>.
+    //    Must match that exact format AND the student must really have completed
+    //    the course (all lessons + quiz). A bare phone/enrollment suffix no longer verifies.
+    $legacyCode = function ($courseId) {
+        $id = strtolower((string)$courseId);
+        if (strpos($id, 'pre-wedding') !== false) return 'PW';
+        if (strpos($id, 'album') !== false) return 'AD';
+        if (strpos($id, 'premiere') !== false) return 'PR';
+        if (strpos($id, 'edius') !== false) return 'ED';
+        if (strpos($id, 'davinci') !== false || strpos($id, 'resolve') !== false) return 'DR';
+        if (strpos($id, 'cinematic') !== false || strpos($id, 'wedding') !== false) return 'CE';
+        if (strpos($id, 'website') !== false || strpos($id, 'web') !== false) return 'WD';
+        if (strpos($id, 'marketing') !== false || strpos($id, 'digital') !== false) return 'DM';
+        if (strpos($id, 'auto') !== false) return 'AU';
+        return 'GEN';
+    };
+    if (!$found && preg_match('/^QAA-2026-[A-Z]+-[A-Z0-9]+$/', $upperCert)) {
+        foreach ($students as $s) {
+            $enroll = $s['offlineAdmissionId'] ?? ($s['enrollmentNo'] ?? '');
+            $suffixes = [];
+            if ($enroll) { $parts = explode('-', $enroll); $suffixes[] = strtoupper(end($parts)); }
+            $phoneSuffix = substr(clean_phone($s['phone'] ?? ''), -4);
+            if (strlen($phoneSuffix) === 4) $suffixes[] = $phoneSuffix;
+            if (!$suffixes) continue;
 
-    foreach ($students as $s) {
-        $phoneSuffix = substr($s['phone'] ?? '', -4);
-        $enroll = $s['offlineAdmissionId'] ?? ($s['enrollmentNo'] ?? '');
-        $enrollSuffix = $enroll ? substr($enroll, -4) : '';
-        if (strlen($phoneSuffix) < 4) continue;
-        if (
-            strpos($certId, $phoneSuffix) !== false || 
-            ($enroll && (strpos($certId, $enroll) !== false || $certId === $enroll || ($enrollSuffix && strpos($certId, $enrollSuffix) !== false))) ||
-            $certId === 'QAA-SAMPLE' || 
-            strpos($certId, (string)($s['phone'] ?? '')) !== false
-        ) {
-            $courses = load_courses();
-            
-            // Prefer the matched course if student is enrolled in it
-            $targetCourse = null;
-            if ($matchedCourseId && in_array($matchedCourseId, $s['enrolledCourses'] ?? [])) {
-                foreach ($courses as $c) {
-                    if ($c['id'] === $matchedCourseId) {
-                        $targetCourse = $c;
-                        break;
-                    }
+            foreach (($s['enrolledCourses'] ?? []) as $cid) {
+                $course = cert_find_course($cid);
+                if (!$course || !cert_eligibility($s, $course)['eligible']) continue;
+                foreach ($suffixes as $suf) {
+                    if ($upperCert !== 'QAA-2026-' . $legacyCode($cid) . '-' . $suf) continue;
+                    $found = true;
+                    $certData = [
+                        'valid' => true,
+                        'studentName' => $s['name'] ?: 'Verified Student',
+                        'studentPhoneMasked' => substr($s['phone'] ?? '', 0, 2) . '******' . substr($s['phone'] ?? '', -2),
+                        'enrollmentNo' => $enroll ?: ('QAA-' . date('Y') . '-' . $phoneSuffix),
+                        'courseId' => $course['id'],
+                        'courseTitle' => $course['title'],
+                        'courseSubtitle' => $course['subtitle'] ?? 'Professional Certification Program',
+                        'category' => $course['category'] ?? 'Filmmaking & Photography',
+                        'issuedDate' => date('d F Y'),
+                        'issuedBy' => 'Quick Art Photography Academy',
+                        'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
+                        'centerCode' => 'PAT/QAA-800001',
+                        'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
+                        'grade' => 'Distinction (Grade A+)',
+                        'status' => 'AUTHENTIC & VERIFIED',
+                        'certificateId' => $certId,
+                        'verificationUrl' => 'https://quickartphotography.in/portal/index.html?verify=' . urlencode($certId)
+                    ];
+                    break 3;
                 }
-            }
-
-            // Fallback to first enrolled course if specific match not found
-            if (!$targetCourse) {
-                foreach ($courses as $c) {
-                    if (in_array($c['id'], $s['enrolledCourses'] ?? [])) {
-                        $targetCourse = $c;
-                        break;
-                    }
-                }
-            }
-
-            $legacyOk = $targetCourse && (
-                cert_eligibility($s, $targetCourse)['eligible'] ||
-                !empty($s['offlineAdmissionId']) ||
-                !empty($s['examPassed'])
-            );
-            if ($legacyOk) {
-                $found = true;
-                $certData = [
-                    'valid' => true,
-                    'studentName' => $s['name'] ?: 'Verified Student',
-                    'studentPhoneMasked' => substr($s['phone'], 0, 2) . '******' . substr($s['phone'], -2),
-                    'enrollmentNo' => $enroll ?: ('QAA-' . date('Y') . '-' . $phoneSuffix),
-                    'courseId' => $targetCourse['id'],
-                    'courseTitle' => $targetCourse['title'],
-                    'courseSubtitle' => $targetCourse['subtitle'] ?? 'Professional Certification Program',
-                    'category' => $targetCourse['category'] ?? 'Filmmaking & Photography',
-                    'issuedDate' => date('d F Y'),
-                    'issuedBy' => 'Quick Art Photography Academy',
-                    'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
-                    'centerCode' => 'PAT/QAA-800001',
-                    'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
-                    'grade' => 'Distinction (Grade A+)',
-                    'status' => 'AUTHENTIC & VERIFIED',
-                    'certificateId' => $certId,
-                    'verificationUrl' => 'https://quickartphotography.in/portal/index.html?verify=' . urlencode($certId)
-                ];
-                break;
             }
         }
     }
@@ -3892,6 +3877,13 @@ if ($action === 'submit-course-exam' && $method === 'POST') {
 
     if (!$studentPhone || empty($answers)) {
         json_err('Answers mandatory hain.', 400);
+    }
+
+    // Offline certification exam is only for Admin-approved admission-form students
+    $isAdmissionStu = !empty($sessionStudent['offlineAdmissionId']) || !empty($sessionStudent['isOfflineStudent']) || !empty($sessionStudent['isOnlineBatch']);
+    $isApprovedStu = !empty($sessionStudent['isApproved']) && in_array($sessionStudent['status'] ?? '', ['active', 'approved']);
+    if (!$isAdmissionStu || !$isApprovedStu) {
+        json_err('Certification exam sirf Admin-approved admission students ke liye hai.', 403);
     }
 
     // 10 Official Certification Exam Questions with correct keys
