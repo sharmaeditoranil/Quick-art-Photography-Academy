@@ -246,18 +246,20 @@
         letter-spacing: 0.05em;
         margin-bottom: 16px;
       }
+      .blog-article-body .aipf-cta-box,
       .aipf-cta-box {
-        background: linear-gradient(135deg, #161a23 0%, #0d0f14 100%);
-        border: 1px solid rgba(201, 146, 56, 0.3);
-        border-radius: 20px;
-        padding: 36px 32px;
-        color: #ffffff;
-        margin: 40px 0;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+        background: linear-gradient(135deg, #161a23 0%, #0d0f14 100%) !important;
+        border: 1px solid rgba(201, 146, 56, 0.45) !important;
+        border-radius: 20px !important;
+        padding: 40px 32px !important;
+        color: #ffffff !important;
+        margin: 44px 0 !important;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
+        text-align: center !important;
+        position: relative !important;
+        overflow: hidden !important;
       }
+      .blog-article-body .aipf-cta-box::before,
       .aipf-cta-box::before {
         content: '';
         position: absolute;
@@ -265,21 +267,39 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: radial-gradient(circle, rgba(201, 146, 56, 0.1) 0%, transparent 60%);
+        background: radial-gradient(circle, rgba(201, 146, 56, 0.15) 0%, transparent 60%);
         pointer-events: none;
       }
-      .aipf-cta-title {
-        font-size: 26px;
-        font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 12px;
+      .blog-article-body .aipf-cta-box h3,
+      .blog-article-body .aipf-cta-box .aipf-cta-title,
+      .aipf-cta-box h3,
+      .aipf-cta-box .aipf-cta-title {
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        margin: 0 0 14px 0 !important;
+        border: none !important;
+        padding: 0 !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
       }
-      .aipf-cta-desc {
-        color: #c5cbd5;
-        font-size: 16px;
-        max-width: 680px;
-        margin: 0 auto 24px auto;
-        line-height: 1.6;
+      .blog-article-body .aipf-cta-box h3::after,
+      .aipf-cta-box h3::after {
+        display: none !important;
+      }
+      .blog-article-body .aipf-cta-box p,
+      .blog-article-body .aipf-cta-box .aipf-cta-desc,
+      .aipf-cta-box p,
+      .aipf-cta-box .aipf-cta-desc {
+        color: #e2e8f0 !important;
+        font-size: 16px !important;
+        max-width: 680px !important;
+        margin: 0 auto 26px auto !important;
+        line-height: 1.7 !important;
+      }
+      .blog-article-body .aipf-cta-box a:not(.aipf-btn-primary):not(.aipf-btn-secondary),
+      .aipf-cta-box a:not(.aipf-btn-primary):not(.aipf-btn-secondary) {
+        color: #f6c065 !important;
+        text-decoration: underline !important;
       }
       .aipf-btn-group {
         display: flex;
@@ -747,16 +767,16 @@
                         </div>
 
                         <!-- CTA Box 1 -->
-                        <div class="aipf-cta-box">
-                            <h3 class="aipf-cta-title">Apne Wedding Studio Ko AI Powered Banayein!</h3>
-                            <p class="aipf-cta-desc">
+                        <div class="aipf-cta-box" style="background: linear-gradient(135deg, #161a23 0%, #0d0f14 100%) !important; color: #ffffff !important; border: 1px solid rgba(201, 146, 56, 0.45) !important;">
+                            <h3 class="aipf-cta-title" style="color: #ffffff !important; font-size: 28px !important; font-weight: 800 !important; margin: 0 0 14px 0 !important; border: none !important; padding: 0 !important;">Apne Wedding Studio Ko AI Powered Banayein!</h3>
+                            <p class="aipf-cta-desc" style="color: #e2e8f0 !important; font-size: 16px !important; line-height: 1.7 !important; max-width: 680px !important; margin: 0 auto 26px auto !important;">
                                 AI PhotoFlow par abhi visit karein aur dekhein kaise aapka ghanton ka editing aur culling time sirf kuch minutes mein badal jata hai.
                             </p>
                             <div class="aipf-btn-group">
                                 <a href="https://aiphotoflow.in/" target="_blank" rel="noopener" class="aipf-btn-primary">
                                     🌐 Visit Official Website (aiphotoflow.in) →
                                 </a>
-                                <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20mujhe%20AI%20PhotoFlow%20ke%20bare%20mein%20jankari%20chahiye" target="_blank" rel="noopener" class="aipf-btn-secondary">
+                                <a href="https://wa.me/919939800780?text=Hi%20Anil%20Sir%2C%20mujhe%20AI%20PhotoFlow%20ke%20bare%20mein%20jankari%20chahiye" target="_blank" rel="noopener" class="aipf-btn-secondary" style="color: #ffffff !important;">
                                     💬 WhatsApp Enquiry: 9939800780
                                 </a>
                             </div>
@@ -869,16 +889,16 @@
                         </div>
 
                         <!-- Final Call to Action -->
-                        <div class="aipf-cta-box" style="margin-top:48px;">
-                            <h3 class="aipf-cta-title">Lagan Season Mein Apna Time Aur Paisa Dono Bachayein!</h3>
-                            <p class="aipf-cta-desc">
-                                Abhi visit karein <a href="https://aiphotoflow.in/" target="_blank" rel="noopener" style="color:var(--blog-gold); font-weight:700;">www.aiphotoflow.in</a> aur ban jaiye apne area ke sabse fast aur modern wedding photographer!
+                        <div class="aipf-cta-box" style="margin-top: 48px; background: linear-gradient(135deg, #161a23 0%, #0d0f14 100%) !important; color: #ffffff !important; border: 1px solid rgba(201, 146, 56, 0.45) !important;">
+                            <h3 class="aipf-cta-title" style="color: #ffffff !important; font-size: 28px !important; font-weight: 800 !important; margin: 0 0 14px 0 !important; border: none !important; padding: 0 !important;">Lagan Season Mein Apna Time Aur Paisa Dono Bachayein!</h3>
+                            <p class="aipf-cta-desc" style="color: #e2e8f0 !important; font-size: 16px !important; line-height: 1.7 !important; max-width: 680px !important; margin: 0 auto 26px auto !important;">
+                                Abhi visit karein <a href="https://aiphotoflow.in/" target="_blank" rel="noopener" style="color: #f6c065 !important; font-weight: 700; text-decoration: underline;">www.aiphotoflow.in</a> aur ban jaiye apne area ke sabse fast aur modern wedding photographer!
                             </p>
                             <div class="aipf-btn-group">
                                 <a href="https://aiphotoflow.in/" target="_blank" rel="noopener" class="aipf-btn-primary">
                                     🚀 Start Using AI PhotoFlow Now →
                                 </a>
-                                <a href="../../courses/wedding-album-design/" class="aipf-btn-secondary">
+                                <a href="../../courses/wedding-album-design/" class="aipf-btn-secondary" style="color: #ffffff !important;">
                                     📖 Learn Wedding Album Design Course
                                 </a>
                             </div>
