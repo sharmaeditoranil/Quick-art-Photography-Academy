@@ -2433,6 +2433,45 @@ if ($action === 'verify-certificate' && $method === 'GET') {
         }
     }
 
+    // 3) Offline / batch certificates printed with the admission number as the certificate
+    //    number (e.g. QAA-OFF-2026-B6D2C). Valid only for an exact match of an
+    //    Admin-approved admission — pending applications never verify.
+    if (!$found) {
+        $admFile = DATA_DIR . '/offline-admissions.json';
+        $allAdms = file_exists($admFile) ? (json_decode(file_get_contents($admFile), true) ?: []) : [];
+        foreach ($allAdms as $a) {
+            if (strtoupper($a['id'] ?? '') !== $upperCert) continue;
+            $aStatus = $a['status'] ?? '';
+            $admApproved = !empty($a['isApproved']) || in_array($aStatus, ['approved', 'active', 'approved_alumni'], true);
+            $stuRec = null;
+            foreach ($students as $s) {
+                if (clean_phone($s['phone'] ?? '') === clean_phone($a['phone'] ?? '')) { $stuRec = $s; break; }
+            }
+            if ($stuRec && !empty($stuRec['isApproved']) && in_array($stuRec['status'] ?? '', ['active', 'approved'], true)) {
+                $admApproved = true;
+            }
+            if (!$admApproved || $aStatus === 'pending_approval') break;
+
+            $found = true;
+            $certData = [
+                'valid' => true,
+                'studentName' => trim($a['fullName'] ?? '') ?: (($stuRec['name'] ?? '') ?: 'Verified Student'),
+                'studentPhoneMasked' => substr(clean_phone($a['phone'] ?? ''), 0, 2) . '******' . substr(clean_phone($a['phone'] ?? ''), -2),
+                'enrollmentNo' => $a['id'],
+                'courseId' => map_offline_course_id($a['courseTitle'] ?? ''),
+                'courseTitle' => ($a['courseTitle'] ?? '') ?: 'Professional Diploma Program',
+                'issuedDate' => !empty($a['createdAt']) ? date('d F Y', strtotime($a['createdAt'])) : '',
+                'issuedBy' => 'Quick Art Photography Academy',
+                'accreditation' => 'ISO 9001:2015 Certified Educational Institution | Govt. of India MSME Regd. (UDYAM-BR-35-0027860)',
+                'mentor' => 'Anil Sharma (Founder & Lead Instructor)',
+                'status' => 'AUTHENTIC & VERIFIED',
+                'certificateId' => $a['id'],
+                'verificationUrl' => 'https://quickartphotography.in/portal/index.html?verify=' . urlencode($a['id'])
+            ];
+            break;
+        }
+    }
+
     // Former fallback validated ANY id containing a course code (e.g. "-PR-") using
     // an unrelated student's name. Disabled: only real certificates verify now.
     if (false && !$found && $matchedCourseId) {
