@@ -5093,7 +5093,11 @@ function renderLmsStudents() {
     const isPaid = !!s.isPaid500 || s.paymentStatus === 'paid';
     const isApproved = (s.isApproved === true || s.status === 'active' || s.status === 'approved') && s.status !== 'pending_approval';
     const photoUrl = resolveMediaUrl(s.photoUrl || s.avatar || s.avatarUrl || (s.offlineData && (s.offlineData.photoUrl || s.offlineData.avatar || s.offlineData.avatarUrl)) || '');
-    const certCode = `QAA-PR-${(s.phone || '0000').slice(-4)}`;
+    // Real certificates issued to this student (portal course certificates + offline exam certificate)
+    const issuedCerts = Object.entries(s.certificates || {})
+      .filter(([, c]) => c && c.id)
+      .map(([cid, c]) => ({ id: c.id, title: c.courseTitle || cid }));
+    if (s.certId) issuedCerts.push({ id: s.certId, title: s.appliedCourse || 'Certification Exam' });
     const hasAdmission = isOffline || isOnlineBatch || !!s.offlineAdmissionId || !!s.offlineData || !!s.photoUrl || (typeof allOfflineAdmissions !== 'undefined' && allOfflineAdmissions.some(a => String(a.phone || '').replace(/[^0-9]/g, '') === String(s.phone || '').replace(/[^0-9]/g, '')));
 
     // Type Badge
@@ -5238,7 +5242,9 @@ function renderLmsStudents() {
     actionsHtml += `
       <button onclick="openStudentWhatsApp('${s.phone}', '${escapeHtml(s.name || '')}')" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#34d399;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.12)" title="Send WhatsApp Message">💬</button>
       <a href="tel:+91${s.phone}" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#93c5fd;border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.12)" title="Call Student">📞</a>
-      <a href="portal/?verify=${encodeURIComponent(certCode)}" target="_blank" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#fde68a;border-color:rgba(216,161,83,0.3);background:rgba(216,161,83,0.12)" title="Verify Certificate">🎓</a>
+      ${issuedCerts.length
+        ? issuedCerts.map(c => `<a href="portal/?verify=${encodeURIComponent(c.id)}" target="_blank" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#fde68a;border-color:rgba(216,161,83,0.3);background:rgba(216,161,83,0.12)" title="Verify Certificate: ${escapeHtml(c.title)}">🎓 ${escapeHtml(c.id)}</a>`).join('')
+        : `<span class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#64748b;border-color:rgba(100,116,139,0.3);cursor:default;opacity:0.7" title="Is student ko abhi koi certificate issue nahi hua">🎓 No Certificate</span>`}
       <button onclick="openSetPasswordModal('${s.phone}', '${escapeHtml(s.email || '')}')" class="btn btn-outline" style="padding:5px 9px;font-size:11px;color:#c4b5fd;border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.12)" title="Set Email/Password Login">🔑</button>
       <button onclick="openEditStudentModal('${s.phone}')" class="btn btn-outline" style="padding:5px 8px;font-size:11px" title="Edit Student">✏️</button>
       <button onclick="deleteStudent('${s.phone}')" class="btn btn-danger" style="padding:5px 8px;font-size:11px" title="Remove Student">✕</button>
