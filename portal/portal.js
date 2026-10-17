@@ -5832,6 +5832,14 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
           <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:8px 10px;cursor:pointer">💬</button>
         </div>`;
     }
+
+    // One step: 'Enter Live Classroom' joins straight away while the class is live
+    // (the Join Class button stays as a retry if joining fails or the class hasn't started)
+    window._qaZoomAutoJoined = window._qaZoomAutoJoined || {};
+    if (session && session.status === 'live' && !window._qaZoomAutoJoined[session.id] && !document.getElementById('zmmtg-root')?.children.length) {
+      window._qaZoomAutoJoined[session.id] = true;
+      setTimeout(() => window.qaJoinZoomClass && window.qaJoinZoomClass(), 50);
+    }
     return;
   } else {
     if (liveBox) liveBox.classList.remove('is-zoom');
