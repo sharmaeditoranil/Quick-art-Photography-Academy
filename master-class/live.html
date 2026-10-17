@@ -79,38 +79,6 @@
         "ratingCount": 257,
         "reviewCount": 257
       },
-      "review": [
-        {
-          "@type": "Review",
-          "author": {
-            "@type": "Person",
-            "name": "Karan Verma"
-          },
-          "datePublished": "2026-09-15",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": 5,
-            "bestRating": 5,
-            "worstRating": 1
-          },
-          "reviewBody": "AI se wedding photos aur videos edit karne ka practical workflow itne kam price me sikhna kamaal ka experience raha."
-        },
-        {
-          "@type": "Review",
-          "author": {
-            "@type": "Person",
-            "name": "Sunil Kumar"
-          },
-          "datePublished": "2026-09-22",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": 5,
-            "bestRating": 5,
-            "worstRating": 1
-          },
-          "reviewBody": "1-click me RAW photos retouching aur AI audio enhance ka live practical dekh kar maza aa gaya. 100% value for money!"
-        }
-      ],
       "offers": {
         "@type": "Offer",
         "price": "21",
@@ -1779,6 +1747,53 @@
       .bonus-body h3 { margin-right: 0 !important; }
       .hero-bonus { font-size: 12.5px; }
     }
+
+    /* Bonus colour v3: wedding maroon/purple so the section stands apart */
+    .bonus-sec { background: radial-gradient(ellipse 70% 60% at 20% 0%, rgba(236, 72, 153, 0.22), transparent 60%), radial-gradient(ellipse 60% 60% at 90% 100%, rgba(245, 158, 11, 0.18), transparent 60%), linear-gradient(160deg, #2b0b2e 0%, #4a0f2b 50%, #250a1c 100%) !important; border-top: 1px solid rgba(244, 114, 182, 0.25); border-bottom: 1px solid rgba(244, 114, 182, 0.25); }
+    .bonus-sec .eyebrow { color: #f9a8d4 !important; }
+    .bonus-sec .sec-sub { color: #f3d9e6 !important; }
+    .bonus-sec .gold-gradient { background: linear-gradient(135deg, #fde68a, #fbbf24 50%, #f472b6) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+    .bonus-panel { background: linear-gradient(rgba(30, 8, 26, 0.72), rgba(30, 8, 26, 0.72)) padding-box, linear-gradient(135deg, #fde68a, #f472b6 45%, #fbbf24 75%, #db2777) border-box !important; box-shadow: 0 0 0 6px rgba(244, 114, 182, 0.08), 0 30px 70px -30px rgba(236, 72, 153, 0.55) !important; }
+    .bonus-ribbon { background: linear-gradient(105deg, #fde68a, #fbbf24 45%, #f472b6) !important; box-shadow: 0 10px 26px rgba(236, 72, 153, 0.45) !important; }
+    .bonus-card { background: linear-gradient(165deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03) 60%) !important; border-color: rgba(244, 114, 182, 0.35) !important; }
+    .bonus-card:hover { border-color: rgba(253, 230, 138, 0.7) !important; }
+    .bonus-ic { background: linear-gradient(135deg, #fb7185, #ec4899 50%, #a855f7) !important; color: #fff !important; box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4) !important; }
+    .bonus-tag { color: #fde68a !important; }
+    .bonus-body p { color: #f1d7e4 !important; }
+
+    /* Mentor + reviews hooks */
+    .mentor-sec .sec-head { margin-bottom: 36px; }
+    .mentor-role { color: var(--gold-2); }
+    .mentor-points { list-style: none; padding: 0; margin: 16px 0 18px; display: grid; gap: 9px; }
+    .mentor-points li { display: flex; gap: 10px; font-size: 15px; line-height: 1.5; color: #e7e3da; }
+    .mentor-points li span { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #1a1205; background: linear-gradient(135deg, #fce09b, #d8a153); }
+    .mentor-photo img { border: 3px solid rgba(216, 161, 83, 0.55); box-shadow: 0 24px 60px -20px rgba(216, 161, 83, 0.45); }
+    .mentor-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 22px; }
+    .mentor-yt { color: #f5c879; font-weight: 700; font-size: 14px; text-decoration: none; }
+    .mentor-yt:hover { text-decoration: underline; }
+    .rv-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 16px; border-radius: 999px; background: #fff; color: #1f2937; font-size: 13.5px; font-weight: 600; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3); }
+    .rv-badge b { font-size: 16px; }
+    .rv-badge .stars { color: #f59e0b; }
+    .rv-g { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; color: #fff; background: conic-gradient(#ea4335 0 25%, #fbbc05 0 50%, #34a853 0 75%, #4285f4 0); }
+    .more-reviews { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .rv-more { color: #f5c879; font-weight: 700; font-size: 14px; text-decoration: none; }
+    @media (max-width: 560px) {
+      .mentor-points li { font-size: 14px; }
+      .mentor-cta { flex-direction: column; align-items: stretch; text-align: center; }
+      .mentor-cta .cta-green { width: 100%; }
+      .rv-badge { font-size: 12.5px; padding: 7px 12px; }
+    }
+
+    /* Colour balance: alternate section tones + gold glow so dark sections don't blur together */
+    body.lp #fast-editing, body.lp #curriculum, body.lp #register, body.lp #certificate-showcase, body.lp section.faq-sec { background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(216, 161, 83, 0.07), transparent 70%), #0d0c0a !important; }
+    body.lp #fayda, body.lp section.light-2:not(#reviews), body.lp section.light:not(#certificate-showcase), body.lp #mentor { background: linear-gradient(180deg, #14110c, #0f0d0a) !important; }
+    body.lp #reviews { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(66, 133, 244, 0.08), transparent 70%), #0b0d12 !important; }
+    body.lp .final-cta { background: radial-gradient(ellipse 70% 70% at 50% 100%, rgba(216, 161, 83, 0.22), transparent 70%), #0d0c0a !important; }
+    .rv-clean { grid-template-columns: minmax(0, 320px) minmax(0, 1fr) !important; align-items: stretch; }
+    .rv-note { padding: 26px 28px; border-radius: 18px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(216, 161, 83, 0.4); display: flex; flex-direction: column; justify-content: center; }
+    .rv-note h3 { margin: 0 0 8px; font-size: 18px; color: #fff; }
+    .rv-note p { margin: 0; font-size: 14.5px; line-height: 1.65; color: #b9bdc9; }
+    @media (max-width: 760px) { .rv-clean { grid-template-columns: 1fr !important; } }
     /* Sticky CTA: no dark strip behind the button */
     .mobile-sticky-cta { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-top: 0 !important; box-shadow: none !important; pointer-events: none; }
     .mobile-sticky-cta .sticky-btn { pointer-events: auto; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(216, 161, 83, 0.35); }
@@ -2043,7 +2058,7 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">आपका फायदा</span>
-        <h2 class="sec-title">Class Ke Baad <span class="gold-gradient">Aapko Kya Fayda Hoga?</span></h2>
+        <h2 class="sec-title">₹21 Lagaiye, <span class="gold-gradient">Fayda Poore Season Uthaiye</span></h2>
         <p class="sec-sub">Ek shaam ki class — aur AI ke saath kaam karne ka saaf tarika.</p>
       </div>
 
@@ -2094,7 +2109,7 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">क्लास में क्या सीखेंगे</span>
-        <h2 class="sec-title">Class Me Ye <span class="gold-gradient">4 Kaam Sikhenge</span></h2>
+        <h2 class="sec-title">Ek Class, <span class="gold-gradient">4 Bade Kaam</span></h2>
         <p class="sec-sub">Har kaam me AI kahan madad karta hai — practical, screen par.</p>
       </div>
 
@@ -2313,8 +2328,9 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">students की बात</span>
-        <h2 class="sec-title">1,800+ students ka <span class="gold-gradient">bharosa</span></h2>
-        <p class="sec-sub">Suniye, hamare students khud kya bolte hain.</p>
+        <h2 class="sec-title">Hamari Baat Nahi — <span class="gold-gradient">Students Ki Zubaani Suniye</span></h2>
+        <p class="sec-sub">1,800+ students ne yahan sikha hai. Video dabaiye aur khud suniye.</p>
+        <div class="rv-badge"><span class="rv-g">G</span><b>4.9</b><span class="stars">★★★★★</span><span>257+ Google reviews</span></div>
       </div>
 
       <div class="vt-grid">
@@ -2340,41 +2356,22 @@
           </a>
       </div>
 
-      <div class="reviews-grid">
+      <div class="reviews-grid rv-clean">
         <div class="rating-card reveal">
           <div class="rating-big">4.9</div>
           <div class="stars">★★★★★</div>
-          <p>257+ Google reviews • 1,800+ students trained across India</p>
-          <a href="https://maps.app.goo.gl/eRkAc7kia1D1s1zQ7" target="_blank" rel="noopener">Google par reviews dekhein →</a>
+          <p>257+ Google reviews • 1,800+ students trained</p>
+          <a href="https://maps.app.goo.gl/eRkAc7kia1D1s1zQ7" target="_blank" rel="noopener">Google par saare reviews khud padhiye →</a>
         </div>
-        <figure class="review reveal">
-          <div class="stars">★★★★★</div>
-          <blockquote>"AI se wedding photos aur videos edit karne ka practical workflow itne kam price me sikhna kamaal ka experience raha."</blockquote>
-          <figcaption class="reviewer">
-            <div class="avatar">KV</div>
-            <div><strong>Karan Verma</strong><span>Workshop student</span></div>
-          </figcaption>
-        </figure>
-        <figure class="review reveal">
-          <div class="stars">★★★★★</div>
-          <blockquote>"1-click me RAW photos retouching aur AI audio enhance ka live practical dekh kar maza aa gaya. 100% value for money!"</blockquote>
-          <figcaption class="reviewer">
-            <div class="avatar">SK</div>
-            <div><strong>Sunil Kumar</strong><span>Workshop student</span></div>
-          </figcaption>
-        </figure>
-        <figure class="review reveal">
-          <div class="stars">★★★★★</div>
-          <blockquote>"Quick Art Photography Academy completely changed my approach to lighting and post-processing. My portfolio has never looked better and I have started booking paid clients!"</blockquote>
-          <figcaption class="reviewer">
-            <img class="avatar" src="../home-assets/6a62e4eb3643ad.webp" alt="Raju Gupta" width="42" height="42" loading="lazy" style="object-fit:cover">
-            <div><strong>Raju Gupta</strong><span>Portrait &amp; Lifestyle Photographer</span></div>
-          </figcaption>
-        </figure>
+        <div class="rv-note reveal">
+          <h3>Reviews hum yahan nahi likhte</h3>
+          <p>Upar ke videos me hamare asli students khud bol rahe hain. Likhe hue reviews Google par hain — wahan jaakar khud check kariye. Wahan koi bhi review kar sakta hai, hum unhe badal nahi sakte.</p>
+        </div>
       </div>
 
       <div class="more-reviews reveal">
-        <a href="../alumni/" class="btn btn-dark">Aur reviews &amp; student stories dekhein →</a>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Main Bhi Sikhna Chahta Hoon <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class + 6 free bonus</span></a>
+        <a href="../alumni/" class="rv-more">Aur student stories dekhein →</a>
       </div>
     </div>
   </section>
@@ -2410,22 +2407,38 @@
   </section>
 
   <!-- ═══════════ MENTOR ═══════════ -->
-  <section class="section dark-2">
-    <div class="wrap mentor-grid">
-      <div class="mentor-photo reveal">
-        <img src="../assets/anil-sharma-mentor.webp" alt="Mentor Anil Sharma" id="lp-mentor-img" width="1024" height="1024" loading="lazy">
-        <div class="mentor-badge"><strong>10+ yrs</strong><span>Wedding editing experience</span></div>
+  <section class="section dark-2 mentor-sec" id="mentor">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">आपके मेंटर</span>
+        <h2 class="sec-title">Class Kaun Lega? <span class="gold-gradient">Seedhe Anil Sharma</span></h2>
+        <p class="sec-sub">Koi recorded video nahi — Anil Sir khud live aakar sikhayenge aur aapke sawal ka jawab denge.</p>
       </div>
-      <div class="reveal">
-        <div class="mentor-role">Aapke mentor</div>
-        <h2 class="mentor-name" id="lp-mentor-name">Anil Sharma</h2>
-        <p class="mentor-bio" id="lp-mentor-bio">
-          Quick Art Photography Academy ke founder. 10+ saal se wedding editing aur color ka kaam kar rahe hain. India bhar me 1,800+ photographer aur editor ko sikha chuke hain — is class me khud aapko sikhayenge.
-        </p>
-        <div class="mentor-stats">
-          <div class="mentor-stat"><strong>1,800+</strong><span>Students</span></div>
-          <div class="mentor-stat"><strong>4.9★</strong><span>257+ reviews</span></div>
-          <div class="mentor-stat"><strong>10+</strong><span>Years</span></div>
+      <div class="mentor-grid">
+        <div class="mentor-photo reveal">
+          <img src="../assets/anil-sharma-mentor.webp" alt="Mentor Anil Sharma" id="lp-mentor-img" width="1024" height="1024" loading="lazy">
+          <div class="mentor-badge"><strong>10+ yrs</strong><span>Wedding editing experience</span></div>
+        </div>
+        <div class="reveal">
+          <div class="mentor-role">Founder, Quick Art Photography Academy • Siwan, Bihar</div>
+          <h3 class="mentor-name" id="lp-mentor-name">Anil Sharma</h3>
+          <p class="mentor-bio" id="lp-mentor-bio">
+            10+ saal ka wedding filmmaking aur photo/video editing experience. 1,800+ wedding photographers aur editors ko ground-level practical workflows sikhaye hain.
+          </p>
+          <ul class="mentor-points">
+            <li><span>✓</span> Album, video, teaser aur full wedding — sab ka kaam khud karke dikhayenge</li>
+            <li><span>✓</span> Hindi me, aasan bhasha me — naye log bhi samajh jayenge</li>
+            <li><span>✓</span> Class ke end me live sawal-jawab</li>
+          </ul>
+          <div class="mentor-stats">
+            <div class="mentor-stat"><strong>1,800+</strong><span>Students</span></div>
+            <div class="mentor-stat"><strong>4.9★</strong><span>257+ Google reviews</span></div>
+            <div class="mentor-stat"><strong>10+</strong><span>Years</span></div>
+          </div>
+          <div class="mentor-cta">
+            <a href="#register" class="cta-green cta-rock"><span class="cta-main">Anil Sir Se Live Sikhiye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Sunday 7 PM • 6 free bonus</span></a>
+            <a href="https://www.youtube.com/@QuickartPhotographyAcademy" target="_blank" rel="noopener" class="mentor-yt">▶ YouTube par Anil Sir ka kaam dekhiye</a>
+          </div>
         </div>
       </div>
     </div>
