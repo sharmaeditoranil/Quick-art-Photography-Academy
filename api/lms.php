@@ -542,6 +542,11 @@ if ($action === 'send-otp' && $method === 'POST') {
         json_err('Is number ke liye pehle isi browser me Admin Panel me login karein, phir OTP mangwayein.', 403);
     }
 
+    // Local development never sends real WhatsApp messages (devOtp is returned below instead)
+    if ($isLocal) {
+        json_ok(['message' => 'Local test: OTP not sent', 'phone' => $phone, 'devOtp' => $otp]);
+    }
+
     // Direct WhatsApp OTP via AIbotflow (Official Meta WhatsApp Cloud API)
     if (!$demoMode && !$isSenderOwnNumber && !empty($settings['aibotflowApiKey'])) {
         $sendRes = send_aibotflow_whatsapp_otp($phone, $otp, $settings['aibotflowApiKey'], $settings['aibotflowOtpTemplate'] ?? 'quickart_photography_verification_otp');
@@ -788,6 +793,14 @@ if ($action === 'send-email-otp' && $method === 'POST') {
 
     $otp = strval(random_int(100000, 999999));
     $settings = load_lms_settings();
+    // Local development never sends real emails: store the OTP and return it
+    if (in_array($ipAddr, ['127.0.0.1', '::1'])) {
+        $sendRes = ['ok' => true];
+        $eo = load_email_otps();
+        $eo[$email] = ['otp' => $otp, 'purpose' => $purpose, 'expiresAt' => time() + 600, 'verified' => false];
+        save_email_otps($eo);
+        json_ok(['message' => 'Local test: email not sent', 'email' => $email, 'purpose' => $purpose, 'devOtp' => $otp]);
+    }
     $sendRes = send_email_otp($email, $otp, $purpose, $settings);
 
     if (!$sendRes['ok']) {
