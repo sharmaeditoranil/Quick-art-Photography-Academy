@@ -209,27 +209,25 @@
 /* Close 'X' Button */
 .offline-modal-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
   color: #94a3b8;
-  font-size: 17px;
+  font-size: 24px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.15s;
 }
 
 .offline-modal-close:hover {
-  background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.4);
 }
 
 /* Clean Header */
@@ -336,9 +334,17 @@
 }
 
 .offline-phone-prefix {
-  padding: 0 9px;
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 10px;
+  white-space: nowrap;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1;
   color: #94a3b8;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
@@ -437,4 +443,28 @@
   font-size: 13.5px;
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+}
+
+/* Desktop / tablet: larger, roomier booking popup (mobile stays compact) */
+@media (min-width: 769px) {
+  .offline-modal-card {
+    max-width: 460px;
+    max-height: 92vh;
+    padding: 30px 32px 24px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #121926 0%, #0d1219 100%);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(228, 179, 95, 0.08), 0 0 44px rgba(228, 179, 95, 0.14);
+  }
+  .offline-modal-close { top: 12px; right: 12px; font-size: 26px; }
+  .offline-modal-header { margin-bottom: 14px; padding-right: 0; }
+  .offline-modal-badge { font-size: 11px; padding: 4px 12px; margin-bottom: 10px; }
+  .offline-modal-title { font-size: 25px; letter-spacing: -0.01em; }
+  .offline-modal-offer-tag { margin: 10px 0 18px; padding: 9px 12px; font-size: 13px; border-radius: 9px; }
+  .offline-form-group { margin-bottom: 14px; }
+  .offline-form-label { font-size: 11.5px; margin-bottom: 6px; }
+  .offline-input, .offline-select { padding: 12px 14px; font-size: 15px; border-radius: 9px; }
+  .offline-phone-group { border-radius: 9px; }
+  .offline-phone-prefix { padding: 0 14px; font-size: 14px; gap: 6px; }
+  .offline-modal-submit-btn { margin-top: 8px; padding: 14px 18px; font-size: 16.5px; border-radius: 10px; }
+  .offline-trust-note { font-size: 12.5px; margin-top: 12px; }
 }
