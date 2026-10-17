@@ -2685,8 +2685,9 @@ if ($action === 'update-profile' && $method === 'POST') {
             }
         }
     }
-    $name = mb_substr(strip_tags($name), 0, 80);
-    $city = mb_substr(strip_tags($city), 0, 80);
+    // UTF-8 safe trim to 80 characters (server has no mbstring extension)
+    $name = trim(preg_replace('/^(.{0,80}).*$/us', '$1', strip_tags($name)));
+    $city = trim(preg_replace('/^(.{0,80}).*$/us', '$1', strip_tags($city)));
 
     $photoUrl = '';
     if ($rawPhoto) {

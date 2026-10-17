@@ -269,9 +269,6 @@ document.addEventListener('DOMContentLoaded', function () {
           if (previewImg) previewImg.src = e.target.result;
           var issuedPhoto = document.getElementById('issued-id-photo');
           if (issuedPhoto) issuedPhoto.src = e.target.result;
-          try {
-            localStorage.setItem('qaa_student_avatar', e.target.result);
-          } catch (err) {}
         };
         instantReader.readAsDataURL(file);
 
@@ -662,11 +659,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.setItem('qa_student_token', data.token);
               } catch (e) {}
             }
-            if (data.photoUrl || studentUploadedPhotoDataUrl) {
-              try {
-                localStorage.setItem('qaa_student_avatar', data.photoUrl || studentUploadedPhotoDataUrl);
-              } catch (e) {}
-            }
 
             // If Razorpay order returned for online payment (and not direct batch confirmation)
             if (data.paymentMode === 'online' && data.razorpay && window.Razorpay && !data.isOnlineBatch) {
@@ -884,17 +876,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (issuedPhoto) {
       var photoSource = studentUploadedPhotoDataUrl ||
                         (data && (data.photoUrl || data.avatar || data.avatarUrl)) ||
-                        localStorage.getItem('qaa_student_avatar') ||
                         (previewImg && previewImg.src && previewImg.src.indexOf('default-student-avatar') === -1 && previewImg.src.indexOf('anil-sharma') === -1 ? previewImg.src : '') ||
                         '../assets/default-student-avatar.svg';
       issuedPhoto.src = photoSource;
-      try {
-        if (studentUploadedPhotoDataUrl) {
-          localStorage.setItem('qaa_student_avatar', studentUploadedPhotoDataUrl);
-        } else if (data && (data.photoUrl || data.avatar)) {
-          localStorage.setItem('qaa_student_avatar', data.photoUrl || data.avatar);
-        }
-      } catch (e) {}
     }
 
     // Generate Verification URL & Scannable QR Code

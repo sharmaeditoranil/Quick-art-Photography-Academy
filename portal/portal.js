@@ -3,6 +3,8 @@
  */
 
 const TOKEN_KEY = 'qaa_student_token';
+// A shared, account-less avatar key used to leak one person's photo onto another account on the same device
+try { localStorage.removeItem('qaa_student_avatar'); } catch (_) {}
 const _initParams = new URLSearchParams(window.location.search);
 const _tokenFromUrl = _initParams.get('token');
 let studentToken = _tokenFromUrl || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('qa_student_token') || '';
@@ -430,7 +432,7 @@ async function loadDashboard() {
     // ── Header / Nav Dropdown & Dashboard Hero User Details ──
     const shortName = currentStudent.name.split(' ')[0];
     const initials  = currentStudent.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-    const avatarUrl = currentStudent.avatar || currentStudent.avatarUrl || currentStudent.photoUrl || localStorage.getItem('qaa_avatar_' + currentStudent.id) || localStorage.getItem('qaa_student_avatar') || '';
+    const avatarUrl = currentStudent.avatar || currentStudent.avatarUrl || currentStudent.photoUrl || localStorage.getItem('qaa_avatar_' + currentStudent.id) || '';
 
     // Set name in nav and hero
     const elName = document.getElementById('nav-user-name');
@@ -4015,7 +4017,7 @@ async function loadDiscussionComments() {
   list.innerHTML = '<div class="discussion-loading">Loading comments…</div>';
 
   try {
-    const tok = localStorage.getItem('qaa_student_token') || '';
+    const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
     const res = await fetch(
       `${LMS_API}?action=discussion-list&courseId=${encodeURIComponent(_discussionCourseId)}&lessonId=${encodeURIComponent(_discussionLessonId)}`,
       { headers: { 'X-Student-Token': tok } }
@@ -4082,7 +4084,7 @@ async function postDiscussionComment() {
   btn.textContent = 'Posting…';
 
   try {
-    const tok = localStorage.getItem('qaa_student_token') || '';
+    const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
     const res = await fetch(`${LMS_API}?action=discussion-post`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Student-Token': tok },
@@ -4128,7 +4130,7 @@ async function toggleCommentLike(commentId, btn) {
   localStorage.setItem('qaa_liked_comments', JSON.stringify(_likedComments));
 
   // Fire-and-forget API call
-  const tok = localStorage.getItem('qaa_student_token') || '';
+  const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
   fetch(`${LMS_API}?action=discussion-like`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Student-Token': tok },
@@ -4221,7 +4223,7 @@ function openMyProfile() {
   if (existing) existing.remove();
 
   const stu = window._currentStudent || {};
-  const avatarUrl = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + stu.id) || localStorage.getItem('qaa_student_avatar') || '';
+  const avatarUrl = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + stu.id) || '';
   const initials  = (stu.name || 'S').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
 
   const overlay = document.createElement('div');
@@ -4322,7 +4324,7 @@ function openMyIdCardModal() {
   const stuStudio = stu.studioName || 'Quick Art Photography';
   const stuCity = stu.workCity || stu.city || 'Patna, Bihar';
   const stuBlood = stu.bloodGroup || 'O+';
-  const stuAvatar = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + stu.id) || localStorage.getItem('qaa_student_avatar') || '../assets/default-student-avatar.svg';
+  const stuAvatar = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + stu.id) || '../assets/default-student-avatar.svg';
   const verifyUrl = `https://quickartphotography.in/admission/verify.html?id=${encodeURIComponent(stuId)}&phone=${encodeURIComponent(stu.phone || '')}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verifyUrl)}`;
 
@@ -4714,7 +4716,6 @@ function handleAvatarUpload(e) {
 
       // Save to localStorage immediately
       localStorage.setItem('qaa_avatar_' + (stu.id || stu.phone), dataUrl);
-      localStorage.setItem('qaa_student_avatar', dataUrl);
 
       // Update preview in modal
       const preview = document.getElementById('profile-avatar-preview');
@@ -4734,7 +4735,7 @@ function handleAvatarUpload(e) {
 
       // Sync to academy server & ID Card database
       try {
-        const tok = localStorage.getItem('qaa_student_token') || '';
+        const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
         const res = await fetch(`${getLmsApiBase()}?action=update-profile`, {
           method: 'POST',
           headers: {
@@ -4748,7 +4749,6 @@ function handleAvatarUpload(e) {
           stu.avatar = data.photoUrl;
           stu.photoUrl = data.photoUrl;
           stu.avatarUrl = data.photoUrl;
-          localStorage.setItem('qaa_student_avatar', data.photoUrl);
           localStorage.setItem('qaa_avatar_' + (stu.id || stu.phone), data.photoUrl);
         }
         showToast('Profile photo & ID Card update ho gaya! 🎉');
@@ -4771,7 +4771,7 @@ async function saveProfileChanges() {
   if (!name) { showToast('Naam required hai', false); return; }
 
   try {
-    const tok = localStorage.getItem('qaa_student_token') || '';
+    const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
     const res = await fetch(`${getLmsApiBase()}?action=update-profile`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Student-Token': tok },
@@ -4826,7 +4826,7 @@ async function openMyCertificates() {
   document.body.appendChild(overlay);
 
   try {
-    const tok = localStorage.getItem('qaa_student_token') || '';
+    const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
     const res = await fetch(`${getLmsApiBase()}?action=my-courses`, {
       headers: { 'X-Student-Token': tok }
     });
@@ -4996,7 +4996,7 @@ async function submitChangePassword() {
   if (pw1 !== pw2) { showToast('Passwords match nahi kar rahe', false); return; }
 
   try {
-    const tok = localStorage.getItem('qaa_student_token') || '';
+    const tok = (studentToken || localStorage.getItem('qaa_student_token') || localStorage.getItem('qa_student_token') || '');
     const res = await fetch(`${getLmsApiBase()}?action=change-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Student-Token': tok },

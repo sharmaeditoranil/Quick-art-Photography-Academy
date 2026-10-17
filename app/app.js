@@ -4737,7 +4737,7 @@ function openStudentIdCardModal() {
   const stuStudio = stu.studioName || 'Quick Art Photography';
   const stuCity = stu.workCity || stu.city || 'Patna, Bihar';
   const stuBlood = stu.bloodGroup || 'O+';
-  const stuAvatar = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + (stu.id || '')) || localStorage.getItem('qaa_student_avatar') || '../assets/default-student-avatar.svg';
+  const stuAvatar = stu.avatar || stu.avatarUrl || stu.photoUrl || localStorage.getItem('qaa_avatar_' + (stu.id || '')) || '../assets/default-student-avatar.svg';
 
   // Front elements
   const nameEl = document.getElementById('app-idcard-name');
