@@ -7686,7 +7686,12 @@ window.qaJoinZoomClass = async function () {
     await new Promise((resolve, reject) => ZoomMtg.init({
       leaveUrl: window.location.href.split('#')[0],
       patchJsMedia: true,
-      defaultView: 'speaker',
+      defaultView: 'speaker',          // no share: active speaker fills the screen
+      sharingMode: 'fit',              // share: shared screen always fits the full stage
+      showPureSharingContent: true,    // nothing overlays the shared screen
+      videoDrag: true,                 // during share the speaker's face is a small movable window
+      enableHD: true,
+      enableFullHD: true,
       showMeetingHeader: false,                                   // header shows the meeting number
       meetingInfo: ['topic', 'host', 'participant', 'dc', 'enctype'], // no ID / passcode / invite link
       disableInvite: true,
