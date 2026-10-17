@@ -1,231 +1,183 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   OFFLINE ON-CAMPUS STICKY CTA BAR & MODAL
-   Matching master-class/live.html button styling, colors & cta-bounce
+   OFFLINE ON-CAMPUS MOBILE STICKY CTA & COMPACT MODAL
+   - Strictly Mobile Only (Hidden on PC/Desktop)
+   - Scroll triggered (slides up on scroll, hides at top)
+   - Website matching Gold Gradient + distinct "Book Now" color
+   - Compact, ultra-clean popup form
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* Keyframe bounce animation from master-class/live.html */
+/* Keyframe bounce animation matching master-class/live.html */
 @keyframes cta-bounce {
   0%, 15% { transform: translateY(0); }
-  35% { transform: translateY(-12px); }
+  35% { transform: translateY(-11px); }
   45% { transform: translateY(0); }
-  55% { transform: translateY(-7px); }
+  55% { transform: translateY(-6px); }
   70% { transform: translateY(0); }
   80% { transform: translateY(-3px); }
   90%, 100% { transform: translateY(0); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 10px rgba(48, 160, 92, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.25); }
-  50% { box-shadow: 0 0 22px rgba(48, 160, 92, 0.85), inset 0 0 0 2px rgba(255, 255, 255, 0.4); }
+@keyframes pulse-pill {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
-@keyframes tag-shimmer {
-  0% { background-position: -150% 0; }
-  100% { background-position: 250% 0; }
+/* ═══ DESKTOP / PC MODE: STRICTLY HIDDEN ═══ */
+@media (min-width: 769px) {
+  .offline-sticky-bar {
+    display: none !important;
+  }
+  body.has-offline-sticky {
+    padding-bottom: 0 !important;
+  }
 }
 
-/* Page body padding so sticky bar never covers footer or content */
-body.has-offline-sticky {
-  padding-bottom: 84px !important;
-}
+/* ═══ MOBILE MODE (< 769px) ═══ */
+@media (max-width: 768px) {
+  /* Prevent sticky bar from covering footer content */
+  body.has-offline-sticky {
+    padding-bottom: 76px !important;
+  }
 
-/* Adjust floating WhatsApp/Call buttons so they sit neatly above the bar */
-body.has-offline-sticky .qa-float-stack,
-body.has-offline-sticky .fixed.bottom-5.right-5,
-body.has-offline-sticky [class*="qa-float"] {
-  bottom: 88px !important;
-  transition: bottom 0.25s ease;
-  z-index: 1040 !important;
-}
+  /* Keep existing floating WhatsApp/Call buttons neatly above the bar */
+  body.has-offline-sticky .qa-float-stack,
+  body.has-offline-sticky .fixed.bottom-5.right-5,
+  body.has-offline-sticky [class*="qa-float"] {
+    bottom: 84px !important;
+    transition: bottom 0.25s ease;
+    z-index: 1040 !important;
+  }
 
-/* ═══ STICKY BAR CONTAINER ═══ */
-.offline-sticky-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1030;
-  background: rgba(11, 15, 23, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1.5px solid rgba(228, 179, 95, 0.45);
-  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.65);
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
+  /* Sticky Bottom Bar Container - Initially Hidden Off-Screen */
+  .offline-sticky-bar {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1030;
+    background: rgba(11, 15, 23, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1.5px solid rgba(228, 179, 95, 0.45);
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.65);
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transform: translateY(115%); /* Hidden initially, shown on scroll */
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-.offline-sticky-bar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-/* Left info block on Desktop */
-.offline-sticky-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.offline-sticky-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.offline-pill-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: rgba(228, 179, 95, 0.15);
-  color: #f5c879;
-  border: 1px solid rgba(228, 179, 95, 0.4);
-}
-
-.offline-offer-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #dc2626, #b91c1c);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.45);
-  animation: pulse-glow 2s infinite ease-in-out;
-}
-
-.offline-sticky-title {
-  margin: 0;
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #f8fafc;
-  line-height: 1.3;
-}
-
-.offline-sticky-sub {
-  margin: 0;
-  font-size: 12.5px;
-  color: #94a3b8;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.offline-sticky-sub strong {
-  color: #22c55e;
-}
-
-/* ═══ THE GREEN BOUNCING BUTTON (Directly from live.html) ═══ */
-.offline-btn-green {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 10px 28px 9px;
-  background: #30a05c;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2), 0 12px 26px -12px rgba(48, 160, 92, 0.75);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-  text-decoration: none;
-  cursor: pointer;
-  font-family: 'Outfit', sans-serif;
-  line-height: 1.2;
-  transition: background 0.2s, transform 0.15s;
-  flex-shrink: 0;
-  border: none;
-  outline: none;
-}
-
-.offline-btn-green:hover {
-  background: #2a8f52;
-  color: #ffffff;
-}
-
-.offline-btn-green:active {
-  transform: scale(0.98);
-}
-
-.offline-btn-green.cta-bounce {
-  animation: cta-bounce 1.6s ease-in infinite;
-}
-
-.offline-btn-main {
-  font-size: 15.5px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.offline-btn-sub {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #dcfce7;
-  letter-spacing: 0.01em;
-}
-
-/* ═══ MOBILE RESPONSIVE TWEAKS ═══ */
-@media (max-width: 820px) {
-  .offline-sticky-info {
-    display: none; /* Keep mobile clean and focused entirely on the CTA button */
+  /* When scrolled down past hero: slide up smoothly */
+  .offline-sticky-bar.show {
+    transform: translateY(0);
   }
 
   .offline-sticky-bar-inner {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
 
-  .offline-btn-green {
+  /* Website Matching Gold Gradient CTA Button */
+  .offline-btn-gold {
     width: 100%;
-    padding: 11px 14px 10px;
-    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 9px 12px 8px;
+    background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
+    color: #0b0f19;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 9px;
+    box-shadow: 0 8px 22px rgba(216, 161, 83, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.2;
+    transition: transform 0.15s ease, filter 0.2s ease;
+    border: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  .offline-btn-gold:active {
+    transform: scale(0.98);
+    filter: brightness(0.95);
+  }
+
+  .offline-btn-gold.cta-bounce {
+    animation: cta-bounce 1.6s ease-in infinite;
+  }
+
+  /* Top row of button: "1 Day Free Class" + DISTINCT "Book Now" Pill */
   .offline-btn-main {
-    font-size: 15px;
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #0b0f19;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
   }
 
+  /* Distinct high-contrast color for "Book Now" */
+  .offline-book-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #0b0f19;
+    color: #fde047; /* Bright glowing yellow on dark base */
+    padding: 2.5px 9px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    border: 1px solid rgba(253, 224, 71, 0.45);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Sub text of button */
   .offline-btn-sub {
     font-size: 11px;
+    font-weight: 700;
+    color: #2b1a03; /* Readable dark contrast over gold */
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .offline-btn-sub strong {
+    background: rgba(220, 38, 38, 0.18);
+    color: #991b1b;
+    padding: 1px 5px;
+    border-radius: 4px;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   POPUP MODAL STYLES (Clean, Luxury, High-Converting)
+   COMPACT & CLEAN POPUP MODAL (Ultra-Clean, Fast, Chota)
    ═══════════════════════════════════════════════════════════════════════ */
 .offline-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 2100;
   background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 14px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
 }
 
 .offline-modal-overlay.active {
@@ -233,44 +185,46 @@ body.has-offline-sticky [class*="qa-float"] {
   visibility: visible;
 }
 
+/* Compact Modal Card */
 .offline-modal-card {
   position: relative;
   width: 100%;
-  max-width: 480px;
-  max-height: 92vh;
+  max-width: 390px; /* Chota & Compact */
+  max-height: 90vh;
   overflow-y: auto;
   background: #0f141d;
   border: 1.5px solid rgba(228, 179, 95, 0.45);
-  border-radius: 18px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(228, 179, 95, 0.15);
-  padding: 26px 24px 22px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(228, 179, 95, 0.12);
+  padding: 20px 20px 18px; /* Clean & Compact padding */
   font-family: 'Outfit', sans-serif;
   color: #e2e8f0;
-  transform: scale(0.94) translateY(10px);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.95) translateY(8px);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .offline-modal-overlay.active .offline-modal-card {
   transform: scale(1) translateY(0);
 }
 
+/* Close 'X' Button */
 .offline-modal-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 34px;
-  height: 34px;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #94a3b8;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .offline-modal-close:hover {
@@ -279,30 +233,32 @@ body.has-offline-sticky [class*="qa-float"] {
   border-color: rgba(239, 68, 68, 0.4);
 }
 
+/* Clean Compact Header */
 .offline-modal-header {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+  padding-right: 20px;
 }
 
 .offline-modal-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+  gap: 5px;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(228, 179, 95, 0.14);
+  background: rgba(228, 179, 95, 0.15);
   border: 1px solid rgba(228, 179, 95, 0.4);
   color: #f5c879;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
 }
 
 .offline-modal-title {
-  margin: 0 0 6px 0;
-  font-size: 22px;
+  margin: 0;
+  font-size: 19px;
   font-weight: 800;
   color: #f8fafc;
   line-height: 1.25;
@@ -313,43 +269,34 @@ body.has-offline-sticky [class*="qa-float"] {
   color: #f5c879;
 }
 
-.offline-modal-desc {
-  margin: 0;
-  font-size: 13.5px;
-  color: #94a3b8;
-  line-height: 1.5;
+/* Compact Offer Tag Strip */
+.offline-modal-offer-tag {
+  margin: 10px 0 14px 0;
+  background: rgba(228, 179, 95, 0.08);
+  border: 1px dashed rgba(228, 179, 95, 0.35);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  color: #cbd5e1;
+  text-align: center;
+  line-height: 1.35;
 }
 
-/* Urgency & Offer Banner in Modal */
-.offline-modal-offer-banner {
-  margin: 14px 0 18px 0;
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(48, 160, 92, 0.15));
-  border: 1px solid rgba(228, 179, 95, 0.35);
-  border-radius: 10px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #f1f5f9;
-}
-
-.offline-modal-offer-banner strong {
+.offline-modal-offer-tag strong {
   color: #f5c879;
 }
 
-/* Modal Form Controls */
+/* Form Groups */
 .offline-form-group {
-  margin-bottom: 14px;
+  margin-bottom: 11px;
 }
 
 .offline-form-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: #cbd5e1;
-  margin-bottom: 5px;
+  color: #94a3b8;
+  margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -358,12 +305,12 @@ body.has-offline-sticky [class*="qa-float"] {
 .offline-select {
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 14px;
+  padding: 9.5px 12px;
   background: #161e2e;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  border-radius: 7px;
   color: #f8fafc;
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -372,7 +319,7 @@ body.has-offline-sticky [class*="qa-float"] {
 .offline-input:focus,
 .offline-select:focus {
   border-color: #f5c879;
-  box-shadow: 0 0 0 3px rgba(228, 179, 95, 0.25);
+  box-shadow: 0 0 0 2px rgba(228, 179, 95, 0.2);
 }
 
 .offline-phone-group {
@@ -380,19 +327,18 @@ body.has-offline-sticky [class*="qa-float"] {
   align-items: center;
   background: #161e2e;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  border-radius: 7px;
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .offline-phone-group:focus-within {
   border-color: #f5c879;
-  box-shadow: 0 0 0 3px rgba(228, 179, 95, 0.25);
+  box-shadow: 0 0 0 2px rgba(228, 179, 95, 0.2);
 }
 
 .offline-phone-prefix {
-  padding: 0 12px;
-  font-size: 13.5px;
+  padding: 0 10px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #94a3b8;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -406,83 +352,90 @@ body.has-offline-sticky [class*="qa-float"] {
   box-shadow: none;
 }
 
-.offline-submit-btn {
+/* Submit Button in Modal */
+.offline-modal-submit-btn {
   width: 100%;
-  margin-top: 8px;
-  padding: 13px 20px 12px;
-  font-size: 16px;
+  margin-top: 6px;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
+  color: #0b0f19;
+  font-size: 15px;
+  font-weight: 800;
   border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.35);
+  transition: filter 0.2s ease, transform 0.15s ease;
 }
 
-.offline-submit-btn:disabled {
+.offline-modal-submit-btn:hover {
+  filter: brightness(1.05);
+}
+
+.offline-modal-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.offline-modal-submit-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
 .offline-trust-note {
-  margin: 10px 0 0 0;
+  margin: 8px 0 0 0;
   text-align: center;
-  font-size: 11.5px;
+  font-size: 11px;
   color: #64748b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
 }
 
-/* Success State View inside Modal */
+/* Compact Success View */
 .offline-success-view {
   text-align: center;
-  padding: 10px 4px;
+  padding: 8px 2px;
 }
 
 .offline-success-icon {
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: rgba(48, 160, 92, 0.15);
-  border: 2px solid #30a05c;
-  color: #30a05c;
+  background: rgba(34, 197, 94, 0.15);
+  border: 2px solid #22c55e;
+  color: #22c55e;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  margin: 0 auto 16px;
-  animation: pulse-glow 1.8s infinite;
+  font-size: 26px;
+  margin: 0 auto 12px;
 }
 
 .offline-success-title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   color: #22c55e;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
 }
 
 .offline-success-msg {
-  font-size: 14.5px;
+  font-size: 13px;
   color: #cbd5e1;
-  line-height: 1.6;
-  margin: 0 0 20px 0;
+  line-height: 1.5;
+  margin: 0 0 14px 0;
 }
 
 .offline-wa-confirm-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 13px 20px;
+  box-sizing: border-box;
+  padding: 11px 16px;
   border-radius: 8px;
   background: #25d366;
   color: #ffffff;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 14px;
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-  transition: background 0.2s;
-}
-
-.offline-wa-confirm-btn:hover {
-  background: #1ebe57;
-  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
 }
