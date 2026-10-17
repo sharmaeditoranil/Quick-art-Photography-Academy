@@ -1,9 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   OFFLINE ON-CAMPUS MOBILE STICKY CTA & COMPACT MODAL
-   - Strictly Mobile Only (Hidden on PC/Desktop)
-   - Scroll triggered (slides up on scroll, hides at top)
-   - Website matching Gold Gradient + distinct "Book Now" color
-   - Compact, ultra-clean popup form
+   OFFLINE ON-CAMPUS MOBILE STICKY CTA & COMPACT CLEAN MODAL
+   - Mobile Only (Strictly hidden on PC/Desktop)
+   - Scroll-triggered (appears after scrolling past hero > 220px)
+   - Website Gold Gradient button
+   - Clean "1 Days Free Demo Class Book Now" with no background on Book Now
+   - Book Now text in clean lighter contrast color
+   - Compact & clean popup form
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Keyframe bounce animation matching master-class/live.html */
@@ -15,11 +17,6 @@
   70% { transform: translateY(0); }
   80% { transform: translateY(-3px); }
   90%, 100% { transform: translateY(0); }
-}
-
-@keyframes pulse-pill {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
 }
 
 /* ═══ DESKTOP / PC MODE: STRICTLY HIDDEN ═══ */
@@ -48,7 +45,7 @@
     z-index: 1040 !important;
   }
 
-  /* Sticky Bottom Bar Container - Initially Hidden Off-Screen */
+  /* Sticky Bottom Floating Container - Transparent (No Black Bar Behind Button) */
   .offline-sticky-bar {
     display: block;
     position: fixed;
@@ -56,15 +53,18 @@
     right: 0;
     bottom: 0;
     z-index: 1030;
-    background: rgba(11, 15, 23, 0.97);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1.5px solid rgba(228, 179, 95, 0.45);
-    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.65);
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    padding: 0 12px calc(10px + env(safe-area-inset-bottom, 0px));
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transform: translateY(115%); /* Hidden initially, shown on scroll */
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none; /* Touches pass through empty areas */
   }
 
   /* When scrolled down past hero: slide up smoothly */
@@ -74,26 +74,28 @@
 
   .offline-sticky-bar-inner {
     width: 100%;
+    max-width: 480px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none;
   }
 
   /* Website Matching Gold Gradient CTA Button */
   .offline-btn-gold {
+    pointer-events: auto; /* Ensure button clicks work */
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 9px 12px 8px;
+    padding: 10px 14px 9px;
     background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
     color: #0b0f19;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 9px;
-    box-shadow: 0 8px 22px rgba(216, 161, 83, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(216, 161, 83, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.45);
     text-decoration: none;
     cursor: pointer;
     font-family: 'Outfit', sans-serif;
@@ -113,33 +115,29 @@
     animation: cta-bounce 1.6s ease-in infinite;
   }
 
-  /* Top row of button: "1 Day Free Class" + DISTINCT "Book Now" Pill */
+  /* Clean main text line without any background rectangle */
   .offline-btn-main {
     font-size: 14.5px;
     font-weight: 800;
-    letter-spacing: 0.02em;
-    color: #0b0f19;
+    letter-spacing: 0.01em;
+    color: #0b0f19; /* Dark contrast */
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     width: 100%;
+    white-space: nowrap;
   }
 
-  /* Distinct high-contrast color for "Book Now" */
-  .offline-book-pill {
+  /* Book Now Text - Clean, NO background, slightly lighter color for clear legibility */
+  .offline-book-text {
+    color: #ffffff; /* Clean lighter shade */
+    font-weight: 900;
+    text-shadow: 0 1px 3px rgba(11, 15, 23, 0.8), 0 0 1px rgba(0, 0, 0, 0.85);
+    letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    background: #0b0f19;
-    color: #fde047; /* Bright glowing yellow on dark base */
-    padding: 2.5px 9px;
-    border-radius: 6px;
-    font-size: 13.5px;
-    font-weight: 900;
-    letter-spacing: 0.03em;
-    border: 1px solid rgba(253, 224, 71, 0.45);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    gap: 2px;
   }
 
   /* Sub text of button */
@@ -162,7 +160,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   COMPACT & CLEAN POPUP MODAL (Ultra-Clean, Fast, Chota)
+   COMPACT & ULTRA-CLEAN POPUP MODAL (Chota & Clean)
    ═══════════════════════════════════════════════════════════════════════ */
 .offline-modal-overlay {
   position: fixed;
@@ -174,7 +172,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 12px;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.22s ease, visibility 0.22s ease;
@@ -185,18 +183,18 @@
   visibility: visible;
 }
 
-/* Compact Modal Card */
+/* Chota & Compact Card */
 .offline-modal-card {
   position: relative;
   width: 100%;
-  max-width: 390px; /* Chota & Compact */
-  max-height: 90vh;
+  max-width: 370px; /* Chota & Compact */
+  max-height: 88vh;
   overflow-y: auto;
   background: #0f141d;
   border: 1.5px solid rgba(228, 179, 95, 0.45);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(228, 179, 95, 0.12);
-  padding: 20px 20px 18px; /* Clean & Compact padding */
+  padding: 18px 18px 16px; /* Clean & Compact padding */
   font-family: 'Outfit', sans-serif;
   color: #e2e8f0;
   transform: scale(0.95) translateY(8px);
@@ -210,15 +208,15 @@
 /* Close 'X' Button */
 .offline-modal-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 30px;
-  height: 30px;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #94a3b8;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -233,32 +231,32 @@
   border-color: rgba(239, 68, 68, 0.4);
 }
 
-/* Clean Compact Header */
+/* Clean Header */
 .offline-modal-header {
   text-align: center;
-  margin-bottom: 14px;
-  padding-right: 20px;
+  margin-bottom: 12px;
+  padding-right: 16px;
 }
 
 .offline-modal-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
+  gap: 4px;
+  padding: 2.5px 9px;
   border-radius: 999px;
   background: rgba(228, 179, 95, 0.15);
   border: 1px solid rgba(228, 179, 95, 0.4);
   color: #f5c879;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .offline-modal-title {
   margin: 0;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   color: #f8fafc;
   line-height: 1.25;
@@ -271,12 +269,12 @@
 
 /* Compact Offer Tag Strip */
 .offline-modal-offer-tag {
-  margin: 10px 0 14px 0;
+  margin: 8px 0 12px 0;
   background: rgba(228, 179, 95, 0.08);
   border: 1px dashed rgba(228, 179, 95, 0.35);
-  border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 11.5px;
+  border-radius: 7px;
+  padding: 6px 8px;
+  font-size: 11px;
   color: #cbd5e1;
   text-align: center;
   line-height: 1.35;
@@ -288,15 +286,15 @@
 
 /* Form Groups */
 .offline-form-group {
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 .offline-form-label {
   display: block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   color: #94a3b8;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -305,12 +303,12 @@
 .offline-select {
   width: 100%;
   box-sizing: border-box;
-  padding: 9.5px 12px;
+  padding: 9px 11px;
   background: #161e2e;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 7px;
+  border-radius: 6px;
   color: #f8fafc;
-  font-size: 13.5px;
+  font-size: 13px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -327,7 +325,7 @@
   align-items: center;
   background: #161e2e;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 7px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
@@ -337,8 +335,8 @@
 }
 
 .offline-phone-prefix {
-  padding: 0 10px;
-  font-size: 12.5px;
+  padding: 0 9px;
+  font-size: 12px;
   font-weight: 700;
   color: #94a3b8;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -356,12 +354,12 @@
 .offline-modal-submit-btn {
   width: 100%;
   margin-top: 6px;
-  padding: 11px 16px;
+  padding: 10px 14px;
   background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
   color: #0b0f19;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 800;
-  border-radius: 8px;
+  border-radius: 7px;
   border: none;
   cursor: pointer;
   font-family: inherit;
@@ -383,21 +381,21 @@
 }
 
 .offline-trust-note {
-  margin: 8px 0 0 0;
+  margin: 7px 0 0 0;
   text-align: center;
-  font-size: 11px;
+  font-size: 10.5px;
   color: #64748b;
 }
 
 /* Compact Success View */
 .offline-success-view {
   text-align: center;
-  padding: 8px 2px;
+  padding: 6px 2px;
 }
 
 .offline-success-icon {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: rgba(34, 197, 94, 0.15);
   border: 2px solid #22c55e;
@@ -405,37 +403,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  margin: 0 auto 12px;
+  font-size: 24px;
+  margin: 0 auto 10px;
 }
 
 .offline-success-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 800;
   color: #22c55e;
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
 }
 
 .offline-success-msg {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #cbd5e1;
-  line-height: 1.5;
-  margin: 0 0 14px 0;
+  line-height: 1.45;
+  margin: 0 0 12px 0;
 }
 
 .offline-wa-confirm-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 16px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 7px;
   background: #25d366;
   color: #ffffff;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13.5px;
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
 }

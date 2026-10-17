@@ -51,13 +51,13 @@
   // 1. Mobile Sticky Bar Element
   const stickyBar = document.createElement('aside');
   stickyBar.className = 'offline-sticky-bar';
-  stickyBar.setAttribute('aria-label', '1 Day Free Class Booking');
+  stickyBar.setAttribute('aria-label', '1 Days Free Demo Class Booking');
   stickyBar.innerHTML = `
     <div class="offline-sticky-bar-inner">
       <button type="button" class="offline-btn-gold cta-bounce" id="qaOpenDemoModalBtn" aria-haspopup="dialog" aria-expanded="false">
         <span class="offline-btn-main">
-          <span>🎓 1 Day Free Class</span>
-          <span class="offline-book-pill">Book Now &rarr;</span>
+          <span>🎓 1 Days Free Demo Class</span>
+          <span class="offline-book-text">Book Now &rarr;</span>
         </span>
         <span class="offline-btn-sub">
           ⚡ New Batch Starting Soon &bull; <strong>10% OFF</strong>
