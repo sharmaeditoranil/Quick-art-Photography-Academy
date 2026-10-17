@@ -1740,12 +1740,10 @@
     .bonus-cta { margin-top: 30px; text-align: center; }
     @media (max-width: 900px) {
       .bonus-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
-      .bonus-card:nth-child(3) { grid-column: 1 / -1; }
     }
     @media (max-width: 560px) {
       .bonus-grid { grid-template-columns: 1fr; gap: 12px; }
       .bonus-card { flex-direction: row; align-items: flex-start; gap: 14px; padding: 16px 16px 14px; }
-      .bonus-card:nth-child(3) { grid-column: auto; }
       .bonus-ic { width: 44px; height: 44px; border-radius: 12px; flex: none; }
       .bonus-ic svg { width: 22px; height: 22px; }
       .bonus-body h3 { font-size: 15.5px; }
@@ -1753,6 +1751,33 @@
       .bonus-incl { position: absolute; top: 14px; right: 14px; font-size: 10.5px; padding: 3px 8px; }
       .bonus-body { padding-right: 70px; }
       .bonus-body h3 { margin-right: -70px; }
+    }
+
+    /* Bonus highlight v2 */
+    .bonus-panel { position: relative; max-width: 1120px; margin: 26px auto 0; padding: 44px 26px 28px; border-radius: 24px; background: linear-gradient(#0f0c08, #0f0c08) padding-box, linear-gradient(135deg, #f5d58f, #b07a2f 40%, #f5d58f 70%, #8a5a14) border-box; border: 2px solid transparent; box-shadow: 0 0 0 6px rgba(216, 161, 83, 0.06), 0 30px 70px -30px rgba(216, 161, 83, 0.45); }
+    .bonus-ribbon { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 8px; padding: 9px 22px; border-radius: 999px; white-space: nowrap; font-size: 14px; font-weight: 900; letter-spacing: 0.12em; color: #1a1205; background: linear-gradient(105deg, #fce09b, #e4b35f 55%, #c8913f); box-shadow: 0 10px 26px rgba(216, 161, 83, 0.45); }
+    .bonus-card { background: linear-gradient(165deg, rgba(216, 161, 83, 0.16), rgba(255, 255, 255, 0.02) 60%) !important; border-color: rgba(216, 161, 83, 0.4) !important; }
+    .bonus-ic { width: 60px; height: 60px; border-radius: 16px; }
+    .bonus-ic svg { width: 30px; height: 30px; }
+    .bonus-body h3 { font-size: 19px !important; color: #fff !important; }
+    .bonus-incl { position: absolute; top: 18px; right: 18px; margin: 0 !important; padding: 5px 12px !important; font-size: 12px !important; font-weight: 900 !important; letter-spacing: 0.12em; color: #1a1205 !important; background: linear-gradient(105deg, #fce09b, #e4b35f) !important; border: 0 !important; box-shadow: 0 6px 16px rgba(216, 161, 83, 0.35); }
+    .hero-bonus { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; padding: 9px 16px 9px 10px; border-radius: 14px; text-decoration: none; color: #f5e2bd; font-size: 13.5px; line-height: 1.35; text-align: left; background: rgba(216, 161, 83, 0.1); border: 1px dashed rgba(216, 161, 83, 0.6); }
+    .hero-bonus b { color: #f5c879; letter-spacing: 0.04em; }
+    .hb-ic { flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: #1a1205; background: linear-gradient(135deg, #fce09b, #d8a153); }
+    .ticket-bonus { margin: 14px 0 6px; padding: 12px 14px; border-radius: 12px; background: linear-gradient(135deg, #fff4dc, #f7e1b5); border: 1px solid #e4b35f; }
+    .tb-head { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; color: #7a4e10; }
+    .tb-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tb-items span { padding: 4px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: #3d2a0c; background: #fff; border: 1px solid rgba(176, 122, 47, 0.35); }
+    @media (max-width: 560px) {
+      .bonus-panel { padding: 38px 12px 14px; border-radius: 20px; margin-top: 22px; }
+      .bonus-ribbon { font-size: 12.5px; padding: 8px 18px; }
+      .bonus-ic { width: 46px; height: 46px; }
+      .bonus-ic svg { width: 24px; height: 24px; }
+      .bonus-body h3 { font-size: 16.5px !important; }
+      .bonus-incl { top: 14px; right: 14px; font-size: 11px !important; padding: 4px 10px !important; }
+      .bonus-body { padding-right: 52px !important; }
+      .bonus-body h3 { margin-right: 0 !important; }
+      .hero-bonus { font-size: 12.5px; }
     }
     /* Sticky CTA: no dark strip behind the button */
     .mobile-sticky-cta { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-top: 0 !important; box-shadow: none !important; pointer-events: none; }
@@ -1829,6 +1854,10 @@
             <span class="cta-sub">Abhi ka offer • Baad me <span class="dynamic-orig-price">₹999</span> lagega</span>
           </a>
           <p class="hs-note">Class ki recording 30 din tak aapke paas rahegi</p>
+          <a href="#bonuses" class="hero-bonus">
+            <span class="hb-ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
+            <span class="hb-txt"><b>6 FREE BONUS:</b> AI Repository • LUTs • AI Software • Prompts • Presets • Certificate</span>
+          </a>
         </div>
       </div>
 
@@ -2120,40 +2149,70 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">बोनस</span>
-        <h2 class="sec-title">₹21 Ke Pass Ke Saath <span class="gold-gradient">Ye 3 Bonus Bhi</span></h2>
-        <p class="sec-sub">Sab isi pass me shamil hai — alag se koi charge nahi. Saath me 30 din ki recording aur certificate bhi.</p>
+        <h2 class="sec-title">₹21 Ke Pass Ke Saath <span class="gold-gradient">Ye 6 Bonus Bhi</span></h2>
+        <p class="sec-sub">Sab isi pass me shamil hai — alag se koi charge nahi. Saath me 30 din ki class recording bhi.</p>
       </div>
+      <div class="bonus-panel reveal">
+        <span class="bonus-ribbon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg> FREE BONUS</span>
       <div class="bonus-grid">
-        <article class="bonus-card reveal">
+        <article class="bonus-card">
           <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
           <div class="bonus-body">
             <span class="bonus-tag">Bonus 1</span>
             <h3>AI Repository</h3>
             <p>Wedding ke kaam ke liye AI tools, prompts aur resources ka collection — sab ek hi jagah.</p>
           </div>
-          <span class="bonus-incl">✓ Included</span>
+          <span class="bonus-incl">FREE</span>
         </article>
-        <article class="bonus-card reveal">
+        <article class="bonus-card">
           <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7H16c3.1 0 5.6-2.5 5.6-5.6C21.6 6 17.3 2 12 2z"/></svg></div>
           <div class="bonus-body">
             <span class="bonus-tag">Bonus 2</span>
             <h3>Wedding LUTs</h3>
             <p>Wedding video ko cinematic aur ek jaisa rang jaldi dene ke liye ready LUTs.</p>
           </div>
-          <span class="bonus-incl">✓ Included</span>
+          <span class="bonus-incl">FREE</span>
         </article>
-        <article class="bonus-card reveal">
+        <article class="bonus-card">
           <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m9 10.5 2 2 4-4"/></svg></div>
           <div class="bonus-body">
             <span class="bonus-tag">Bonus 3</span>
             <h3>AI Software</h3>
             <p>Class me jo AI software dikhayenge, wo aapko bonus me milega — kaam turant shuru kariye.</p>
           </div>
-          <span class="bonus-incl">✓ Included</span>
+          <span class="bonus-incl">FREE</span>
+        </article>
+        <article class="bonus-card">
+          <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div>
+          <div class="bonus-body">
+            <span class="bonus-tag">Bonus 4</span>
+            <h3>AI Prompts Cheat Sheet</h3>
+            <p>Album, teaser aur editing ke kaam ke liye ready AI prompts aur step list — ek page me.</p>
+          </div>
+          <span class="bonus-incl">FREE</span>
+        </article>
+        <article class="bonus-card">
+          <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.6 3.6-1.2-1.2a1.2 1.2 0 0 0-1.7 0L2.4 18.6a1.2 1.2 0 0 0 0 1.7l1.3 1.3a1.2 1.2 0 0 0 1.7 0L21.6 5.4a1.2 1.2 0 0 0 0-1.8Z"/><path d="m14 7 3 3"/><path d="M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/></svg></div>
+          <div class="bonus-body">
+            <span class="bonus-tag">Bonus 5</span>
+            <h3>Retouching Presets</h3>
+            <p>Photoshop &amp; Lightroom presets — dulhan aur portrait photo jaldi saaf aur natural.</p>
+          </div>
+          <span class="bonus-incl">FREE</span>
+        </article>
+        <article class="bonus-card">
+          <div class="bonus-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="m8.5 12.5-1.5 9 5-3 5 3-1.5-9"/></svg></div>
+          <div class="bonus-body">
+            <span class="bonus-tag">Bonus 6</span>
+            <h3>Free Certificate</h3>
+            <p>Class ke baad unique ID aur QR code wala certificate — koi bhi online verify kar sake.</p>
+          </div>
+          <span class="bonus-incl">FREE</span>
         </article>
       </div>
+      </div>
       <div class="bonus-cta reveal">
-        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Bonus Ke Saath Join Kariye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class + 3 bonus • Sunday 7 PM</span></a>
+        <a href="#register" class="cta-green cta-rock"><span class="cta-main">Bonus Ke Saath Join Kariye <span class="dynamic-ticket-price">₹21</span></span><span class="cta-sub">Live class + 6 bonus • Sunday 7 PM</span></a>
       </div>
     </div>
   </section>
@@ -2181,8 +2240,10 @@
             <div class="value-row"><span>Bonus: AI Repository</span><span class="bonus-val">Included</span></div>
             <div class="value-row"><span>Bonus: Wedding LUTs</span><span class="bonus-val">Included</span></div>
             <div class="value-row"><span>Bonus: AI Software</span><span class="bonus-val">Included</span></div>
+            <div class="value-row"><span>Bonus: AI Prompts Cheat Sheet</span><span class="bonus-val">Included</span></div>
+            <div class="value-row"><span>Bonus: Retouching Presets</span><span class="bonus-val">Included</span></div>
+            <div class="value-row"><span>Bonus: Free Certificate (unique ID + QR)</span><span class="bonus-val">Included</span></div>
             <div class="value-row"><span>30-Day Replay + Practice Files</span><span class="bonus-val">Included</span></div>
-            <div class="value-row"><span>Certificate (unique ID + QR verification)</span><span class="bonus-val">Included</span></div>
           </div>
           <div class="value-total">
             <div class="lbl">Launch offer<strong>Aaj aapka price</strong></div>
@@ -2203,11 +2264,14 @@
           </div>
           <p class="ticket-note" id="lp-plan-summary">Includes 1-Day Live Class (Sunday 7:00 – 9:30 PM) + Replay + Downloads</p>
 
+          <div class="ticket-bonus">
+            <div class="tb-head"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg> FREE BONUS — is pass ke saath</div>
+            <div class="tb-items"><span>AI Repository</span><span>Wedding LUTs</span><span>AI Software</span><span>AI Prompts</span><span>Retouching Presets</span><span>Free Certificate</span></div>
+          </div>
           <ul class="ticket-incl">
             <li><span>✓</span> Live class + Q&amp;A (Sunday 7 PM)</li>
             <li><span>✓</span> 30-day replay in Student Portal</li>
-            <li><span>✓</span> Bonus: AI Repository, LUTs &amp; AI Software</li>
-            <li><span>✓</span> Certificate with unique ID &amp; QR</li>
+            
           </ul>
 
           <form id="workshop-checkout-form" onsubmit="handleWorkshopTicketBooking(event)" novalidate>
