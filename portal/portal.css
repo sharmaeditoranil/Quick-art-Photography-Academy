@@ -8324,6 +8324,13 @@ video::-webkit-media-controls-download-button {
     width: 14px !important;
     height: 14px !important;
   }
+  /* Invisible 6px halo: easier to tap without making the button look bigger */
+  .live-fs-exit-btn::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+  }
   .live-fs-exit-desktop-text {
     display: none !important;
   }
