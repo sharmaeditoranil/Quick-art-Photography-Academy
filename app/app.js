@@ -3251,7 +3251,7 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
           </span>
         </div>
         <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <button type="button" class="live-btn-fs-preview" onclick="toggleLiveCinemaFullscreen()" title="Full Screen" aria-label="Full Screen">⛶ <span>Full Screen</span></button>
+          <button type="button" class="live-btn-fs-preview" onclick="qaZoomToggleFullscreen()" title="Full Screen" aria-label="Full Screen">⛶ <span>Full Screen</span></button>
           <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:8px 10px;cursor:pointer">💬</button>
         </div>`;
     }
@@ -3686,6 +3686,7 @@ window.addEventListener('message', (event) => {
 
 // Anti-Download & Security Protection for mobile app
 document.addEventListener('keydown', (e) => {
+  if (e.target && e.target.closest && e.target.closest('#zmmtg-root')) return; // keys inside the Zoom classroom belong to Zoom
   if ((e.ctrlKey || e.metaKey) && ['s', 'S', 'u', 'U', 'p', 'P'].includes(e.key)) {
     const inClassroom = document.getElementById('view-classroom') && !document.getElementById('view-classroom').classList.contains('hidden');
     const inLive = document.getElementById('view-live-classroom') && !document.getElementById('view-live-classroom').classList.contains('hidden');
@@ -3976,6 +3977,12 @@ function isLiveFullscreenActive() {
 }
 
 function toggleLiveCinemaFullscreen() {
+  // Zoom classroom lives outside the live box: full-screen the whole page instead
+  const zBox = document.getElementById('live-video-box');
+  if (window._qaZoomSession && ((zBox && zBox.classList.contains('is-zoom')) || document.getElementById('zmmtg-root'))) {
+    window.qaZoomToggleFullscreen();
+    return;
+  }
   const box = document.getElementById('live-video-box');
   const iframe = document.getElementById('live-stream-iframe');
   if (!box) return;
@@ -5368,12 +5375,47 @@ async function qaLoadZoomClientSdk() {
   }
   await qaLoadScript(`https://source.zoom.us/zoom-meeting-${QA_ZOOM_SDK_VER}.min.js`);
 }
+// Full screen for the Zoom classroom: always the whole page, because Zoom's Client View
+// lives in its own layer (#zmmtg-root) outside the live video box.
+function qaFsElement() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+function qaEnterPageFs() {
+  const d = document.documentElement;
+  const req = d.requestFullscreen || d.webkitRequestFullscreen;
+  if (req) { try { const r = req.call(d); if (r && r.catch) r.catch(() => {}); } catch (_) {} }
+}
+function qaExitFs() {
+  const ex = document.exitFullscreen || document.webkitExitFullscreen;
+  if (ex) { try { const r = ex.call(document); if (r && r.catch) r.catch(() => {}); } catch (_) {} }
+}
+window.qaZoomToggleFullscreen = function () {
+  const fs = qaFsElement();
+  if (fs === document.documentElement) return qaExitFs();
+  if (fs) { qaExitFs(); setTimeout(qaEnterPageFs, 60); return; }
+  qaEnterPageFs();
+};
+function qaAddZoomFsButton() {
+  if (document.getElementById('qa-zoom-fs')) return;
+  const b = document.createElement('button');
+  b.id = 'qa-zoom-fs'; b.type = 'button';
+  b.setAttribute('aria-label', 'Full Screen');
+  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:2147483001;background:rgba(15,23,42,.82);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 12px;font:600 13px system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(6px)';
+  const label = () => { b.textContent = qaFsElement() ? '✕ Exit Full Screen' : '⛶ Full Screen'; };
+  b.onclick = () => { window.qaZoomToggleFullscreen(); };
+  document.addEventListener('fullscreenchange', label);
+  document.addEventListener('webkitfullscreenchange', label);
+  label();
+  document.body.appendChild(b);
+}
+
 window.qaJoinZoomClass = async function () {
   const session = window._qaZoomSession;
   const btn = document.getElementById('btn-qa-zoom-join');
   const status = document.getElementById('qa-zoom-status');
   const say = (t) => { if (status) status.textContent = t; };
   if (!session || !session.id) return;
+  // A full-screen live box would hide Zoom's classroom layer; switch to whole-page full screen now (user gesture)
+  const curFs = qaFsElement();
+  if (curFs && curFs !== document.documentElement) { qaExitFs(); setTimeout(qaEnterPageFs, 60); }
   if (btn) { btn.disabled = true; btn.textContent = 'Connecting…'; }
   try {
     say('Class se connect ho raha hai…');
@@ -5413,6 +5455,7 @@ window.qaJoinZoomClass = async function () {
       error: (e) => reject(new Error((e && (e.errorMessage || e.reason)) || 'Class join nahi ho payi'))
     }));
     say('');
+    qaAddZoomFsButton();
   } catch (err) {
     say((err && err.message) || 'Class join nahi ho payi.');
     if (btn) { btn.disabled = false; btn.textContent = '▶ Join Class'; }
