@@ -1976,14 +1976,25 @@ fbq('track', 'PageView');
           </div>
         </div>
 
+        <!-- 2.3 WhatsApp Sender Number (OTP Delivery Number) -->
+        <div style="background:#090e1a;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:22px">
+          <label for="whatsappSenderPhone" style="font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:6px;display:block">
+            WhatsApp OTP Sender Phone Number (WhatsApp Business Account Number) *
+          </label>
+          <input type="text" id="whatsappSenderPhone" placeholder="8434618717" style="font-weight:600;letter-spacing:0.5px" />
+          <div style="margin-top:8px;font-size:11.5px;color:var(--muted);line-height:1.5">
+            Registered WABA Number: <code style="color:#86efac;background:#030712;padding:2px 6px;border-radius:4px">8434618717</code> (+91 84346 18717) — Jis number se students ko WhatsApp OTP send hota hai.
+          </div>
+        </div>
+
         <!-- 2.5 Template Name -->
         <div style="background:#090e1a;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:22px">
           <label for="aibotflowOtpTemplate" style="font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:6px;display:block">
             Meta Approved Template Name *
           </label>
-          <input type="text" id="aibotflowOtpTemplate" placeholder="quickart_login_otp" style="font-weight:600;letter-spacing:0.5px" />
+          <input type="text" id="aibotflowOtpTemplate" placeholder="quickart_photography_verification_otp" style="font-weight:600;letter-spacing:0.5px" />
           <div style="margin-top:8px;font-size:11.5px;color:var(--muted);line-height:1.5">
-            Default: <code style="color:#86efac;background:#030712;padding:2px 6px;border-radius:4px">quickart_login_otp</code> — Official Authentication template jisme 1 body param (OTP code) aur 1 Copy Code Button param hota hai.
+            Default: <code style="color:#86efac;background:#030712;padding:2px 6px;border-radius:4px">quickart_photography_verification_otp</code> — Official Authentication template (Language: en, 1 OTP body code, 1 Button param).
           </div>
         </div>
 
@@ -3883,13 +3894,16 @@ async function loadWhatsAppSettings() {
     const res = await lmsAdmin('get-lms-settings');
     const s = res.settings || {};
     const key = (s.aibotflowApiKey || '').trim();
-    const tpl = (s.aibotflowOtpTemplate || 'quickart_login_otp').trim();
+    const tpl = (s.aibotflowOtpTemplate || 'quickart_photography_verification_otp').trim();
+    const sender = (s.whatsappSenderPhone || '8434618717').trim();
     const keyInput = document.getElementById('aibotflowApiKey');
     const demoInput = document.getElementById('otpDemoMode');
     const tplInput = document.getElementById('aibotflowOtpTemplate');
+    const senderInput = document.getElementById('whatsappSenderPhone');
     if (keyInput) keyInput.value = key;
     if (demoInput) demoInput.checked = s.otpDemoMode !== false;
     if (tplInput) tplInput.value = tpl;
+    if (senderInput) senderInput.value = sender;
   } catch(e){}
 }
 
@@ -3898,7 +3912,9 @@ async function saveWhatsAppSettingsOnly() {
   const aibotflowApiKey = keyInput ? keyInput.value.trim() : '';
   const otpDemoMode = document.getElementById('otpDemoMode').checked;
   const tplInput = document.getElementById('aibotflowOtpTemplate');
-  const aibotflowOtpTemplate = tplInput ? (tplInput.value.trim() || 'quickart_login_otp') : 'quickart_login_otp';
+  const aibotflowOtpTemplate = tplInput ? (tplInput.value.trim() || 'quickart_photography_verification_otp') : 'quickart_photography_verification_otp';
+  const senderInput = document.getElementById('whatsappSenderPhone');
+  const whatsappSenderPhone = senderInput ? (senderInput.value.replace(/\D/g, '') || '8434618717') : '8434618717';
 
   try {
     const curr = await lmsAdmin('get-lms-settings');
@@ -3906,7 +3922,8 @@ async function saveWhatsAppSettingsOnly() {
       ...(curr.settings || {}),
       aibotflowApiKey,
       otpDemoMode,
-      aibotflowOtpTemplate
+      aibotflowOtpTemplate,
+      whatsappSenderPhone
     };
     await lmsAdmin('save-lms-settings', { method: 'POST', body });
     toast('✅ WhatsApp OTP settings saved successfully!');
@@ -6913,7 +6930,7 @@ async function sendTestWhatsAppOtp() {
   const keyInput = document.getElementById('aibotflowApiKey');
   const apiKey = keyInput ? keyInput.value.trim() : '';
   const phone = (document.getElementById('whatsappTestPhone')?.value || '').trim();
-  const template = (document.getElementById('aibotflowOtpTemplate')?.value || 'quickart_login_otp').trim();
+  const template = (document.getElementById('aibotflowOtpTemplate')?.value || 'quickart_photography_verification_otp').trim();
   const resSpan = document.getElementById('whatsappTestResult');
 
   if (!apiKey) {

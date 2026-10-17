@@ -754,7 +754,8 @@ if ($action === 'save-lms-settings' && $method === 'POST') {
         'otpDemoMode' => isset($body['otpDemoMode']) ? !empty($body['otpDemoMode']) : ($currSettings['otpDemoMode'] ?? false),
         'defaultOtp' => isset($body['defaultOtp']) ? trim($body['defaultOtp']) : ($currSettings['defaultOtp'] ?? '123456'),
         'aibotflowApiKey' => isset($body['aibotflowApiKey']) ? trim($body['aibotflowApiKey']) : ($currSettings['aibotflowApiKey'] ?? ''),
-        'aibotflowOtpTemplate' => isset($body['aibotflowOtpTemplate']) ? trim($body['aibotflowOtpTemplate']) : ($currSettings['aibotflowOtpTemplate'] ?? 'quickart_login_otp'),
+        'aibotflowOtpTemplate' => isset($body['aibotflowOtpTemplate']) ? trim($body['aibotflowOtpTemplate']) : ($currSettings['aibotflowOtpTemplate'] ?? 'quickart_photography_verification_otp'),
+        'whatsappSenderPhone' => isset($body['whatsappSenderPhone']) ? preg_replace('/[^0-9]/', '', (string)$body['whatsappSenderPhone']) : ($currSettings['whatsappSenderPhone'] ?? '8434618717'),
         'supabaseUrl' => isset($body['supabaseUrl']) ? rtrim(trim($body['supabaseUrl']), '/') : ($currSettings['supabaseUrl'] ?? ''),
         'supabaseAnonKey' => isset($body['supabaseAnonKey']) ? trim($body['supabaseAnonKey']) : ($currSettings['supabaseAnonKey'] ?? ''),
         'supabaseSecretKey' => isset($body['supabaseSecretKey']) ? trim($body['supabaseSecretKey']) : ($currSettings['supabaseSecretKey'] ?? ''),
@@ -917,7 +918,7 @@ if ($action === 'test-whatsapp-otp' && $method === 'POST') {
 
     $settings = file_exists(LMS_SETTINGS_FILE) ? json_decode(file_get_contents(LMS_SETTINGS_FILE), true) : [];
     $apiKey = trim($body['apiKey'] ?? ($settings['aibotflowApiKey'] ?? ''));
-    $template = trim($body['template'] ?? ($settings['aibotflowOtpTemplate'] ?? 'quickart_login_otp'));
+    $template = trim($body['template'] ?? ($settings['aibotflowOtpTemplate'] ?? 'quickart_photography_verification_otp'));
 
     if (empty($apiKey)) {
         json_err('AIbotflow WhatsApp API Key darj karein pehle', 400);
@@ -1570,7 +1571,7 @@ if ($action === 'get-live-viewers' && ($method === 'GET' || $method === 'POST'))
         $p = clean_phone($st['phone'] ?? '');
         if (!$p) continue;
         $courses = $st['enrolledCourses'] ?? [];
-        if ($p === '9939800780' || $isWorkshop || in_array($sessionId, $courses) || ($targetCourseId && in_array($targetCourseId, $courses))) {
+        if ($p === '9939800780' || $p === '8434618717' || $isWorkshop || in_array($sessionId, $courses) || ($targetCourseId && in_array($targetCourseId, $courses))) {
             $enrolledCount++;
         }
     }
@@ -1592,7 +1593,7 @@ if ($action === 'get-live-viewers' && ($method === 'GET' || $method === 'POST'))
             $courses = $st['enrolledCourses'] ?? [];
             $isEnrolled = false;
 
-            if ($p === '9939800780') {
+            if ($p === '9939800780' || $p === '8434618717') {
                 $isEnrolled = true;
             } elseif ($isWorkshop) {
                 $isEnrolled = in_array($sessionId, $courses) || in_array('masterclass-live', $courses) || in_array('live_demo_01', $courses) || count($courses) > 0;

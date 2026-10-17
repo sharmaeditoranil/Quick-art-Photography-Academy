@@ -513,14 +513,15 @@ if ($action === 'send-otp' && $method === 'POST') {
     ];
     file_put_contents(LMS_OTPS_FILE, json_encode($otps, JSON_PRETTY_PRINT), LOCK_EX);
 
-    $isSenderOwnNumber = ($phone === '9939800780'); // WhatsApp Cloud API disallows sending from number to itself
+    $senderNumber = clean_phone($settings['whatsappSenderPhone'] ?? '8434618717');
+    $isSenderOwnNumber = ($phone === $senderNumber || $phone === '8434618717'); // WhatsApp Cloud API disallows sending from number to itself
     if ($isSenderOwnNumber && !$isAdminCaller && !$demoMode && !$isLocal) {
         json_err('Is number ke liye pehle isi browser me Admin Panel me login karein, phir OTP mangwayein.', 403);
     }
 
     // Direct WhatsApp OTP via AIbotflow (Official Meta WhatsApp Cloud API)
     if (!$demoMode && !$isSenderOwnNumber && !empty($settings['aibotflowApiKey'])) {
-        $sendRes = send_aibotflow_whatsapp_otp($phone, $otp, $settings['aibotflowApiKey'], $settings['aibotflowOtpTemplate'] ?? 'quickart_login_otp');
+        $sendRes = send_aibotflow_whatsapp_otp($phone, $otp, $settings['aibotflowApiKey'], $settings['aibotflowOtpTemplate'] ?? 'quickart_photography_verification_otp');
         if (!$sendRes['ok']) {
             error_log("AIbotflow WhatsApp OTP delivery failure for {$phone}: " . ($sendRes['error'] ?? 'Unknown error'));
             // Never show the OTP on screen — that let anyone log in to any number
@@ -1337,7 +1338,7 @@ if ($action === 'my-courses' && $method === 'GET') {
         $liveType = $live['type'] ?? 'workshop';
 
         $isLiveEnrolled = false;
-        if ($stuPhone === '9939800780') {
+        if ($stuPhone === '9939800780' || $stuPhone === '8434618717') {
             $isLiveEnrolled = true;
         } elseif ($liveType === 'course') {
             // STRICT: Must be enrolled in this specific course/batch or have explicit liveId
@@ -2803,7 +2804,7 @@ if ($action === 'get-live-classes' && $method === 'GET') {
         if ($stu) {
             $stuPhone = clean_phone($stu['phone'] ?? '');
 
-            if ($stuPhone === '9939800780') {
+            if ($stuPhone === '9939800780' || $stuPhone === '8434618717') {
                 $isAuth = true;
             } elseif ($cType === 'course') {
                 // Course Specific Batch:
@@ -2941,7 +2942,7 @@ if ($action === 'get-live-session' && ($method === 'GET' || $method === 'POST'))
     $targetType = $target['type'] ?? 'workshop';
     $targetCourseId = $target['courseId'] ?? '';
 
-    if ($stuPhone === '9939800780') {
+    if ($stuPhone === '9939800780' || $stuPhone === '8434618717') {
         $isAuth = true;
     } elseif ($targetType === 'course') {
         // STRICT COURSE BATCH AUTHORIZATION:

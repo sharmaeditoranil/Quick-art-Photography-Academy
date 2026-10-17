@@ -379,7 +379,7 @@ function trigger_webhook($lead) {
 }
 
 // ---------- AIbotflow WhatsApp OTP Helpers ----------
-function send_aibotflow_whatsapp_otp($phone, $otp, $apiKey, $templateName = 'quickart_login_otp') {
+function send_aibotflow_whatsapp_otp($phone, $otp, $apiKey, $templateName = 'quickart_photography_verification_otp') {
     $apiKey = trim((string)$apiKey);
     if (empty($apiKey)) {
         return ['ok' => false, 'error' => 'AIbotflow WhatsApp API Key configure nahi hai'];
@@ -395,57 +395,77 @@ function send_aibotflow_whatsapp_otp($phone, $otp, $apiKey, $templateName = 'qui
 
     // Meta Cloud API / AIbotflow requires international number without '+' prefix (e.g. 919939967431)
     $targetPhone = '91' . $cleanPhone;
-    $tpl = !empty($templateName) ? trim($templateName) : 'quickart_login_otp';
+    $tpl = !empty($templateName) ? trim($templateName) : 'quickart_photography_verification_otp';
 
-    $payload = [
-        'to' => $targetPhone,
-        'type' => 'template',
-        'template' => [
-            'name' => $tpl,
-            'language' => 'en_US',
-            'params' => [
-                'body' => [(string)$otp],
-                'buttonParams' => [
-                    '0' => (string)$otp
+    $executeSend = function($lang) use ($targetPhone, $tpl, $apiKey, $otp) {
+        $payload = [
+            'to' => $targetPhone,
+            'type' => 'template',
+            'template' => [
+                'name' => $tpl,
+                'language' => $lang,
+                'params' => [
+                    'body' => [(string)$otp],
+                    'buttonParams' => [
+                        '0' => (string)$otp
+                    ]
                 ]
             ]
-        ]
-    ];
+        ];
 
-    $ch = curl_init("https://aibotflow.in/api/v1/messages");
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_HTTPHEADER => [
-            "Authorization: Bearer " . $apiKey,
-            "Content-Type: application/json"
-        ],
-        CURLOPT_TIMEOUT => 12
-    ]);
-    $raw = curl_exec($ch);
-    $err = curl_error($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    @curl_close($ch);
+        $ch = curl_init("https://aibotflow.in/api/v1/messages");
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer " . $apiKey,
+                "Content-Type: application/json"
+            ],
+            CURLOPT_TIMEOUT => 12
+        ]);
+        $raw = curl_exec($ch);
+        $err = curl_error($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        @curl_close($ch);
 
-    $res = $raw ? json_decode($raw, true) : null;
-    if ($code >= 200 && $code < 300) {
+        $res = $raw ? json_decode($raw, true) : null;
+        return ['code' => $code, 'raw' => $raw, 'res' => $res, 'err' => $err];
+    };
+
+    // quickart_photography_verification_otp uses 'en'; legacy uses 'en_US'
+    $primaryLang = ($tpl === 'quickart_photography_verification_otp') ? 'en' : 'en_US';
+    $attempt = $executeSend($primaryLang);
+
+    // If Meta returns language translation error (#132001), try fallback
+    if ($attempt['code'] !== 200 && $attempt['code'] !== 201) {
+        $errMsg = $attempt['res']['error']['message'] ?? '';
+        if (strpos($errMsg, '132001') !== false || strpos($errMsg, 'translation') !== false) {
+            $fallbackLang = ($primaryLang === 'en') ? 'en_US' : 'en';
+            $fallbackAttempt = $executeSend($fallbackLang);
+            if ($fallbackAttempt['code'] >= 200 && $fallbackAttempt['code'] < 300) {
+                $attempt = $fallbackAttempt;
+            }
+        }
+    }
+
+    if ($attempt['code'] >= 200 && $attempt['code'] < 300) {
         return [
             'ok' => true,
             'route' => 'whatsapp',
             'message' => "OTP {$otp} delivered to WhatsApp ({$targetPhone}) via AIbotflow",
-            'response' => $res
+            'response' => $attempt['res']
         ];
     }
 
     $errMsg = 'WhatsApp OTP delivery failed';
-    if ($res && !empty($res['error']['message'])) {
-        $errMsg = $res['error']['message'];
-    } elseif ($err) {
-        $errMsg = $err;
+    if ($attempt['res'] && !empty($attempt['res']['error']['message'])) {
+        $errMsg = $attempt['res']['error']['message'];
+    } elseif ($attempt['err']) {
+        $errMsg = $attempt['err'];
     }
 
-    return ['ok' => false, 'error' => $errMsg, 'raw' => $raw, 'httpCode' => $code];
+    return ['ok' => false, 'error' => $errMsg, 'raw' => $attempt['raw'], 'httpCode' => $attempt['code']];
 }
 
 
