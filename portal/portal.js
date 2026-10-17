@@ -5828,7 +5828,7 @@ function embedLiveStream(streamId, replayUrl, status, bunnyVideoId, isReplay = f
           </span>
         </div>
         <div class="live-stream-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <button type="button" class="live-btn-fs-preview" onclick="qaZoomToggleFullscreen()" title="Full Screen" aria-label="Full Screen">⛶ <span>Full Screen</span></button>
+          ${(window.matchMedia && window.matchMedia('(max-width: 900px), (pointer: coarse)').matches) ? '' : `<button type="button" class="live-btn-fs-preview" onclick="qaZoomToggleFullscreen()" title="Full Screen" aria-label="Full Screen">⛶ <span>Full Screen</span></button>`}
           <button type="button" class="live-icon-btn" onclick="handleCommentButtonClick()" title="Live Doubts &amp; Comments" aria-label="Doubts" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:8px 10px;cursor:pointer">💬</button>
         </div>`;
     }
@@ -7644,10 +7644,12 @@ window.qaZoomToggleFullscreen = function () {
 };
 function qaAddZoomFsButton() {
   if (document.getElementById('qa-zoom-fs')) return;
+  // Phones/tablets: no floating button over the Zoom classroom (Zoom's own controls are enough)
+  if (window.matchMedia && window.matchMedia('(max-width: 900px), (pointer: coarse)').matches) return;
   const b = document.createElement('button');
   b.id = 'qa-zoom-fs'; b.type = 'button';
   b.setAttribute('aria-label', 'Full Screen');
-  b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:2147483001;background:rgba(15,23,42,.82);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 12px;font:600 13px system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(6px)';
+  b.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:2147483001;background:rgba(15,23,42,.82);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 12px;font:600 13px system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(6px)';
   const label = () => { b.textContent = qaFsElement() ? '✕ Exit Full Screen' : '⛶ Full Screen'; };
   b.onclick = () => { window.qaZoomToggleFullscreen(); };
   document.addEventListener('fullscreenchange', label);
