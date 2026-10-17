@@ -11110,12 +11110,12 @@ body.live-fs-open #view-live-studio {
   z-index: 9999;
   background: #060a14 !important;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px 20px;
+  padding: 12px 14px;
   color: #ffffff;
+  overflow-y: auto;                 /* never clip the message on short video boxes */
   animation: live-curtain-fadein 0.25s ease forwards;
   box-sizing: border-box;
 }
@@ -11123,42 +11123,54 @@ body.live-fs-open #view-live-studio {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+.live-ended-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 440px;
+  width: 100%;
+  margin: auto;
+}
 .live-ended-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
   background: rgba(239, 68, 68, 0.18);
   border: 1px solid rgba(239, 68, 68, 0.5);
   color: #fca5a5;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
-  letter-spacing: 0.6px;
-  padding: 4px 14px;
+  letter-spacing: 0.5px;
+  padding: 3px 12px;
   border-radius: 20px;
-  margin-bottom: 10px;
 }
 .live-ended-title {
-  font-size: 20px;
+  font-size: 18px !important;
+  line-height: 1.25 !important;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 6px;
+  margin: 0 !important;
 }
 .live-ended-desc {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #94a3b8;
-  max-width: 440px;
   line-height: 1.5;
-  margin: 0 0 16px;
+  margin: 0;
 }
 .live-ended-countdown {
   font-size: 12px;
   font-weight: 700;
   color: #f5c879;
-  margin-bottom: 16px;
+  margin: 0;
 }
 .live-ended-btn {
   background: linear-gradient(135deg, #f5c879, #d8a153);
   color: #0c0e12;
   font-size: 13px;
   font-weight: 800;
-  padding: 10px 24px;
+  padding: 9px 20px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
@@ -11167,6 +11179,14 @@ body.live-fs-open #view-live-studio {
 }
 .live-ended-btn:active {
   transform: scale(0.97);
+}
+/* Phones / short video boxes: compact, keep only what matters */
+@media (max-width: 768px), (max-height: 500px) {
+  .live-ended-card { gap: 6px; }
+  .live-ended-title { font-size: 15.5px !important; }
+  .live-ended-desc { display: none; }
+  .live-ended-countdown { font-size: 11px; }
+  .live-ended-btn { font-size: 12px; padding: 7px 16px; }
 }
 
 /* ==============================================================
