@@ -239,7 +239,7 @@
       text-align: center;
     }
 
-    .top-announcement span:first-child {
+    .top-announcement > span:first-child {
       background: var(--gold);
       color: #1a1205;
       padding: 2px 8px;
@@ -1707,14 +1707,37 @@
     .yt-play { position: absolute; top: 50%; left: 50%; width: 68px; height: 48px; transform: translate(-50%, -50%); border-radius: 14px; background: #ff0033; box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: transform .2s; }
     .yt-play::after { content: ''; position: absolute; top: 50%; left: 54%; transform: translate(-50%, -50%); border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent #fff; }
     .yt-facade:hover .yt-play { transform: translate(-50%, -50%) scale(1.08); }
+
+    /* Announcement bar v2: one fixed-height line, no JS rewrite (stable) */
+    .top-announcement { display: flex; align-items: center; justify-content: center; gap: 12px; height: 42px; padding: 0 14px !important; white-space: nowrap; overflow: hidden; font-size: 13.5px !important; font-weight: 500 !important; color: #e9dcc2 !important; background: linear-gradient(90deg, #120e07, #241a0b 50%, #120e07) !important; border-bottom: 1px solid rgba(216, 161, 83, 0.28) !important; }
+    .top-announcement .ta-live { display: inline-flex; align-items: center; gap: 0; margin: 0 !important; padding: 4px 11px !important; border-radius: 999px !important; background: rgba(216, 161, 83, 0.12) !important; border: 1px solid rgba(216, 161, 83, 0.45); color: #f5c879 !important; font-size: 11px !important; font-weight: 800 !important; letter-spacing: 0.1em !important; line-height: 1; }
+    .top-announcement .ta-live i { margin-right: 7px; width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.22); }
+    .top-announcement .ta-item b { color: #fff; font-weight: 700; }
+    .top-announcement .ta-item .dynamic-ticket-price { color: #f5c879; }
+    .top-announcement .ta-muted { color: #b9ad97; }
+    .top-announcement .ta-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(216, 161, 83, 0.6); flex: none; }
+    .top-announcement .ta-short { display: none; }
+    @media (max-width: 480px) {
+      .top-announcement { gap: 8px; height: 38px; font-size: 12px !important; padding: 0 10px !important; }
+      .top-announcement .ta-live { padding: 3px 8px !important; font-size: 10px !important; letter-spacing: 0.06em !important; }
+      .top-announcement .ta-long { display: none; }
+      .top-announcement .ta-short { display: inline; }
+    }
+    @media (max-width: 400px) { .top-announcement .ta-cls { display: none; } }
+    @media (max-width: 335px) { .top-announcement .ta-live { display: none; } }
   </style>
 </head>
 
 <body class="lp">
 
   <!-- Top Announcement Bar -->
-  <div class="top-announcement" id="lp-top-announcement">
-    <span>LIVE CLASS</span> Sunday 7:00 PM • Price <span class="dynamic-ticket-price">₹21</span> — offer ke baad ₹999
+  <div class="top-announcement" id="lp-top-announcement" role="note" aria-label="Live class schedule and price">
+    <span class="ta-live"><i aria-hidden="true"></i>LIVE<span class="ta-cls">&nbsp;CLASS</span></span>
+    <span class="ta-item"><b>Sunday</b> 7:00 PM</span>
+    <span class="ta-dot" aria-hidden="true"></span>
+    <span class="ta-item">Price <b class="dynamic-ticket-price">₹21</b></span>
+    <span class="ta-dot" aria-hidden="true"></span>
+    <span class="ta-item ta-muted"><span class="ta-long">offer ke baad</span><span class="ta-short">baad me</span> <span class="dynamic-orig-price">₹999</span></span>
   </div>
 
   <!-- ═══════════ HERO ═══════════ -->
@@ -2652,11 +2675,7 @@
             activeTicketPrice = parseInt(landing.ticketPrice) || (workshop ? workshop.ticketPrice : 21);
             const origPrice = parseInt(landing.originalPrice) || 999;
 
-            // Announcement Bar
-            if (landing.topAnnouncement && document.getElementById('lp-top-announcement')) {
-              let ann = landing.topAnnouncement.replace(/₹\d+/, `₹${activeTicketPrice}`);
-              document.getElementById('lp-top-announcement').innerHTML = `<span>⚡ SPECIAL OFFER</span> ${ann}`;
-            }
+            // Announcement Bar: kept static (prices update via .dynamic-* spans) so it never jumps
 
             // Hero Badge
             if (landing.heroBadge && document.getElementById('hero-badge-tag')) {
