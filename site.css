@@ -5060,7 +5060,7 @@ main .qa-texture-hero>.qa-hero-inner {
 
 main.qa-topics-page>section.qa-topics-hero {
   padding-top: 0 !important;
-  background: linear-gradient(90deg, rgba(17, 17, 17, .97), rgba(17, 17, 17, .82)), url('assets/editing-timeline.jpg') center/cover
+  background: linear-gradient(90deg, rgba(17, 17, 17, .97), rgba(17, 17, 17, .82)), url('/assets/editing-timeline.webp') center/cover
 }
 
 main.qa-topics-page>section.qa-topics-hero>.container {
