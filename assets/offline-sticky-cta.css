@@ -82,7 +82,7 @@
     pointer-events: none;
   }
 
-  /* Website Matching Gold Gradient CTA Button */
+  /* Landing Page Style Vibrant Green CTA Button (matching master-class/live.html) */
   .offline-btn-gold {
     pointer-events: auto; /* Ensure button clicks work */
     width: 100%;
@@ -91,17 +91,18 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 10px 14px 9px;
-    background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
-    color: #0b0f19;
+    padding: 11px 16px 10px;
+    background: linear-gradient(180deg, #32b163 0%, #259250 100%);
+    color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 12px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(216, 161, 83, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 28px -6px rgba(37, 150, 80, 0.65), 0 4px 12px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     text-decoration: none;
     cursor: pointer;
     font-family: 'Outfit', sans-serif;
     line-height: 1.2;
     transition: transform 0.15s ease, filter 0.2s ease;
-    border: none;
     outline: none;
     -webkit-tap-highlight-color: transparent;
   }
@@ -115,12 +116,12 @@
     animation: cta-bounce 1.6s ease-in infinite;
   }
 
-  /* Clean main text line without any background rectangle */
+  /* Main text row: Clean Crisp White with Book Now highlight */
   .offline-btn-main {
-    font-size: 14.5px;
+    font-size: 15px;
     font-weight: 800;
     letter-spacing: 0.01em;
-    color: #0b0f19; /* Dark contrast */
+    color: #ffffff; /* Crisp White */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,22 +130,25 @@
     white-space: nowrap;
   }
 
-  /* Book Now Text - Vibrant Light Green for fresh, attractive legibility */
+  /* Book Now Text - Clean, glowing white contrast badge */
   .offline-book-text {
-    color: #16a34a; /* Vibrant Light Green */
+    color: #ffffff;
     font-weight: 900;
-    text-shadow: 0 1px 2px rgba(11, 15, 23, 0.55);
     letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
-    gap: 2px;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
   /* Sub text of button */
   .offline-btn-sub {
-    font-size: 11px;
-    font-weight: 700;
-    color: #2b1a03; /* Readable dark contrast over gold */
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #e6f9ed; /* Soft light mint white */
     letter-spacing: 0.01em;
     display: flex;
     align-items: center;
@@ -152,10 +156,10 @@
   }
 
   .offline-btn-sub strong {
-    background: rgba(22, 163, 74, 0.2);
-    color: #15803d; /* Matching vibrant Light Green */
-    border: 1px solid rgba(22, 163, 74, 0.45);
-    padding: 1px 6px;
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff7d1; /* Warm Golden highlight matching live.html */
+    border: 1px solid rgba(255, 247, 209, 0.35);
+    padding: 1px 7px;
     border-radius: 4px;
     font-weight: 800;
   }
@@ -356,16 +360,17 @@
 .offline-modal-submit-btn {
   width: 100%;
   margin-top: 6px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #f5c879 0%, #d8a153 50%, #bd863a 100%);
-  color: #0b0f19;
-  font-size: 14.5px;
+  padding: 11px 16px;
+  background: linear-gradient(180deg, #32b163 0%, #259250 100%);
+  color: #ffffff;
+  font-size: 15px;
   font-weight: 800;
-  border-radius: 7px;
-  border: none;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   cursor: pointer;
   font-family: inherit;
-  box-shadow: 0 6px 18px rgba(216, 161, 83, 0.35);
+  box-shadow: 0 8px 20px rgba(37, 150, 80, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   transition: filter 0.2s ease, transform 0.15s ease;
 }
 
