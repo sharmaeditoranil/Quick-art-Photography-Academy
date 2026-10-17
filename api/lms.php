@@ -308,6 +308,29 @@ function rate_limit_hit($bucket, $key, $max, $windowSec) {
     return $allowed;
 }
 
+// Zoom: meeting number / passcode for a live class, resolved server-side only
+function zoom_meeting_info($c) {
+    $url = trim((string)($c['zoomUrl'] ?? ''));
+    if ($url === '' && ($c['streamType'] ?? '') === 'zoom') $url = trim((string)($c['streamId'] ?? ''));
+    $mid = preg_replace('/\D/', '', (string)($c['zoomMeetingId'] ?? ''));
+    if (!$mid && preg_match('#/(?:j|wc|w|s)/(\d{9,12})#i', $url, $m)) $mid = $m[1];
+    if (!$mid && preg_match('/[?&]confno=(\d{9,12})/i', $url, $m)) $mid = $m[1];
+    if (!$mid && preg_match('/^\s*[\d\s-]{9,14}\s*$/', $url)) $mid = preg_replace('/\D/', '', $url);
+    $pwdHash = preg_match('/[?&]pwd=([^&#]+)/i', $url, $m) ? urldecode($m[1]) : '';
+    $isZoom = (($c['streamType'] ?? '') === 'zoom') || $mid !== '' || stripos($url, 'zoom.') !== false;
+    return ['isZoom' => $isZoom, 'meetingNumber' => $mid, 'passcode' => trim((string)($c['zoomPasscode'] ?? '')), 'pwdHash' => $pwdHash];
+}
+
+// Zoom Meeting SDK (Web) join signature — HS256 JWT signed with the SDK secret (never sent to the browser)
+function zoom_sdk_signature($sdkKey, $sdkSecret, $meetingNumber, $role = 0) {
+    $b64 = function ($d) { return rtrim(strtr(base64_encode($d), '+/', '-_'), '='); };
+    $iat = time() - 30;
+    $exp = $iat + 2 * 3600;
+    $header = $b64(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+    $payload = $b64(json_encode(['appKey' => $sdkKey, 'sdkKey' => $sdkKey, 'mn' => (string)$meetingNumber, 'role' => (int)$role, 'iat' => $iat, 'exp' => $exp, 'tokenExp' => $exp, 'video_webrtc_mode' => 1]));
+    return $header . '.' . $payload . '.' . $b64(hash_hmac('sha256', $header . '.' . $payload, $sdkSecret, true));
+}
+
 function require_student() {
     $token = $_SERVER['HTTP_X_STUDENT_TOKEN'] ?? '';
     if (!$token) {
@@ -1411,7 +1434,7 @@ if ($action === 'my-courses' && $method === 'GET') {
                 'liveSessionId'   => $live['id'],
                 'liveStatus'      => $live['status'] ?? 'scheduled',
                 'scheduledAt'     => $live['scheduledAt'] ?? '',
-                'streamId'        => $live['streamId'] ?? '',
+                'streamId'        => (zoom_meeting_info($live)['isZoom'] && ($live['streamType'] ?? '') === 'zoom') ? '' : ($live['streamId'] ?? ''),
                 'chatEnabled'     => !empty($live['chatEnabled'])
             ];
         }
@@ -2887,10 +2910,10 @@ if ($action === 'get-live-classes' && $method === 'GET') {
             $safeItem['cloudflareVideoId'] = $c['cloudflareVideoId'] ?? '';
             $safeItem['bunnyVideoId'] = $c['bunnyVideoId'] ?? '';
             $safeItem['meetUrl'] = $c['meetUrl'] ?? '';
-            $safeItem['zoomUrl'] = $c['zoomUrl'] ?? '';
-            $safeItem['zoomMeetingId'] = $c['zoomMeetingId'] ?? '';
-            $safeItem['zoomPasscode'] = $c['zoomPasscode'] ?? '';
-            $safeItem['zoomEmbedMode'] = ($c['zoomEmbedMode'] ?? true) !== false;
+            // Zoom ID / passcode / link are never sent to students; they join in-page via 'zoomJoin'
+            $zInfo = zoom_meeting_info($c);
+            $safeItem['isZoom'] = $zInfo['isZoom'];
+            if ($zInfo['isZoom'] && ($safeItem['streamType'] ?? '') === 'zoom') unset($safeItem['streamId']);
             $safeItem['resources'] = $c['resources'] ?? [];
             if ($c['status'] === 'completed' && !empty($c['replayUrl'])) {
                 $safeItem['replayUrl'] = $c['replayUrl'];
@@ -3039,6 +3062,37 @@ if ($action === 'get-live-session' && ($method === 'GET' || $method === 'POST'))
 
     // Dynamic Anti-Piracy Watermark String
     $cleanName = !empty($stu['name']) ? $stu['name'] : 'Student';
+
+    // In-page Zoom join: credentials are resolved here, after the enrollment check, and only on request
+    $zInfo = zoom_meeting_info($target);
+    if (!empty($_GET['zoomJoin']) || !empty($_POST['zoomJoin'])) {
+        if (!$zInfo['isZoom'] || $zInfo['meetingNumber'] === '') json_err('Is class me Zoom join available nahi hai.', 400);
+        $zStatus = $target['status'] ?? 'scheduled';
+        $zStart = strtotime($target['scheduledAt'] ?? '') ?: 0;
+        if ($zStatus === 'completed') json_err('Ye live class khatam ho chuki hai.', 400);
+        if ($zStatus !== 'live' && $zStart && ($zStart - time()) > 30 * 60) {
+            json_err('Class shuru hone se 30 minute pehle Join khulega.', 400);
+        }
+        $zs = load_lms_settings();
+        $sdkKey = trim($zs['zoomSdkKey'] ?? '');
+        $sdkSecret = trim($zs['zoomSdkSecret'] ?? '');
+        if ($sdkKey && $sdkSecret) {
+            json_ok(['zoomJoin' => [
+                'mode'          => 'sdk',
+                'sdkKey'        => $sdkKey,
+                'signature'     => zoom_sdk_signature($sdkKey, $sdkSecret, $zInfo['meetingNumber']),
+                'meetingNumber' => $zInfo['meetingNumber'],
+                'password'      => $zInfo['passcode'] !== '' ? $zInfo['passcode'] : $zInfo['pwdHash'],
+                'userName'      => $cleanName,
+                'userEmail'     => $stu['email'] ?? ''
+            ]]);
+        }
+        // SDK not configured yet: fall back to opening the Zoom app (nothing is displayed on the page)
+        json_ok(['zoomJoin' => [
+            'mode'    => 'app',
+            'joinUrl' => 'https://zoom.us/j/' . $zInfo['meetingNumber'] . '?' . http_build_query(array_filter(['pwd' => $zInfo['pwdHash'], 'uname' => $cleanName]))
+        ]]);
+    }
     $watermarkText = "{$cleanName} | +91-{$stu['phone']} | " . ($stu['id'] ?? 'QA-STU');
 
     $bunnyVid = trim($target['bunnyVideoId'] ?? '');
@@ -3076,15 +3130,12 @@ if ($action === 'get-live-session' && ($method === 'GET' || $method === 'POST'))
         'scheduledAt'               => $target['scheduledAt'] ?? '',
         'duration'                  => $target['duration'] ?? '90 Mins',
         'streamType'                => $target['streamType'] ?? (!empty($bunnyVid) ? 'bunny' : 'cloudflare'),
-        'streamId'                  => $target['streamId'] ?? '',
+        'streamId'                  => ($zInfo['isZoom'] && ($target['streamType'] ?? '') === 'zoom') ? '' : ($target['streamId'] ?? ''),
         'replayUrl'                 => $finalReplayUrl,
         'bunnyVideoId'              => $bunnyVid,
         'cloudflareVideoId'         => $target['cloudflareVideoId'] ?? '',
         'meetUrl'                   => $target['meetUrl'] ?? '',
-        'zoomUrl'                   => $target['zoomUrl'] ?? '',
-        'zoomMeetingId'             => $target['zoomMeetingId'] ?? '',
-        'zoomPasscode'              => $target['zoomPasscode'] ?? '',
-        'zoomEmbedMode'             => ($target['zoomEmbedMode'] ?? true) !== false,
+        'isZoom'                    => $zInfo['isZoom'],
         'showViewerCountToStudents' => $showViewers,
         'viewerCount'               => $viewerCount,
         'allowStudentMic'           => !empty($target['allowStudentMic']),

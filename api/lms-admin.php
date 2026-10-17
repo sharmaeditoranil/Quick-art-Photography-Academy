@@ -768,6 +768,9 @@ if ($action === 'save-lms-settings' && $method === 'POST') {
         'smtpPort' => isset($body['smtpPort']) ? intval($body['smtpPort']) : ($currSettings['smtpPort'] ?? 587),
         'smtpUser' => isset($body['smtpUser']) ? trim($body['smtpUser']) : ($currSettings['smtpUser'] ?? 'support@quickartphotography.in'),
         'smtpPass' => isset($body['smtpPass']) ? trim($body['smtpPass']) : ($currSettings['smtpPass'] ?? ''),
+        // Zoom Meeting SDK (in-page class join). Secret stays server-side only.
+        'zoomSdkKey' => isset($body['zoomSdkKey']) ? trim($body['zoomSdkKey']) : ($currSettings['zoomSdkKey'] ?? ''),
+        'zoomSdkSecret' => isset($body['zoomSdkSecret']) ? trim($body['zoomSdkSecret']) : ($currSettings['zoomSdkSecret'] ?? ''),
         'collections' => $currSettings['collections'] ?? [
             'course-premiere-pro' => 'e8c9044d-a305-465c-86ca-297e4e71436d',
             'course-edius-pro' => '22652727-657c-4280-8d97-08504a594235',
@@ -783,6 +786,9 @@ if ($action === 'save-lms-settings' && $method === 'POST') {
         'mentorName' => 'Anil Sharma',
         'updatedAt' => date('c')
     ];
+
+    // Keep any settings keys this form doesn't know about (they used to be silently dropped)
+    $newSettings = array_merge($currSettings, $newSettings);
 
     if (!is_dir(DATA_DIR)) mkdir(DATA_DIR, 0755, true);
     file_put_contents(LMS_SETTINGS_FILE, json_encode($newSettings, JSON_PRETTY_PRINT), LOCK_EX);
