@@ -15,6 +15,13 @@
   if (window.__qaOfflineStickyInitialized) return;
   window.__qaOfflineStickyInitialized = true;
 
+  // Optional config on the <script> tag:
+  //   data-href="/master-class/"   -> button links to this page instead of opening the popup form
+  //   data-scroll-percent="30"     -> show the bar after this % of the page has been scrolled
+  const cfgScript = document.currentScript || document.querySelector('script[src*="offline-sticky-cta.js"]');
+  const linkHref = (cfgScript && cfgScript.getAttribute('data-href')) || '';
+  const scrollPercent = parseFloat((cfgScript && cfgScript.getAttribute('data-scroll-percent')) || '');
+
   // Determine current course context from URL
   const path = (window.location.pathname || '').toLowerCase();
   let defaultCourse = 'Video Editing Course (Offline - Siwan Campus)';
@@ -54,7 +61,9 @@
   stickyBar.setAttribute('aria-label', '1 Days Free Demo Class Booking');
   stickyBar.innerHTML = `
     <div class="offline-sticky-bar-inner">
-      <button type="button" class="offline-btn-gold cta-bounce" id="qaOpenDemoModalBtn" aria-haspopup="dialog" aria-expanded="false">
+      ${linkHref
+        ? '<a class="offline-btn-gold cta-bounce" id="qaStickyLinkBtn" href="' + linkHref.replace(/"/g, '&quot;') + '">'
+        : '<button type="button" class="offline-btn-gold cta-bounce" id="qaOpenDemoModalBtn" aria-haspopup="dialog" aria-expanded="false">'}
         <span class="offline-btn-main">
           <span>🎓 1 Days Free Demo Class</span>
           <span class="offline-book-text">Book Now &rarr;</span>
@@ -62,7 +71,7 @@
         <span class="offline-btn-sub">
           ⚡ New Batch Starting Soon &bull; <strong>10% OFF</strong>
         </span>
-      </button>
+      ${linkHref ? '</a>' : '</button>'}
     </div>
   `;
 
@@ -135,8 +144,9 @@
     if (document.body) {
       document.body.classList.add('has-offline-sticky');
       document.body.appendChild(stickyBar);
-      document.body.appendChild(modalOverlay);
       bindScrollTrigger();
+      if (linkHref) return;
+      document.body.appendChild(modalOverlay);
       bindEvents();
     } else {
       document.addEventListener('DOMContentLoaded', mount);
@@ -150,7 +160,12 @@
 
     function updateStickyVisibility() {
       const currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
-      if (currentScroll > threshold) {
+      let limit = threshold;
+      if (scrollPercent > 0) {
+        const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        limit = scrollable * scrollPercent / 100;
+      }
+      if (currentScroll > limit) {
         stickyBar.classList.add('show');
       } else {
         stickyBar.classList.remove('show');

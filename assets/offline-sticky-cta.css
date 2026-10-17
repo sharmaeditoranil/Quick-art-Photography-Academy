@@ -468,3 +468,11 @@
   .offline-modal-submit-btn { margin-top: 8px; padding: 14px 18px; font-size: 16.5px; border-radius: 10px; }
   .offline-trust-note { font-size: 12.5px; margin-top: 12px; }
 }
+
+/* Link mode (blog posts): the bar is an <a> to the landing page */
+a.offline-btn-gold,
+a.offline-btn-gold:hover,
+a.offline-btn-gold:visited {
+  color: #0b0f19 !important;
+  text-decoration: none !important;
+}
