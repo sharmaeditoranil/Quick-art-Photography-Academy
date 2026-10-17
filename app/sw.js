@@ -1,5 +1,5 @@
 // app/sw.js — Service Worker for Quick Art Photography Academy LMS App
-const CACHE_NAME = 'qaa-lms-cache-v33';
+const CACHE_NAME = 'qaa-lms-cache-v34';
 const STATIC_ASSETS = [
   '/app/',
   '/app/index.html',
