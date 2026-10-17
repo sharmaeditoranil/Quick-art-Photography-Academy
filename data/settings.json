@@ -1,9 +1,0 @@
-{
-    "adminPasswordHash": "$2y$12$sl7Ny5dLua391o9qXDRYqu63HOolDIzeIjiKxsREg4nx3QBAziK8O",
-    "webhookUrl": "",
-    "teamPhone": "+919939800780",
-    "webhookMethod": "POST",
-    "webhookPayloadFormat": "json",
-    "webhookHeaders": "",
-    "updatedAt": "2026-09-17T18:31:48+00:00"
-}

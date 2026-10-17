@@ -31,3 +31,6 @@ uploads/
 android/.gradle/
 android/**/build/
 android/local.properties
+
+# Server runtime data (students, admissions, payments, API keys) — never commit
+data/
