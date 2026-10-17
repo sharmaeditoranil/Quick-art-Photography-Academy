@@ -5339,9 +5339,8 @@ function escHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// ── Zoom in-page join (Meeting SDK Component View) ──
+// ── Zoom in-page join (Meeting SDK Client View: full Zoom-style classroom in this tab) ──
 const QA_ZOOM_SDK_VER = '3.11.2';
-let _qaZoomClient = null;
 function qaLoadScript(src) {
   return new Promise((resolve, reject) => {
     if (document.querySelector(`script[data-qa-src="${src}"]`)) return resolve();
@@ -5351,13 +5350,23 @@ function qaLoadScript(src) {
     document.head.appendChild(el);
   });
 }
-async function qaLoadZoomSdk() {
-  if (window.ZoomMtgEmbedded) return;
+async function qaLoadZoomClientSdk() {
+  if (window.ZoomMtg) return;
   const base = `https://source.zoom.us/${QA_ZOOM_SDK_VER}`;
+  // Zoom's own stylesheets are only added at join time so they never affect the portal
+  ['bootstrap.css', 'react-select.css'].forEach(f => {
+    if (document.querySelector(`link[data-qa-zoom="${f}"]`)) return;
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `${base}/css/${f}`; l.dataset.qaZoom = f; document.head.appendChild(l);
+  });
+  if (!document.getElementById('qa-zoom-layer-fix')) {
+    const st = document.createElement('style'); st.id = 'qa-zoom-layer-fix';
+    st.textContent = '#zmmtg-root{z-index:2147483000!important}';
+    document.head.appendChild(st);
+  }
   for (const f of ['react.min.js', 'react-dom.min.js', 'redux.min.js', 'redux-thunk.min.js', 'lodash.min.js']) {
     await qaLoadScript(`${base}/lib/vendor/${f}`);
   }
-  await qaLoadScript(`${base}/zoom-meeting-embedded-${QA_ZOOM_SDK_VER}.min.js`);
+  await qaLoadScript(`https://source.zoom.us/zoom-meeting-${QA_ZOOM_SDK_VER}.min.js`);
 }
 window.qaJoinZoomClass = async function () {
   const session = window._qaZoomSession;
@@ -5369,32 +5378,43 @@ window.qaJoinZoomClass = async function () {
   try {
     say('Class se connect ho raha hai…');
     const res = await apiFetch(`get-live-session&id=${encodeURIComponent(session.id)}&zoomJoin=1`);
-    const j = res.zoomJoin || {};
+    const j = (res && res.zoomJoin) || {};
     if (j.mode === 'app' && j.joinUrl) {
-      // In-page SDK not configured yet: open the Zoom app directly (nothing shown on this page)
       window.open(j.joinUrl, '_blank', 'noopener');
       say('Zoom app me class khul rahi hai…');
       if (btn) { btn.disabled = false; btn.textContent = '▶ Join Class'; }
       return;
     }
     if (j.mode !== 'sdk') throw new Error('Class join nahi ho payi. Thodi der baad try karein.');
-    await qaLoadZoomSdk();
-    const root = document.getElementById('qa-zoom-root');
-    const panel = document.getElementById('qa-zoom-panel');
-    root.style.display = 'block';
-    if (!_qaZoomClient) {
-      _qaZoomClient = ZoomMtgEmbedded.createClient();
-      await _qaZoomClient.init({
-        zoomAppRoot: root, language: 'en-US', patchJsMedia: true, leaveOnPageUnload: true,
-        customize: { video: { isResizable: true, viewSizes: { default: { width: root.clientWidth || 960, height: Math.max(360, (root.clientHeight || 540) - 60) } } } }
-      });
-    }
-    await _qaZoomClient.join({ sdkKey: j.sdkKey, signature: j.signature, meetingNumber: j.meetingNumber, password: j.password, userName: j.userName, userEmail: j.userEmail || '' });
-    if (panel) panel.style.display = 'none';
+    say('Classroom load ho raha hai…');
+    await qaLoadZoomClientSdk();
+    ZoomMtg.setZoomJSLib(`https://source.zoom.us/${QA_ZOOM_SDK_VER}/lib`, '/av');
+    ZoomMtg.preLoadWasm();
+    ZoomMtg.prepareWebSDK();
+    try { ZoomMtg.i18n.load('en-US'); } catch (_) {}
+    await new Promise((resolve, reject) => ZoomMtg.init({
+      leaveUrl: window.location.href.split('#')[0],
+      patchJsMedia: true,
+      defaultView: 'speaker',
+      showMeetingHeader: false,                                   // header shows the meeting number
+      meetingInfo: ['topic', 'host', 'participant', 'dc', 'enctype'], // no ID / passcode / invite link
+      disableInvite: true,
+      disableCallOut: true,
+      disableRecord: true,
+      isSupportChat: true,
+      screenShare: !!session.allowStudentScreen,
+      success: resolve,
+      error: (e) => reject(new Error((e && (e.errorMessage || e.reason)) || 'Zoom start nahi hua'))
+    }));
+    await new Promise((resolve, reject) => ZoomMtg.join({
+      signature: j.signature, sdkKey: j.sdkKey, meetingNumber: j.meetingNumber, passWord: j.password,
+      userName: j.userName, userEmail: j.userEmail || '',
+      success: resolve,
+      error: (e) => reject(new Error((e && (e.errorMessage || e.reason)) || 'Class join nahi ho payi'))
+    }));
+    say('');
   } catch (err) {
-    const msg = (err && (err.reason || err.message)) || 'Class join nahi ho payi.';
-    say(msg);
-    const root = document.getElementById('qa-zoom-root'); if (root && !_qaZoomClient) root.style.display = 'none';
+    say((err && err.message) || 'Class join nahi ho payi.');
     if (btn) { btn.disabled = false; btn.textContent = '▶ Join Class'; }
   }
 };
