@@ -442,7 +442,10 @@ section#mcx-hero{padding:65px 0 64px!important}@media(min-width:1151px){section#
 .mcx-fee-list b{color:#fce09b;white-space:nowrap}
 .mcx-cta{display:block;margin-top:20px;padding:15px 20px;border-radius:14px;text-align:center;text-decoration:none!important;color:#1a1408!important;font-family:'Outfit',sans-serif;font-size:21px;font-weight:800;line-height:1.2;background:linear-gradient(105deg,#fce09b,#e4b35f 55%,#c8913f);box-shadow:0 14px 34px rgba(228,179,95,.3);transition:transform .15s,filter .15s}
 .mcx-cta small{display:block;margin-top:4px;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:13px;font-weight:600;color:#3d2e12}
-.mcx-cta:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.mcx-cta{animation:mcxRock 2s ease-out infinite;transform-origin:50% 50%;will-change:transform}
+.mcx-cta:hover,.mcx-cta:focus-visible{animation-play-state:paused;filter:brightness(1.06)}
+@keyframes mcxRock{0%,25%{transform:rotate(0)}50%{transform:rotate(2deg)}75%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
+@media(prefers-reduced-motion:reduce){.mcx-cta{animation:none}}
 .mcx-links{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 22px;margin-top:14px}
 .mcx-links a{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:#e2e8f0!important;text-decoration:none}
 .mcx-links a:hover{color:#fce09b!important}
