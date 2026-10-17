@@ -973,68 +973,9 @@ if ($action === 'email-signup' && $method === 'POST') {
     ]);
 }
 
-// 3.1 Supabase Auto-Login after email link confirmation
-if ($action === 'supabase-auto-login' && $method === 'POST') {
-    $body = read_json_body();
-    // The email must come from Supabase itself (verified access token), never from the browser
-    $accessToken = trim((string)($body['accessToken'] ?? ''));
-    $sbSettings = load_lms_settings();
-    $sbUrl = rtrim($sbSettings['supabaseUrl'] ?? '', '/');
-    $sbKey = $sbSettings['supabaseAnonKey'] ?? '';
-    if (!$accessToken || !$sbUrl || !$sbKey) json_err('Email link login verify nahi ho paya. Dobara login karein.', 401);
-    $ch = curl_init($sbUrl . '/auth/v1/user');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => ['apikey: ' . $sbKey, 'Authorization: Bearer ' . $accessToken],
-        CURLOPT_TIMEOUT => 8
-    ]);
-    $sbRaw = curl_exec($ch);
-    $sbCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    $sbUser = json_decode((string)$sbRaw, true) ?: [];
-    $email = strtolower(trim($sbUser['email'] ?? ''));
-    if ($sbCode !== 200 || !filter_var($email, FILTER_VALIDATE_EMAIL) || empty($sbUser['email_confirmed_at'] ?? ($sbUser['confirmed_at'] ?? ''))) {
-        json_err('Email link login verify nahi ho paya. Dobara login karein.', 401);
-    }
-
-    $students = load_students();
-    $matched = null;
-    foreach ($students as $s) {
-        if (!empty($s['email']) && strtolower($s['email']) === $email) {
-            $matched = $s;
-            break;
-        }
-    }
-
-    if (!$matched) {
-        $matched = [
-            'id'              => 'stu_' . substr(md5(uniqid($email, true)), 0, 8),
-            'phone'           => '',
-            'name'            => explode('@', $email)[0],
-            'email'           => $email,
-            'passwordHash'    => '',
-            'city'            => '',
-            'enrolledAt'      => date('c'),
-            'enrolledCourses' => [],
-            'completedLessons'=> [],
-            'lastActive'      => date('c'),
-            'signupMethod'    => 'supabase-email'
-        ];
-        $students[] = $matched;
-        save_students($students);
-    }
-
-    $token = create_student_session($matched['phone'] ?: $matched['email']);
-    json_ok([
-        'token'   => $token,
-        'student' => [
-            'id'             => $matched['id'],
-            'phone'          => $matched['phone'],
-            'name'           => $matched['name'],
-            'email'          => $matched['email'],
-            'enrolledCourses'=> $matched['enrolledCourses'] ?? []
-        ]
-    ]);
+// 3.1 Supabase email-link login was never used (0 sign-ups) and has been retired
+if ($action === 'supabase-auto-login') {
+    json_err('Ye login tareeka band ho chuka hai. Kripya OTP ya email/password se login karein.', 410);
 }
 
 // ─── Discussion / Comments API ────────────────────────────────────────────────

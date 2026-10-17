@@ -469,7 +469,7 @@ function send_aibotflow_whatsapp_otp($phone, $otp, $apiKey, $templateName = 'qui
 }
 
 
-// ---------- Email OTP Helpers (Supabase + Direct Mail) ----------
+// ---------- Email OTP Helpers (Brevo / SMTP / PHP mail) ----------
 const EMAIL_OTPS_FILE = DATA_DIR . '/email-otps.json';
 
 function load_email_otps() {
@@ -624,44 +624,7 @@ function send_email_otp($email, $otp, $purpose = 'register', $settings = []) {
         }
     }
 
-    // 5. Try Supabase Auth OTP if configured
-    $supabaseUrl = rtrim($settings['supabaseUrl'] ?? '', '/');
-    $supabaseKey = $settings['supabaseAnonKey'] ?? '';
-
-    if (!empty($supabaseUrl) && !empty($supabaseKey)) {
-        $portalUrl = (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'quickart') !== false)
-            ? 'https://' . $_SERVER['HTTP_HOST'] . '/portal/'
-            : 'https://quickartphotography.in/portal/';
-
-        $ch = curl_init("{$supabaseUrl}/auth/v1/otp");
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode([
-                'email' => $email,
-                'create_user' => ($purpose === 'register'),
-                'options' => [
-                    'email_redirect_to' => $portalUrl
-                ]
-            ]),
-            CURLOPT_HTTPHEADER => [
-                "apikey: {$supabaseKey}",
-                "Authorization: Bearer {$supabaseKey}",
-                "Content-Type: application/json"
-            ],
-            CURLOPT_TIMEOUT => 8
-        ]);
-        $raw = curl_exec($ch);
-        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        @curl_close($ch);
-        if ($code >= 200 && $code < 300) {
-            return [
-                'ok' => true,
-                'message' => 'OTP sent to email successfully via Supabase',
-                'provider' => 'supabase'
-            ];
-        }
-    }
+    // (Supabase removed: it was never reached — Brevo/SMTP send the OTP email)
 
     // 6. Fallback to PHP mail()
     $headers = "MIME-Version: 1.0\r\n"
@@ -675,7 +638,6 @@ function send_email_otp($email, $otp, $purpose = 'register', $settings = []) {
     return [
         'ok' => true,
         'message' => 'OTP sent to email successfully',
-        'supabase' => $supabaseSent ?? false,
         'smtp' => $smtpSent ?? false,
         'brevo' => $brevoSent ?? false
     ];
@@ -769,36 +731,7 @@ function verify_email_otp($email, $userOtp, $purpose = '', $settings = []) {
     $email = strtolower(trim((string)$email));
     $userOtp = trim((string)$userOtp);
 
-    // 1. Try Supabase verification if configured
-    $supabaseUrl = rtrim($settings['supabaseUrl'] ?? '', '/');
-    $supabaseKey = $settings['supabaseAnonKey'] ?? '';
-
-    if (!empty($supabaseUrl) && !empty($supabaseKey)) {
-        $ch = curl_init("{$supabaseUrl}/auth/v1/verify");
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode([
-                'type' => 'email',
-                'email' => $email,
-                'token' => $userOtp
-            ]),
-            CURLOPT_HTTPHEADER => [
-                "apikey: {$supabaseKey}",
-                "Authorization: Bearer {$supabaseKey}",
-                "Content-Type: application/json"
-            ],
-            CURLOPT_TIMEOUT => 8
-        ]);
-        $raw = curl_exec($ch);
-        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        @curl_close($ch);
-        if ($code >= 200 && $code < 300) {
-            return ['ok' => true, 'supabase' => true];
-        }
-    }
-
-    // 2. Check local OTP records
+    // Check local OTP records (Supabase verification removed; it bypassed the attempt limit)
     $otps = load_email_otps();
     $rec = $otps[$email] ?? null;
 

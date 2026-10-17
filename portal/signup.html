@@ -261,35 +261,7 @@ fbq('track', 'PageView');
       }
     }
 
-    // Check if redirected from email confirmation link
-    (async function checkEmailRedirect() {
-      const hash = window.location.hash ? window.location.hash.substring(1) : '';
-      const params = new URLSearchParams(hash);
-      const token = params.get('access_token');
-      if (token) {
-        try {
-          const uRes = await fetch('https://wysgdueraejdmphenjkp.supabase.co/auth/v1/user', {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'apikey': 'sb_publishable_O9vYLYrO5Q84toHf0fpE0w_hrMfXNx1'
-            }
-          });
-          const sbUser = await uRes.json();
-          if (sbUser && sbUser.email) {
-            toast('✅ Email verified! Completing login…');
-            const autoRes = await lmsApi('supabase-auto-login', {
-              method: 'POST',
-              body: { email: sbUser.email, accessToken: token }
-            });
-            if (autoRes.token) {
-              localStorage.setItem(TOKEN_KEY, autoRes.token);
-              window.location.replace(PORTAL_URL);
-              return;
-            }
-          }
-        } catch(e) {}
-      }
-
+    (function redirectIfLoggedIn() {
       // If already logged in, redirect to portal
       const tok = localStorage.getItem(TOKEN_KEY);
       if (tok) window.location.replace(PORTAL_URL);

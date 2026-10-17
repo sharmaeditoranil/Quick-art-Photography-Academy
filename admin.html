@@ -1012,7 +1012,7 @@ fbq('track', 'PageView');
       </button>
       <button type="button" class="tab" data-tab="lms-email" style="border-left-color:#3b82f6;">
         <span class="qa-tab-icon">✉️</span>
-        <span class="qa-tab-label">Email OTP (Supabase)</span>
+        <span class="qa-tab-label">Email OTP (Brevo)</span>
       </button>
       <button type="button" class="tab" data-tab="lms-settings">
         <span class="qa-tab-icon">🎥</span>
@@ -2050,13 +2050,13 @@ fbq('track', 'PageView');
       </div>
     </div>
 
-    <!-- EMAIL OTP (SUPABASE) TAB -->
+    <!-- EMAIL OTP (BREVO) TAB -->
     <div id="tab-lms-email" class="tab-content hidden" style="margin-top:16px">
       <div class="card" style="border:1px solid rgba(59,130,246,0.3);background:linear-gradient(180deg,#0b1329,#070b14)">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
           <div>
             <h2 style="font-size:20px;font-family:'Outfit',sans-serif;color:#93c5fd;margin:0 0 6px;display:flex;align-items:center;gap:8px">
-              ✉️ Supabase Email OTP Configuration
+              ✉️ Email OTP Configuration (Brevo)
             </h2>
             <p class="muted" style="margin:0;font-size:13px">
               Student <b>Registration (Sign Up)</b> aur <b>Forgot Password</b> ke liye Email OTP service.
@@ -2168,42 +2168,6 @@ fbq('track', 'PageView');
           </div>
         </div>
 
-        <!-- 2. Credentials Form (Supabase) -->
-        <div style="background:#090e1a;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:22px">
-          <div style="font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:12px">⚡ Supabase Auth Integration Keys</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-            <div style="grid-column:1 / -1">
-              <label for="supabaseUrl" style="font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:6px;display:block">
-                Supabase Project URL * <small style="font-weight:400;color:var(--muted)">(Supabase Dashboard -> Settings -> API se copy karein)</small>
-              </label>
-              <input type="url" id="supabaseUrl" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" style="width:100%" />
-            </div>
-            <div>
-              <label for="supabaseAnonKey" style="font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:6px;display:block">
-                Supabase Publishable / Anon API Key *
-              </label>
-              <div style="position:relative">
-                <input type="password" id="supabaseAnonKey" placeholder="sb_publishable_..." style="padding-right:42px" />
-                <button type="button" onclick="togglePasswordVisibility('supabaseAnonKey')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px" title="Show / Hide Key">👁</button>
-              </div>
-            </div>
-            <div>
-              <label for="supabaseSecretKey" style="font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:6px;display:block">
-                Supabase Secret Key (Service Role)
-              </label>
-              <div style="position:relative">
-                <input type="password" id="supabaseSecretKey" placeholder="sb_secret_..." style="padding-right:42px" />
-                <button type="button" onclick="togglePasswordVisibility('supabaseSecretKey')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px" title="Show / Hide Key">👁</button>
-              </div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:flex-end">
-            <button type="button" onclick="saveSupabaseSettingsOnly()" class="btn btn-gold" style="padding:11px 24px;font-size:13px">
-              💾 Save Supabase Settings
-            </button>
-          </div>
-        </div>
-
         <!-- 2. Live Test Email OTP Tool -->
         <div style="padding:18px 20px;background:rgba(0,0,0,0.35);border:1px solid rgba(59,130,246,0.3);border-radius:16px;margin-bottom:22px">
           <div style="font-size:13.5px;font-weight:700;color:#93c5fd;margin-bottom:10px">✉️ Send Live Test Email OTP (Email inbox check karein):</div>
@@ -2216,46 +2180,6 @@ fbq('track', 'PageView');
           </div>
         </div>
 
-        <!-- 3. Hindi Guide for 6-Digit OTP & URL Setup -->
-        <div style="background:rgba(216,161,83,0.06);border:1px solid rgba(216,161,83,0.3);border-radius:14px;padding:20px;margin-bottom:18px">
-          <h3 style="font-size:15px;color:#fcd34d;margin:0 0 10px;font-family:'Outfit',sans-serif">⚡ Email me Link ki jagah 6-Digit OTP Code aane ke liye (1-Minute Setting)</h3>
-          <p style="font-size:12.5px;color:#cbd5e1;line-height:1.6;margin:0 0 12px">
-            Supabase by default email me link bhejta hai. Agar aap chahte hain ki student ko email me <b>6-digit numeric OTP code</b> dikhai de, to Supabase me sirf ye 2 chote se step karein:
-          </p>
-          <ol style="font-size:12.5px;color:#e2e8f0;line-height:1.9;margin:0 0 14px;padding-left:20px">
-            <li>
-              Direct is link par click karein:
-              <a href="https://supabase.com/dashboard/project/wysgdueraejdmphenjkp/auth/templates" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;text-decoration:underline;font-weight:700">
-                👉 Supabase Email Templates Page Kholein
-              </a>
-            </li>
-            <li>
-              <b>"Confirm signup"</b> aur <b>"Magic Link"</b> par baari-baari click karein.
-            </li>
-            <li>
-              Template body me jahan <code>{{ .ConfirmationURL }}</code> hai, wahan ye code paste karke <b>Save</b> daba dein:
-            </li>
-          </ol>
-          <div style="background:#090d13;border:1px solid rgba(216,161,83,0.25);border-radius:8px;padding:12px 14px;font-family:monospace;font-size:12px;color:#fef08a;margin-bottom:12px;overflow-x:auto">
-            &lt;h2&gt;Quick Art Photography Academy&lt;/h2&gt;<br>
-            &lt;p&gt;Aapka 6-digit verification code hai: &lt;b style="font-size:24px;color:#d8a153;"&gt;{{ .Token }}&lt;/b&gt;&lt;/p&gt;<br>
-            &lt;p&gt;Ya direct verify karne ke liye yahan click karein: &lt;a href="{{ .ConfirmationURL }}"&gt;Confirm Email&lt;/a&gt;&lt;/p&gt;
-          </div>
-          <div style="font-size:12px;color:#94a3b8">
-            ✅ <b>Bonus:</b> Agar student email me aaye link par click karega to bina OTP daale bhi auto-login ho jayega, aur OTP daalega to OTP se bhi login ho jayega!
-          </div>
-        </div>
-
-        <!-- 4. Supabase Project URL Guide -->
-        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px">
-          <h3 style="font-size:14px;color:#93c5fd;margin:0 0 10px;font-family:'Outfit',sans-serif">📖 Supabase Project URL Kaise Nikalein? (Simple Hindi)</h3>
-          <ol style="font-size:12.5px;color:#cbd5e1;line-height:1.9;margin:0;padding-left:20px">
-            <li><a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;text-decoration:underline;font-weight:600">supabase.com/dashboard</a> par jakar apna project open karein.</li>
-            <li>Left side bottom me <b>Project Settings (⚙️ Gear Icon)</b> par click karein.</li>
-            <li>Wahan <b>API</b> option par click karein.</li>
-            <li>Page ke sabse upar <b>Project URL</b> likha hoga (jaise <code>https://abcdefghijkl.supabase.co</code>) — use copy karke upar paste kar dein aur <b>Save Supabase Settings</b> par click karein.</li>
-          </ol>
-        </div>
       </div>
     </div>
 

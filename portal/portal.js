@@ -3862,36 +3862,6 @@ async function verifyCertificateById(certId) {
 // ---------- Initial Bootstrap ----------
 
 async function initStudentSession() {
-  // 1. Detect Supabase email confirmation link redirect
-  const hash = window.location.hash ? window.location.hash.substring(1) : '';
-  const hashParams = new URLSearchParams(hash);
-  const sbAccessToken = hashParams.get('access_token');
-
-  if (sbAccessToken) {
-    try {
-      const uRes = await fetch('https://wysgdueraejdmphenjkp.supabase.co/auth/v1/user', {
-        headers: {
-          'Authorization': `Bearer ${sbAccessToken}`,
-          'apikey': 'sb_publishable_O9vYLYrO5Q84toHf0fpE0w_hrMfXNx1'
-        }
-      });
-      const sbUser = await uRes.json();
-      if (sbUser && sbUser.email) {
-        const autoRes = await lmsApi('supabase-auto-login', {
-          method: 'POST',
-          body: { email: sbUser.email, accessToken: sbAccessToken }
-        });
-        if (autoRes.token) {
-          studentToken = autoRes.token;
-          localStorage.setItem(TOKEN_KEY, studentToken);
-          currentStudent = autoRes.student;
-          toast('🎉 Email verified successfully! Welcome to Quick Art Academy.');
-          window.history.replaceState(null, '', window.location.pathname);
-        }
-      }
-    } catch(e) {}
-  }
-
   const params = new URLSearchParams(window.location.search);
   const enrollParam = params.get('enroll');
   const catalogParam = params.get('catalog');
