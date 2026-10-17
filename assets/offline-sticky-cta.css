@@ -129,9 +129,9 @@
     white-space: nowrap;
   }
 
-  /* Book Now Text - Rich Crimson Red for maximum legibility and clear contrast on gold */
+  /* Book Now Text - Rich Emerald Green for high contrast and attractive legibility */
   .offline-book-text {
-    color: #8e0b0b; /* Rich Crimson Red - stands out prominently with bold contrast */
+    color: #14532d; /* Rich Emerald Green - vivid, bold and high-contrast on gold */
     font-weight: 900;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
     letter-spacing: 0.02em;
@@ -152,10 +152,12 @@
   }
 
   .offline-btn-sub strong {
-    background: rgba(220, 38, 38, 0.18);
-    color: #991b1b;
-    padding: 1px 5px;
+    background: rgba(20, 83, 45, 0.16);
+    color: #14532d; /* Matching Rich Emerald Green */
+    border: 1px solid rgba(20, 83, 45, 0.32);
+    padding: 1px 6px;
     border-radius: 4px;
+    font-weight: 800;
   }
 }
 
